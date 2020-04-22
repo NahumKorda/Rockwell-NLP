@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<actions>
+        <action>
+            <actionName>javadoc</actionName>
+            <preAction>build-with-dependencies</preAction>
+            <packagings>
+                <packaging>*</packaging>
+            </packagings>
+            <goals>
+                <goal>generate-sources</goal>
+                <goal>javadoc:javadoc</goal>
+                
+                
+            </goals>
+            <properties>
+                <detectOfflineLinks>true</detectOfflineLinks>
+                <verbose>true</verbose>
+                
+            </properties>
+        </action>
+    </actions>

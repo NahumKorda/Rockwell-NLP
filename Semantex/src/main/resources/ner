@@ -1,0 +1,61 @@
+###########################
+########## DATES ##########
+###########################
+
+## 02/03/2020 ##
+@role :number | date
+
+## Monday, March 2, 2020 ##
+@role :weekday ; @cain :, ; @role :month ; @role :number ; @cain :, ; @role :number | date
+@role :weekday ; @role :month ; @role :number ; @cain :, ; @role :number | date
+@role :month ; @role :number ; @cain :, ; @role :number | date
+
+## Monday, 2nd March, 1982 ##
+@role :weekday ; @cain :, ; @pos :ORD ; @role :month ; @cain :, ; @role :number | date
+@role :weekday ; @pos :ORD ; @role :month ; @cain :, ; @role :number | date
+@pos :ORD ; @role :month ; @cain :, ; @role :number | date
+@role :weekday ; @cain :, ; @role :number ; @role :month ; @cain :, ; @role :number | date
+@role :weekday ; @role :number ; @role :month ; @cain :, ; @role :number | date
+@role :number ; @role :month ; @cain :, ; @role :number | date
+@role :weekday ; @cain :, ; @pos :ORD ; @role :month ; @role :number | date
+@role :weekday ; @pos :ORD ; @role :month ; @role :number | date
+@pos :ORD ; @role :month ; @role :number | date
+@role :weekday ; @cain :, ; @role :number ; @role :month ; @role :number | date
+@role :weekday ; @role :number ; @role :month ; @role :number | date
+@role :number ; @role :month ; @role :number | date
+
+## 2nd day of March, 2020 ##
+@pos :ORD ; @cain :day ; @cain :of ; @role :month ; @cain :, ; @role :number | date
+
+
+
+############################
+########## PEOPLE ##########
+############################
+
+@type+suffix :NN+06 | person
+@role :hon_title ; @type+suffix :NN+06 | person
+@role+prefix :name_suffix+07 | person
+@role :hon_title ; @role+infix :name_suffix+07 | person
+
+@type+suffix :NN+06 | person
+@role :hon_title ; @type+suffix :NN+06 | person
+
+
+###################################
+########## ORGANIZATIONS ##########
+###################################
+
+@role+prefix :corp_title+07 | corporation
+
+
+
+##############################
+########## CURRENCY ##########
+##############################
+
+@pos :XZ2 ; @role :number | currency
+@pos :XZ2 ; @pos :XZ2 ; @role :number | currency
+@role :number ; @pos :XZ2 ;  | currency
+@role :number ; @role :currency_name ;  | currency
+@role :number ; @pos :ACR ; @role :currency_name ;  | currency

@@ -1,0 +1,2 @@
+from: birth_date_from, if: _date, meaning: birthday
+from: agreement_date, if: _date, meaning: agreement_valid_from_date

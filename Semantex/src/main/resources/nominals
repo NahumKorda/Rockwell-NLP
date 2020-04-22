@@ -1,0 +1,376 @@
+## months ##
+@cain :january | month
+@cain :jan | month
+@cain :february | month
+@cain :feb | month
+@cain :march | month
+@cain :mar | month
+@cain :april | month
+@cain :apr | month
+@cain :may | month
+@cain :june | month
+@cain :jun | month
+@cain :july | month
+@cain :jul | month
+@cain :august | month
+@cain :aug | month
+@cain :september | month
+@cain :sep | month
+@cain :october | month
+@cain :oct | month
+@cain :november | month
+@cain :nov | month
+@cain :december | month
+@cain :dec | month
+
+## weekdays ##
+@cain :sunday | weekday
+@cain :monday | weekday
+@cain :tuesday | weekday
+@cain :wednesday | weekday
+@cain :thursday | weekday
+@cain :friday | weekday
+@cain :saturday | weekday
+@cain :sunday ; @cain :, | weekday
+@cain :monday ; @cain :, | weekday
+@cain :tuesday ; @cain :, | weekday
+@cain :wednesday ; @cain :, | weekday
+@cain :thursday ; @cain :, | weekday
+@cain :friday ; @cain :, | weekday
+@cain :saturday ; @cain :, | weekday
+
+## honorary titles ##
+@cain :brig.-gen | hon_title
+@cain :brig.-gen. | hon_title
+@cain :capt | hon_title
+@cain :capt. | hon_title
+@cain :cmdr | hon_title
+@cain :cmdr. | hon_title
+@cain :col | hon_title
+@cain :col. | hon_title
+@cain :colo | hon_title
+@cain :colo. | hon_title
+@cain :cols | hon_title
+@cain :cols. | hon_title
+@cain :cpl | hon_title
+@cain :cpl. | hon_title
+@cain :dr | hon_title
+@cain :dr. | hon_title
+@cain :dsc | hon_title
+@cain :esq | hon_title
+@cain :esq. | hon_title
+@cain :gen | hon_title
+@cain :gen. | hon_title
+@cain :hon | hon_title
+@cain :hon. | hon_title
+@cain :ing | hon_title
+@cain :ing. | hon_title
+@cain :lieut | hon_title
+@cain :lieut. | hon_title
+@cain :lt | hon_title
+@cain :lt. | hon_title
+@cain :lt.-cmdr | hon_title
+@cain :lt.-cmdr. | hon_title
+@cain :lt.-col | hon_title
+@cain :lt.-col. | hon_title
+@cain :lt.-gen | hon_title
+@cain :lt.-gen. | hon_title
+@cain :maj | hon_title
+@cain :maj. | hon_title
+@cain :maj.-gen | hon_title
+@cain :maj.-gen. | hon_title
+@cain :maj.-gens | hon_title
+@cain :maj.-gens. | hon_title
+@cain :md | hon_title
+@cain :md. | hon_title
+@cain :messrs | hon_title
+@cain :messrs. | hon_title
+@cain :miss | hon_title
+@cain :miss. | hon_title
+@cain :mm | hon_title
+@cain :mm. | hon_title
+@cain :mmes | hon_title
+@cain :mmes. | hon_title
+@cain :mr | hon_title
+@cain :mr. | hon_title
+@cain :mrs | hon_title
+@cain :mrs. | hon_title
+@cain :ms | hon_title
+@cain :ms. | hon_title
+@cain :msgr | hon_title
+@cain :msgr. | hon_title
+@cain :phd | hon_title
+@cain :prof | hon_title
+@cain :prof. | hon_title
+@cain :rev | hon_title
+@cain :rev. | hon_title
+@cain :sen | hon_title
+@cain :sen. | hon_title
+@cain :sgt | hon_title
+@cain :sgt. | hon_title
+@cain :sir | hon_title
+@cain :sub-lieut | hon_title
+@cain :sub-lieut. | hon_title
+
+## name suffix ##
+@cain :jr | name_suffix
+@cain :jr. | name_suffix
+@cain :sr | name_suffix
+@cain :sr. | name_suffix
+
+## corporate titles ##
+@cain :assn | corp_title
+@cain :assn. | corp_title
+@cain :assoc | corp_title
+@cain :assoc. | corp_title
+@cain :association | corp_title
+@cain :bank | corp_title
+@cain :bankers | corp_title
+@cain :banking | corp_title
+@cain :building ; @cain :and ; @cain :loan | corp_title
+@cain :casualty | corp_title
+@cain :chartered | corp_title
+@cain :chtd | corp_title
+@cain :chtd. | corp_title
+@cain :church | corp_title
+@cain :club | corp_title
+@cain :co | corp_title
+@cain :co. | corp_title
+@cain :college | corp_title
+@cain :comp | corp_title
+@cain :comp. | corp_title
+@cain :company | corp_title
+@cain :corp | corp_title
+@cain :corp. | corp_title
+@cain :corporation | corp_title
+@cain :credit ; @cain :union | corp_title
+@cain :deposit | corp_title
+@cain :electric ; @cain :cooperative | corp_title
+@cain :foundation | corp_title
+@cain :fund | corp_title
+@cain :homestead | corp_title
+@cain :inc | corp_title
+@cain :inc. | corp_title
+@cain :incorporated | corp_title
+@cain :institute | corp_title
+@cain :insurance | corp_title
+@cain :l.c. | corp_title
+@cain :l.l.c. | corp_title
+@cain :l.l.l.p. | corp_title
+@cain :l.l.p. | corp_title
+@cain :l.p. | corp_title
+@cain :lc | corp_title
+@cain :limited | corp_title
+@cain :limited ; @cain :company | corp_title
+@cain :limited ; @cain :liability ; @cain :company | corp_title
+@cain :limited ; @cain :liability ; @cain :limited ; @cain :partnership | corp_title
+@cain :limited ; @cain :liability ; @cain :partnership | corp_title
+@cain :limited ; @cain :partnership | corp_title
+@cain :llc | corp_title
+@cain :lllp | corp_title
+@cain :llp | corp_title
+@cain :lp | corp_title
+@cain :ltd | corp_title
+@cain :ltd. | corp_title
+@cain :p.a. | corp_title
+@cain :p.c. | corp_title
+@cain :pc | corp_title
+@cain :professional ; @cain :association | corp_title
+@cain :professional ; @cain :corporation | corp_title
+@cain :professional ; @cain :limited ; @cain :liability ; @cain :company | corp_title
+@cain :r.l.l.l.p. | corp_title
+@cain :r.l.l.p. | corp_title
+@cain :redevelopment ; @cain :corporation | corp_title
+@cain :registered ; @cain :limited ; @cain :liability ; @cain :limited ; @cain :partnership | corp_title
+@cain :registered ; @cain :limited ; @cain :liability ; @cain :partnership | corp_title
+@cain :rlllp | corp_title
+@cain :rllp | corp_title
+@cain :s.p.a. | corp_title
+@cain :safe ; @cain :deposit | corp_title
+@cain :savings | corp_title
+@cain :service ; @cain :corporation | corp_title
+@cain :societa ; @cain :per ; @cain :azioni | corp_title
+@cain :society | corp_title
+@cain :syndicate | corp_title
+@cain :trust | corp_title
+@cain :trust ; @cain :company | corp_title
+@cain :trustee | corp_title
+@cain :union | corp_title
+@cain :university | corp_title
+
+# number #
+@pos+suffix{*} :CRD+08 | number
+
+# currency #
+@cain :afghani | currency_name
+@cain :afghanis | currency_name
+@cain :ariary | currency_name
+@cain :ariarys | currency_name
+@cain :baht | currency_name
+@cain :bahts | currency_name
+@cain :birr | currency_name
+@cain :birrs | currency_name
+@cain :bolivar | currency_name
+@cain :bolivars | currency_name
+@cain :boliviano | currency_name
+@cain :bolivianos | currency_name
+@cain :cedi | currency_name
+@cain :cedis | currency_name
+@cain :cent | currency_name
+@cain :cents | currency_name
+@cain :colon | currency_name
+@cain :colons | currency_name
+@cain :cordoba | currency_name
+@cain :cordobas | currency_name
+@cain :dalasi | currency_name
+@cain :dalasis | currency_name
+@cain :denar | currency_name
+@cain :denars | currency_name
+@cain :dinar | currency_name
+@cain :dinars | currency_name
+@cain :dirham | currency_name
+@cain :dirhams | currency_name
+@cain :dobra | currency_name
+@cain :dobras | currency_name
+@cain :dollar | currency_name
+@cain :dollars | currency_name
+@cain :dong | currency_name
+@cain :dongs | currency_name
+@cain :dram | currency_name
+@cain :drams | currency_name
+@cain :escudo | currency_name
+@cain :escudos | currency_name
+@cain :euro | currency_name
+@cain :euros | currency_name
+@cain :florin | currency_name
+@cain :florins | currency_name
+@cain :forint | currency_name
+@cain :forints | currency_name
+@cain :franc | currency_name
+@cain :francs | currency_name
+@cain :gourde | currency_name
+@cain :gourdes | currency_name
+@cain :guarani | currency_name
+@cain :guaranis | currency_name
+@cain :guilder | currency_name
+@cain :guilders | currency_name
+@cain :hryvnia | currency_name
+@cain :hryvnias | currency_name
+@cain :kina | currency_name
+@cain :kinas | currency_name
+@cain :kip | currency_name
+@cain :kips | currency_name
+@cain :koruna | currency_name
+@cain :korunas | currency_name
+@cain :krona | currency_name
+@cain :kronas | currency_name
+@cain :krone | currency_name
+@cain :krones | currency_name
+@cain :kuna | currency_name
+@cain :kunas | currency_name
+@cain :kwacha | currency_name
+@cain :kwachas | currency_name
+@cain :kwanza | currency_name
+@cain :kwanzas | currency_name
+@cain :kyat | currency_name
+@cain :kyats | currency_name
+@cain :lari | currency_name
+@cain :laris | currency_name
+@cain :lek | currency_name
+@cain :leks | currency_name
+@cain :lempira | currency_name
+@cain :lempiras | currency_name
+@cain :leone | currency_name
+@cain :leones | currency_name
+@cain :leu | currency_name
+@cain :leus | currency_name
+@cain :lev | currency_name
+@cain :levs | currency_name
+@cain :lilangeni | currency_name
+@cain :lilangenis | currency_name
+@cain :lira | currency_name
+@cain :liras | currency_name
+@cain :loti | currency_name
+@cain :lotis | currency_name
+@cain :manat | currency_name
+@cain :manats | currency_name
+@cain :mark | currency_name
+@cain :marks | currency_name
+@cain :metical | currency_name
+@cain :meticals | currency_name
+@cain :naira | currency_name
+@cain :nairas | currency_name
+@cain :nakfa | currency_name
+@cain :nakfas | currency_name
+@cain :new ; @cain :shekel | currency_name
+@cain :new ; @cain :shekels | currency_name
+@cain :ngultrum | currency_name
+@cain :ngultrums | currency_name
+@cain :ouguiya | currency_name
+@cain :ouguiyas | currency_name
+@cain :pataca | currency_name
+@cain :patacas | currency_name
+@cain :pa’anga | currency_name
+@cain :pa’angas | currency_name
+@cain :pennies | currency_name
+@cain :penny | currency_name
+@cain :peso | currency_name
+@cain :pesos | currency_name
+@cain :pound | currency_name
+@cain :pounds | currency_name
+@cain :pula | currency_name
+@cain :pulas | currency_name
+@cain :quetzal | currency_name
+@cain :quetzals | currency_name
+@cain :rand | currency_name
+@cain :rands | currency_name
+@cain :real | currency_name
+@cain :reals | currency_name
+@cain :renminbi | currency_name
+@cain :renminbis | currency_name
+@cain :rial | currency_name
+@cain :rials | currency_name
+@cain :riel | currency_name
+@cain :riels | currency_name
+@cain :ringgit | currency_name
+@cain :ringgits | currency_name
+@cain :riyal | currency_name
+@cain :riyals | currency_name
+@cain :ruble | currency_name
+@cain :rubles | currency_name
+@cain :rufiyaa | currency_name
+@cain :rufiyaas | currency_name
+@cain :rupee | currency_name
+@cain :rupees | currency_name
+@cain :rupiah | currency_name
+@cain :rupiahs | currency_name
+@cain :shekel | currency_name
+@cain :shekels | currency_name
+@cain :shilling | currency_name
+@cain :shillings | currency_name
+@cain :sol | currency_name
+@cain :sols | currency_name
+@cain :som | currency_name
+@cain :somoni | currency_name
+@cain :somonis | currency_name
+@cain :soms | currency_name
+@cain :sterling | currency_name
+@cain :sterlings | currency_name
+@cain :taka | currency_name
+@cain :takas | currency_name
+@cain :tala | currency_name
+@cain :talas | currency_name
+@cain :tenge | currency_name
+@cain :tenges | currency_name
+@cain :tugrik | currency_name
+@cain :tugriks | currency_name
+@cain :vatu | currency_name
+@cain :vatus | currency_name
+@cain :won | currency_name
+@cain :wons | currency_name
+@cain :yen | currency_name
+@cain :yens | currency_name
+@cain :zloty | currency_name
+@cain :zlotys | currency_name
+@cain :złoty | currency_name
+@cain :złotys | currency_name

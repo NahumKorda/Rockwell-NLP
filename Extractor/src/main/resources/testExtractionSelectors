@@ -1,0 +1,5 @@
+@cain :born ; @cain :on | birth_date_from
+@cain :made ; @cain :as ; @cain :of | agreement_date
+
+@role :date | _date
+@role :legal_date | _date

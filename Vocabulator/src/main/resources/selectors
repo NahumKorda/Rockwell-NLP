@@ -1,0 +1,8 @@
+@type+prefix{xt} :NN+noun | valid_noun_phrase
+@pos+prefix{t}+suffix{t} :CJC+noun+noun | valid_noun_phrase
+@pos+prefix+suffix :PRP+noun+noun / @cain :at ; @cain :all / @type :VV ; @pos :TO0 / @cain :due ; @cain :to | valid_noun_phrase
+
+@type+prefix{xt} :AJ+adjective | valid_adjective_phrase
+@pos+prefix{t}+suffix{t} :CJC+adjective+adjective | valid_adjective_phrase
+
+@type+prefix{*}+suffix :VV+adverb+noun | valid_verb_phrase

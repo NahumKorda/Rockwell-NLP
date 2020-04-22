@@ -1,0 +1,248 @@
+#############################
+########## GRAMMAR ##########
+########## 01 - 05 ##########
+#############################
+
+#######################
+## ADVERBIAL PHRASES ##
+#######################
+
+@type+suffix{*} :AV+01 | adverb
+
+@type+suffix{*} :AV+01 | 01
+@cain :, ; @type+suffix{*} :AV+01 | 01
+@pos :CJC ; @type+suffix{*} :AV+01 | 01
+
+
+
+#######################
+## ADJECTIVE PHRASES ##
+#######################
+@type+prefix{*}+suffix{*} :AJ+01+02 | adjective
+
+@type+suffix{*} :AJ+02 | 02
+@cain :, ; @type+infix{*}+suffix{*} :AJ+01+02 | 02
+@pos :CJC ; @type+infix{*}+suffix{*} :AJ+01+02 | 02
+
+
+
+##################
+## NOUN PHRASES ##
+##################
+@type+prefix{*}+suffix{*} :NN+02+03 | noun
+@type+prefix{*}+suffix{*} :NN+030+03 | noun
+
+@pos+suffix{*} :DT0+02 | 030
+@pos+suffix{*} :PNS+02 | 030
+@type+suffix{x*} :AV+02 | 030
+
+@cain :half ; @cain+suffix{*} :a+02 | 030
+@cain :half ; @pos+suffix{*} :PNS+02 | 030
+@cain :such ; @cain+suffix{*} :a+02 | 030
+@cain :what ; @cain+suffix{*} :a+02 | 030
+@cain :quite ; @cain+suffix{*} :a+02 | 030
+@cain :rather ; @cain+suffix{*} :a+02 | 030
+@cain+suffix :rather+02 | 030
+@cain :all ; @cain+suffix{*} :the+02 | 030
+@cain :all ; @pos+suffix{*} :PNS+02 | 030
+@cain :all | 030
+@cain :both ; @pos+suffix{*} :PNS+02 | 030
+@cain :both | 030
+@cain :twice ; @pos+suffix{*} :DT0+02 | 030
+@cain :twice ; @pos+suffix{*} :PNS+02 | 030
+@cain :twice | 030
+@cain :thrice ; @pos+suffix{*} :DT0+02 | 030
+@cain :thrice ; @pos+suffix{*} :PNS+02 | 030
+@cain :thrice | 030
+@pos :CRD ; @cain :times ; @pos+suffix{*} :DT0+02 | 030
+@pos :CRD ; @cain :times ; @pos+suffix{*} :PNS+02 | 030
+@pos :CRD ; @pos+suffix{*} :DT0+02 | 030
+@pos :CRD ; @pos+suffix{*} :PNS+02 | 030
+
+@type+suffix{*} :NN+03 | 03
+@cain :, ; @type+infix{*}+suffix :NN+02+03 | 03
+@pos :CJC ; @type+infix{*}+suffix :NN+02+03 | 03
+@pos :POS ; @type+infix{*}+suffix{*} :NN+02+03 | 03
+
+
+
+#####################
+## PRONOUN PHRASES ##
+#####################
+
+##direct object pronoun##
+@cain :me | 04
+@cain :you | 04
+@cain :him | 04
+@cain :her | 04
+@cain :it | 04
+@cain :us | 04
+@cain :them | 04
+@pos :PNX | 04
+
+
+
+#########################
+########## NER ##########
+######## 06 - 09 ########
+#########################
+
+## PERSONAL NAMES ##
+@type+suffix{*} :NN+06 | 06
+
+## ORGANIZATIONS ##
+@type+prefix{*} :NN+07 | 07
+
+## NUMBERS ##
+@pos+suffix{*} :CRD+08 | 08
+
+
+#############################
+########## GENERIC ##########
+#############################
+
+
+
+## PRODUCT REFERENCE ##
+@cain :it | 0000
+@cain :this | 0000
+@cain :this ; @cain :product | 0000
+
+## CONJUNCTIONS ##
+@cain :and | 0010
+@cain :or | 0010
+@cain :, | 0010
+
+#@lemma+prefix{*} :do+0000 ; @lemma+suffix{*} :not+01 | 0100
+#@lemma+prefix{*} :have+0000 ; @lemma+suffix{*} :not+01 | 0100
+#@lemma+prefix{*} :be+0000 ; @lemma+suffix{*} :not+01 | 0100
+
+#@lemma+prefix{*} :can+0000 ; @lemma+suffix{*} :not+0021 | 0101
+#@lemma+prefix{*} :will+0000 ; @lemma+suffix{*} :not+0021 | 0101
+#@lemma+prefix{*} :shall+0000 ; @lemma+suffix{*} :not+0021 | 0101
+
+#@pos :AV0 | 0021
+@pos :AJ0 | 0022
+
+@cain :actually | 3010
+@cain :really | 3010
+
+@cain+suffix{*} :a+0022 | 0030
+@cain+suffix{*} :any+0022 | 0030
+@cain+suffix{*} :much+0022 | 0030
+@pos :AJ0 | 0030
+
+@pos :AJ0 | 0040
+@pos :PNS | 0040
+@pos :PNS ; @pos :AJ0 | 0040
+
+@cain :no | 0110
+@cain :zero | 0110
+@cain :limited | 0110
+@cain :limited ; @cain :or ; @cain :no | 0110
+
+########## BODY PARTS ##########
+@cain+prefix{*} :skin+03 | 1111
+@cain+prefix{*} :face+03 | 1111
+@lemma+prefix{*} :eye+03 | 1111
+@lemma+prefix{*} :lip+03 | 1111
+@cain+prefix{*} :mouth+03 | 1111
+@lemma+prefix{*} :forehead+03 | 1111
+@lemma+prefix{*} :cheek+03 | 1111
+@cain+prefix{*} :nose+03 | 1111
+@cain+prefix{*} :chin+03 | 1111
+@cain+prefix{*} :hair+03 | 1111
+@lemma+prefix{*} :hand+03 | 1111
+@lemma+prefix{*} :foot+03 | 1111
+@lemma+prefix{*} :finger+03 | 1111
+@lemma+prefix{*} :toe+03 | 1111
+@lemma+prefix{*} :nail+03 | 1111
+@lemma+prefix{*} :arm+03 | 1111
+@lemma+prefix{*} :leg+03 | 1111
+@cain+prefix{*} :body+03 | 1111
+
+########## NEGATIVE EXPERIENCE ##########
+@lemma :irritate | 2000
+@lemma :burn | 2000
+@lemma :dry | 2000
+@lemma :bother | 2000
+
+@cain :irritation | 2100
+@cain :redness | 2100
+
+@cain :irritated | 2200
+@cain :red | 2200
+@cain :dried | 2200
+
+########## POSITIVE EXPERIENCE ##########
+@cain+prefix{*} :effectively+0021 | 4100
+@cain+prefix{*} :well+0021 | 4100
+@cain+prefix{*} :good+0021 | 4100
+@cain+prefix{*} :nice+0021 | 4100
+@cain+prefix{*} :nicely+0021 | 4100
+@cain+prefix{*} :fine+0021 | 4100
+@cain :100 ; @cain :percent | 4100
+@cain+prefix{*} :great+0021 | 4100
+@cain+prefix{*} :wonderfully+0021 | 4100
+@cain+prefix{*} :ok+0021 | 4100
+@cain+prefix{*} :okay+0021 | 4100
+@cain+prefix{*} :amazing+0021 | 4100
+@cain+prefix{*} :amazingly+0021 | 4100
+@cain+prefix{*} :beautifully+0021 | 4100
+@cain+prefix{*} :fast+0021 | 4100
+@cain+prefix{*} :quickly+0021 | 4100
+@cain+prefix{*} :alright+0021 | 4100
+@cain+prefix{*} :instantly+0021 | 4100
+@cain+prefix{*} :decently+0021 | 4100
+@cain+prefix{*} :awesome+0021 | 4100
+
+
+########################################
+########## NEGATED EXPERIENCE ##########
+########################################
+
+## 3100 must be prefixed only to a noun ##
+@lemma+suffix :see+0110 | 3100
+@lemma+suffix :notice+0110 | 3100
+@lemma+suffix :feel+0110 | 3100
+@lemma+suffix :experience+0110 | 3100
+@lemma+suffix :perceive+0110 | 3100
+@lemma+suffix :sense+0110 | 3100
+@lemma+suffix :observe+0110 | 3100
+@lemma+suffix :smell+0110 | 3100
+@lemma+suffix :taste+0110 | 3100
+
+@lemma :do ; @lemma :not ; @cain+infix{t*}+suffix{*} :see+0021+0030 | 3100
+@lemma :do ; @lemma :not ; @cain+infix{t*}+suffix{*} :notice+0021+0030 | 3100
+@lemma :do ; @lemma :not ; @cain+infix{t*}+suffix{*} :feel+0021+0030 | 3100
+@lemma :do ; @lemma :not ; @cain+infix{t*}+suffix{*} :experience+0021+0030 | 3100
+@lemma :do ; @lemma :not ; @cain+infix{t*}+suffix{*} :perceive+0021+0030 | 3100
+@lemma :do ; @lemma :not ; @cain+infix{t*}+suffix{*} :sense+0021+0030 | 3100
+@lemma :do ; @lemma :not ; @cain+infix{t*}+suffix{*} :observe+0021+0030 | 3100
+@lemma :do ; @lemma :not ; @cain+infix{t*}+suffix{*} :smell+0021+0030 | 3100
+@lemma :do ; @lemma :not ; @cain+infix{t*}+suffix{*} :taste+0021+0030 | 3100
+
+@lemma :have ; @lemma :not ; @cain+infix{t*}+suffix{*} :seen+0021+0030 | 3100
+@lemma :have ; @lemma :not ; @cain+infix{t*}+suffix{*} :noticed+0021+0030 | 3100
+@lemma :have ; @lemma :not ; @cain+infix{t*}+suffix{*} :felt+0021+0030 | 3100
+@lemma :have ; @lemma :not ; @cain+infix{t*}+suffix{*} :experienced+0021+0030 | 3100
+@lemma :have ; @lemma :not ; @cain+infix{t*}+suffix{*} :perceived+0021+0030 | 3100
+@lemma :have ; @lemma :not ; @cain+infix{t*}+suffix{*} :sensed+0021+0030 | 3100
+@lemma :have ; @lemma :not ; @cain+infix{t*}+suffix{*} :observed+0021+0030 | 3100
+@lemma :have ; @lemma :not ; @cain+infix{t*}+suffix{*} :smelled+0021+0030 | 3100
+@lemma :have ; @lemma :not ; @cain+infix{t*}+suffix{*} :smelt+0021+0030 | 3100
+@lemma :have ; @lemma :not ; @cain+infix{t*}+suffix{*} :tasted+0021+0030 | 3100
+
+## 3200 must be prefixed only to an adjective ##
+## 3200 may be followed by an adverbial phrase (preceding the adjective) ##
+@lemma+prefix{*} :do+0000 ; @lemma :not ; @cain+infix{t*}+suffix{*} :get+0021+02 | 3200
+@lemma+prefix{*} :do+0000 ; @lemma :not ; @cain+infix{t*}+suffix{*} :feel+0021+02 | 3200
+@lemma+prefix{*} :do+0000 ; @lemma :not ; @cain+infix{t*}+suffix{*} :seem+0021+02 | 3200
+@lemma+prefix{*} :do+0000 ; @lemma :not ; @cain+infix{t*}+suffix{*} :become+0021+02 | 3200
+@lemma+prefix{*} :do+0000 ; @lemma :not ; @cain+infix{t*} :come+0021 ; @cain+suffix{*} :out+02 | 3200
+
+## 3210 must be prefixed only to an adjective ##
+## 3210 must be followed by a direct object (a noun/pronoun phrase) ##
+## the direct object may be followed by an adverbial phrase (preceding the adjective) ##
+@lemma+prefix{*} :do+0000 ; @lemma :not ; @lemma+infix{t*}+suffix{*} :leave+0021+1111 | 3300
+@lemma+prefix{*} :do+0000 ; @lemma :not ; @lemma+infix{t*}+suffix{*} :make+0021+1111 | 3300
