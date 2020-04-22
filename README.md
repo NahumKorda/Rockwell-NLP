@@ -19,4 +19,4 @@
 <p>For more information about Rockwell consult this document: <a href="https://docs.google.com/document/d/1CjDsEowbBLBOoJs1OrC4tV807-B14b1feAvtTepauHc/edit?usp=sharing" targer="_blank">Rockwell - User Manual</a>.</p>
 <p>For more information about Rockwell expressions consult this document: <a href="https://docs.google.com/document/d/1wMYCXAOm0cmJ4z5PHLRK5JyPsBY-p3vEYnupik-QT-A/edit?usp=sharing" target="_blank">Rockwell Expressions - User Manual</a>.</p>
 <p>For more information about Rockwell frames consult this document: <a href="https://docs.google.com/document/d/16ehTwHFVetysFeySPHOQ8aue64FrN-F5dwVi2xKFVVc/edit?usp=sharing" target="_blank">Rockwell Frames - User Manual</a>.</p>
-<p>Rockwell is developed using OpenJDK 8, and provides Java API. The following document is the user manual containing instructions on how to operate Rockwell Java API.</p>
+<p>Rockwell is developed using OpenJDK 8, and provides Java API.</p>
