@@ -39,6 +39,10 @@ public final class Unicode {
                     break;
                 case Character.LINE_SEPARATOR:
                 case Character.PARAGRAPH_SEPARATOR:
+                /**
+                 * Oddly "\n" is character 15.
+                 */
+                case Character.CONTROL:
                     input.replace(i, i + 1, Character.toString((char) 13));
                     i++;
                     break;

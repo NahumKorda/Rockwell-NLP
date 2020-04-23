@@ -1,6 +1,7 @@
 package com.itcag.rockwell.tagger;
 
 import com.itcag.rockwell.lang.Semtoken;
+import com.itcag.rockwell.lang.Tag;
 import com.itcag.rockwell.lang.Token;
 import com.itcag.rockwell.tagger.lang.Conditions;
 import com.itcag.rockwell.tagger.lang.Match;
@@ -10,17 +11,21 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.UUID;
 
 /**
  * <p>This class validates a single {@link com.itcag.rockwell.lang.Token token}.</p>
  */
 public class TokenAnalyzer {
 
+    private final String sentenceID = UUID.randomUUID().toString().replace("-", "").trim();
+        
     private final Processor processor;
     
     private ArrayList<State> currentStates = new ArrayList<>();
     private ArrayList<State> newStates = new ArrayList<>();
     
+    private final HashMap<String, State> rejecting = new HashMap<>();
     private final ArrayList<State> matches = new ArrayList<>();
         
     /**
@@ -40,11 +45,11 @@ public class TokenAnalyzer {
          * Some tokens have part of speech set during the tokenization.
          */
         if (token.getAlternatives().isEmpty()) {
-            addNewStates(processor.getStates(currentStates, token, true), newStates);
+            addNewStates(processor.getStates(currentStates, token, true));
         } else {
 
             if (token instanceof Semtoken || token instanceof Match) {
-                addNewStates(processor.getStates(currentStates, token, true), newStates);
+                addNewStates(processor.getStates(currentStates, token, true));
             }
 
             /**
@@ -56,15 +61,15 @@ public class TokenAnalyzer {
                  * Only the first alternative is used for checking the quodlibet.
                  */
                 if (alternative.equals(token.getAlternatives().get(0))) {
-                    addNewStates(processor.getStates(currentStates, newToken, true), newStates);
+                    addNewStates(processor.getStates(currentStates, newToken, true));
                 } else {
-                    addNewStates(processor.getStates(currentStates, newToken, false), newStates);
+                    addNewStates(processor.getStates(currentStates, newToken, false));
                 }
             }
 
         }
 
-        validateStates(newStates, matches);
+        validateStates(newStates);
 
         /**
          * The current states are updated for further processing.
@@ -74,13 +79,13 @@ public class TokenAnalyzer {
 
     }
     
-    private void addNewStates(ArrayList<State> newStates, ArrayList<State> currentStates) {
+    private void addNewStates(ArrayList<State> newStates) {
         for (State newState : newStates) {
-            currentStates.add(newState);
+            this.newStates.add(newState);
         }
     }
     
-    private void validateStates(ArrayList<State> newStates, ArrayList<State> matches) {
+    private void validateStates(ArrayList<State> newStates) {
         
         HashMap<String, ArrayList<State>> validator = new HashMap<>();
         Iterator<State> stateIterator = newStates.iterator();
@@ -106,7 +111,11 @@ public class TokenAnalyzer {
                  * to see if any tags were identified.
                  */
                 if (newState.getState() == Conditions.FINAL_STATE_CODE) {
-                    matches.add(newState.getCopy());
+                    if (newState.getIdToBeRejected() != null) {
+                        this.rejecting.put(newState.getIdToBeRejected(), newState.getCopy());
+                    } else {
+                        this.matches.add(newState.getCopy());
+                    }
                     stateIterator.remove();
                 }
             } else {
@@ -130,18 +139,51 @@ public class TokenAnalyzer {
         
     }
 
-    /**
-     * @return Array list containing instances of the {@link com.itcag.rockwell.tagger.lang.State State} class representing the current states of the finite state automaton.
-     */
-    public ArrayList<State> getCurrentStates() {
-        return this.currentStates;
-    }
+    public ArrayList<Tag> getTags() {
+        
+        ArrayList<Tag> retVal = new ArrayList<>();
 
-    /**
-     * @return Array list containing instances of the {@link com.itcag.rockwell.tagger.lang.State State} class representing the complete matches (i.e. completely satisfied conditions).
-     */
-    public ArrayList<State> getMatches() {
-        return this.matches;
+        if (this.matches.size() == 1) {
+            State match = this.matches.get(0);
+            Tag tag = new Tag(match.getTag(), match.getScript(), match.getFirstMatch(), match.getLastMatch());
+            tag.setSentenceId(sentenceID);
+            retVal.add(tag);
+            return retVal;
+        }
+
+        Iterator<State> matchIterator = this.matches.iterator();
+        while (matchIterator.hasNext()) {
+            State match = matchIterator.next();
+            if (!this.rejecting.containsKey(match.getConditionId())) {
+                if (isIncluded(match, retVal)) continue;
+                Tag tag = new Tag(match.getTag(), match.getScript(), match.getFirstMatch(), match.getLastMatch());
+                tag.setSentenceId(sentenceID);
+                retVal.add(tag);
+            }
+        }
+
+        return retVal;
+        
+    }
+    
+    private boolean isIncluded(State match, ArrayList<Tag> tags) {
+        
+        if (tags.isEmpty()) return false;
+        
+        Iterator<Tag> tagIterator = tags.iterator();
+        while (tagIterator.hasNext()) {
+            Tag tag = tagIterator.next();
+            if (match.getStart() == tag.getStart() && match.getEnd() == tag.getEnd()) {
+                return true;
+            } else if (match.getStart() > tag.getStart() && match.getEnd() < tag.getEnd()) {
+                return true;
+            } else if (match.getStart() <= tag.getStart() && match.getEnd() >= tag.getEnd()) {
+                tagIterator.remove();
+            }
+        }
+
+        return false;
+        
     }
     
 }

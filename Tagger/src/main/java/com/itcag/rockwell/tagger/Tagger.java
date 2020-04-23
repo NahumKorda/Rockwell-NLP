@@ -10,6 +10,8 @@ import com.itcag.rockwell.tagger.patterns.Loader;
 import com.itcag.util.io.TextFileReader;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.UUID;
 
 /**
@@ -126,107 +128,15 @@ public class Tagger {
     
     private ArrayList<Tag> run(ArrayList<? extends Token> tokens, Processor processor) throws Exception {
         
-        String sentenceID = UUID.randomUUID().toString().replace("-", "").trim();
-        
         TokenAnalyzer analyzer = new TokenAnalyzer(processor);
         
         for (int i = 0; i < tokens.size(); i++) {
-            
             Token token = tokens.get(i);
             analyzer.analyze(token);
-
-            if (Client.MAIN.equals(this.client)) {
-                Integer next = getNewNext(i, analyzer);
-                if (next != null) i = next;
-            }
-            
         }
 
-        return getTags(analyzer.getMatches(), sentenceID);
+        return analyzer.getTags();
         
-    }
-    
-    private Integer getNewNext(int i, TokenAnalyzer analyzer) {
-        
-        /**
-         * If a suffix was successfully identified,
-         * there is no sense in inspecting the identified tokens again.
-         * Inspection of tokens can be moved forward
-         * to the first non-identified token.
-         * Unless...
-         */
-        int next = i;
-        for (State match : analyzer.getMatches()) {
-            
-            /**
-             * (1) Rejecting conditions should not move the cursor.
-             */
-            if (match.getIdToBeRejected() != null) continue;
-            
-            /**
-             * (2) If the accepting condition contains a suffix condition element,
-             * and it features rejecting conditions,
-             * the following situation may occur:
-             * the suffix completes the validation of the accepting condition,
-             * but the rejecting condition was still not completed,
-             * because it requires inspection of the tokens
-             * that were already validated by the suffix validation;
-             * consequently, the rejecting condition would never be validated,
-             * if the cursor is moved beyond the end of the suffix.
-             * For example:
-             * "irritation at all"
-             * @pos+prefix+suffix :PRP+noun+noun / @cain :at ; @cain :all | valid_noun_phrase
-             * when "at" is checked both prefix and suffix get validated,
-             * so that the accepting condition is completed.
-             * Nonetheless, the rejecting condition is not yet validated,
-             * since "all" is not reached yet.
-             */
-            if (match.getEnd() > next) {
-                if (!match.getRejectedById().isEmpty() && !analyzer.getCurrentStates().isEmpty()) {
-                    for (State state : analyzer.getCurrentStates()) {
-                        if (match.getConditionId().equals(state.getIdToBeRejected())) {
-                            return null;
-                        }
-                    }
-                }
-        
-                next = match.getEnd();
-            
-            }
-        
-        }
-        
-        if (next != i) return next;
-        return null;
-
-    }
-    
-    private ArrayList<Tag> getTags(ArrayList<State> matches, String sentenceID) {
-        
-        ArrayList<Tag> retVal = new ArrayList<>();
-
-        for (State match : matches) {
-            if (match.getIdToBeRejected() == null) {
-                if (isToBeRejected(match, matches)) continue;
-                Tag tag = new Tag(match.getTag(), match.getScript(), match.getFirstMatch(), match.getLastMatch());
-                tag.setSentenceId(sentenceID);
-                retVal.add(tag);
-            }
-        }
-
-        return retVal;
-        
-    }
-
-    private boolean isToBeRejected(State state, ArrayList<State> matches) {
-        for (State match : matches) {
-            if (state.equals(match)) continue;
-            if (match.getIdToBeRejected() == null) continue;
-            if (state.getConditionId().equals(match.getIdToBeRejected())) {
-                if (state.getStart() <= match.getStart() && state.getEnd() >= match.getEnd()) return true;
-            }
-        }
-        return false;
     }
     
 }
