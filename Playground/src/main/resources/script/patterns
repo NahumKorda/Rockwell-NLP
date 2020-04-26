@@ -1,0 +1,43 @@
+########## auxiliary verbs ##########
+@lemma :have | *auxiliary_verb*
+@lemma :be | *auxiliary_verb*
+
+########## amount qualifier ##########
+
+## about, around, over (but not "to") ##
+@pos :PRP \ @cain :to | *amount_qualifier*
+
+## nearly, only ##
+@pos :AV0 | *amount_qualifier*
+
+@cain :another | *amount_qualifier*
+@cain :a ; @cain :further | *amount_qualifier*
+@cain :an ; @cain :additional | *amount_qualifier*
+@cain :a ; @cain :substantial | *amount_qualifier*
+@cain :a ; @cain :total ; @cain :of | *amount_qualifier*
+@cain :a ; @cain :whopping | *amount_qualifier*
+@cain :close ; @cain :to | *amount_qualifier*
+@cain :just ; @cain :over | *amount_qualifier*
+@cain :less ; @cain :than | *amount_qualifier*
+@cain :more ; @cain :than | *amount_qualifier*
+
+
+########## funding type ##########
+@cain :seed | *funding_type*
+@cain :total | *funding_type*
+@cain :additional | *funding_type*
+@cain :new | *funding_type*
+@cain :venture | *funding_type*
+@cain :vc | *funding_type*
+@cain :angel | *funding_type*
+
+
+########## recently ##########
+@cain+prefix{*} :now+adverb | *recently*
+@cain+prefix{*} :today+adverb | *recently*
+@cain+prefix{*} :this+adverb ; @cain :afternoon | *recently*
+@cain+prefix{*} :this+adverb ; @cain :morning | *recently*
+@cain+prefix{*} :yesterday+adverb | *recently*
+@cain+prefix{*} :this+adverb ; @cain :week | *recently*
+@cain+prefix{*} :last+adverb ; @cain :night | *recently*
+

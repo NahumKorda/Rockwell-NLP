@@ -29,11 +29,24 @@ public class PhraserTest {
         String exclusions = Exclusions.STOPPHRASES.name();
         int threshold = 10;
         int trimThreshold = 2;
+
         
-        String positive = null;
+        /*
+        String positive = "acquisition, acquired, acquiring, purchas";
+        String negative = "talent acquisition, customer acquisition, user acquisition, content acquisition";
+        String required = "acquisition, acquired, acquiring, purchas";
+        */
+
+        /*
+        String positive = "investment, invest, funding, funded";
         String negative = null;
-        String required = null;
-        
+        String required = "investment, invest, funding, funded";
+        */
+
+        String positive = "ipo,offering";
+        String negative = null;
+        String required = "ipo,offering";
+
         Properties properties = new Properties();
         properties.put(PropertyFields.TASK.getField(), VocabularyExtractor.Tasks.EXTRACT_PHRASES.name());
         
@@ -59,7 +72,7 @@ public class PhraserTest {
         this.extractor = new VocabularyExtractor(properties);
 
 //        processFolder(folderPath);
-        processFile("/home/nahum/Desktop/negative statements");
+        processFile("/home/nahum/code/Rockwell-NLP/Playground/src/main/resources/data/techcrunch");
         
         extractor.print(true);
         
@@ -77,9 +90,17 @@ public class PhraserTest {
     
     private void processFile(String filePath) throws Exception {
 
+        int count = 0;
+        
         ArrayList<String> lines = TextFileReader.read(filePath);
         for (String line : lines) {
-            this.extractor.process(line);
+            Printer.print(Integer.toString(count++));
+            try {
+                this.extractor.process(line);
+            } catch (Exception ex) {
+                Printer.print(ex.getMessage());
+                Printer.print(line);
+            }
         }
 
         Printer.print(Integer.toString(this.extractor.count()));

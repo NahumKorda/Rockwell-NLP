@@ -1,0 +1,32 @@
+@lemma :raise | _funding_action_
+@lemma :disclose | _funding_action_
+@lemma :announce | _funding_action_
+@lemma :confirm | _funding_action_
+@lemma :secure | _funding_action_
+@lemma :nab | _funding_action_
+@lemma :grab | _funding_action_
+@lemma :land | _funding_action_
+@lemma :get | _funding_action_
+@lemma :receive | _funding_action_
+@lemma :close | _funding_action_
+@lemma :collect | _funding_action_
+@lemma :take | _funding_action_
+@lemma :take ; @cain :on | _funding_action_
+@cain :backed ; @cain :by | _funding_action_
+@lemma :pick ; @cain :up | _funding_action_
+@lemma :pull ; @cain :in | _funding_action_
+
+@lemma :announce | _merger_action_
+@lemma :confirm | _merger_action_
+
+@cain :initial ; @cain :public ; @cain :offering | _ipo_
+@cain :public ; @cain :offering | _ipo_
+@verbatim :IPO | _ipo_
+
+@lemma :announce | _ipo_action_
+@cain :filed ; @cain :for | _ipo_action_
+@cain :filed ; @cain+infix{x*} :documents+noun ; @cain :for | _ipo_action_
+@cain :updated ; @cain :the ; @cain :filing ; @cain :for | _ipo_action_
+@cain :completed | _ipo_action_
+@cain :submitted ; @pos :DT0 ; @cain :filing ; @cain :for | _ipo_action_
+

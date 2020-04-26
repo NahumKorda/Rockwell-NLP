@@ -14,7 +14,7 @@ public class LemmatizerTest {
     public void testGetTokens() throws Exception {
 
         ArrayList<String> tests = new ArrayList<>();
-        tests.add("it is a really good face scrub and doesnt have an overpowering smell which a lot of other face scrubs have.");
+        tests.add("raised $1.2 million in seed funding");
         
         Tokenizer tokenizer = new Tokenizer();
         

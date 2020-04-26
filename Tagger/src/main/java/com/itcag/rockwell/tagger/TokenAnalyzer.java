@@ -139,7 +139,7 @@ public class TokenAnalyzer {
         
     }
 
-    public ArrayList<Tag> getTags() {
+    public ArrayList<Tag> getTags(boolean allowMultipleTags) {
         
         ArrayList<Tag> retVal = new ArrayList<>();
 
@@ -155,7 +155,7 @@ public class TokenAnalyzer {
         while (matchIterator.hasNext()) {
             State match = matchIterator.next();
             if (!this.rejecting.containsKey(match.getConditionId())) {
-                if (isIncluded(match, retVal)) continue;
+                if (!allowMultipleTags && isIncluded(match, retVal)) continue;
                 Tag tag = new Tag(match.getTag(), match.getScript(), match.getFirstMatch(), match.getLastMatch());
                 tag.setSentenceId(sentenceID);
                 retVal.add(tag);
@@ -176,6 +176,10 @@ public class TokenAnalyzer {
             if (match.getStart() == tag.getStart() && match.getEnd() == tag.getEnd()) {
                 return true;
             } else if (match.getStart() > tag.getStart() && match.getEnd() < tag.getEnd()) {
+                return true;
+            } else if (match.getStart() == tag.getStart() && match.getEnd() < tag.getEnd()) {
+                return true;
+            } else if (match.getStart() > tag.getStart() && match.getEnd() == tag.getEnd()) {
                 return true;
             } else if (match.getStart() <= tag.getStart() && match.getEnd() >= tag.getEnd()) {
                 tagIterator.remove();

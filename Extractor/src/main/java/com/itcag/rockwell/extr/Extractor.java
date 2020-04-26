@@ -39,7 +39,7 @@ public class Extractor {
             expressions.add(line);
         }
 
-        Debugger debugger = new Debugger(DebuggingClients.NER, 0);
+        Debugger debugger = new Debugger(DebuggingClients.EXTRACTOR, 0);
         
         this.tagger = new Tagger(expressions, debugger);
         this.frames = new Frames(framePath);

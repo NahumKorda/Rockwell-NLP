@@ -33,7 +33,7 @@ public class Interpreter {
             expressions.add(line);
         }
 
-        Debugger debugger = new Debugger(DebuggingClients.NOMINALS, 0);
+        Debugger debugger = new Debugger(DebuggingClients.INTERPRETER, 0);
         
         this.tagger = new Tagger(expressions, debugger);
     
@@ -55,7 +55,7 @@ public class Interpreter {
             expressions.add(line);
         }
 
-        Debugger debugger = new Debugger(DebuggingClients.NOMINALS, 0);
+        Debugger debugger = new Debugger(DebuggingClients.INTERPRETER, 0);
         
         this.tagger = new Tagger(expressions, patternPath, debugger);
     

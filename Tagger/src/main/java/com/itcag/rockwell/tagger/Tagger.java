@@ -4,15 +4,12 @@ import com.itcag.rockwell.tagger.lang.Conditions;
 import com.itcag.rockwell.lang.Tag;
 import com.itcag.rockwell.lang.Token;
 import com.itcag.rockwell.tagger.debug.Debugger;
+import com.itcag.rockwell.tagger.debug.DebuggingClients;
 import com.itcag.rockwell.tagger.patterns.Patterns;
-import com.itcag.rockwell.tagger.lang.State;
 import com.itcag.rockwell.tagger.patterns.Loader;
 import com.itcag.util.io.TextFileReader;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.UUID;
 
 /**
  * <p>This class carries out tagging of the text by applying the selected Rockwell expressions and patterns.</p>
@@ -21,20 +18,8 @@ import java.util.UUID;
  */
 public class Tagger {
    
-    /**
-     * Enumerates all possible clients that use this class.
-     */
-    public enum Client {
-        MAIN, PATTERN_PREFIX, PATTERN_INFIX, PATTERN_SUFFIX, ;
-    }
-    
     private final Conditions conditions;
     private final Patterns patterns;
-    
-    /**
-     * Signals if Tagger is used to inspect a suffix.
-     */
-    private final Client client;
     
     private final Debugger debugger;
 
@@ -48,7 +33,6 @@ public class Tagger {
         this.conditions = new Conditions(scripts);
         Loader loader = new Loader();
         this.patterns = new Patterns(loader.load("patterns"));
-        this.client = Client.MAIN;
         this.debugger = debugger;
     }
 
@@ -76,7 +60,6 @@ public class Tagger {
 
         this.patterns = new Patterns(patternScripts);
         
-        this.client = Client.MAIN;
         this.debugger = debugger;
 
     }
@@ -85,17 +68,15 @@ public class Tagger {
      * This constructor is used only by the {@link com.itcag.rockwell.tagger.patterns.Patterns Patterns} class for affix validation against applicable patterns.
      * @param conditions Instance of the {@link com.itcag.rockwell.tagger.lang.Conditions Conditions} class containing the applicable Rockwell expressions.
      * @param patterns Instance of the {@link com.itcag.rockwell.tagger.patterns.Patterns Patterns} class containing the applicable patterns.
-     * @param client Value of the {@link Client} enum signaling which affix is being evaluated (used only for debugging).
      * @param debugger Instance of the {@link com.itcag.rockwell.tagger.debug.Debugger Debugger} class use for debugging only.
      * @throws Exception if anything goes wrong.
      */
-    public Tagger(Conditions conditions, Patterns patterns, Client client, Debugger debugger) throws Exception {
+    public Tagger(Conditions conditions, Patterns patterns, Debugger debugger) throws Exception {
         /**
          * Used only by Patterns. -- No need to reload patterns once they are loaded by the main client.
          */
         this.conditions = conditions;
         this.patterns = patterns;
-        this.client = client;
         this.debugger = debugger;
     }
     
@@ -135,7 +116,7 @@ public class Tagger {
             analyzer.analyze(token);
         }
 
-        return analyzer.getTags();
+        return analyzer.getTags(DebuggingClients.INTERPRETER.equals(this.debugger.client()));
         
     }
     

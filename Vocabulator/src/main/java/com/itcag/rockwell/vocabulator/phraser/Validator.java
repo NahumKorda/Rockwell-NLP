@@ -92,6 +92,11 @@ public final class Validator {
             if (!Character.isLetterOrDigit(word.charAt(0))) return false;
         }
 
+        switch (word) {
+            case "will":
+                return false;
+        }
+        
         return true;
         
     }

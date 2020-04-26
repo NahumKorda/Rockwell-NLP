@@ -40,7 +40,7 @@ public class Patterns {
     public final Tag getPrefix(ArrayList<? extends Token> tokens, Affix prefix, Debugger debugger) throws Exception {
 
         Debugger newDebugger = new Debugger(DebuggingClients.PATTERNS, debugger.depth() + 1);
-        Tagger tagger = new Tagger(this.conditions, this, Tagger.Client.PATTERN_PREFIX, newDebugger);
+        Tagger tagger = new Tagger(this.conditions, this, newDebugger);
         if (prefix.isComplete()) {
             for (Tag tag : tagger.tag(tokens, prefix.getValue())) {
                 if (tag.getStart() == tokens.get(0).getIndex() && tag.getEnd() == tokens.get(tokens.size() - 1).getIndex()) {
@@ -82,7 +82,7 @@ public class Patterns {
      */
     public final Tag getInfix(ArrayList<? extends Token> tokens, Affix infix, Debugger debugger) throws Exception {
         Debugger newDebugger = new Debugger(DebuggingClients.PATTERNS, debugger.depth() + 1);
-        Tagger tagger = new Tagger(this.conditions, this, Tagger.Client.PATTERN_INFIX, newDebugger);
+        Tagger tagger = new Tagger(this.conditions, this, newDebugger);
         for (Tag tag : tagger.tag(tokens, infix.getValue())) {
             /**
              * The first identified token of an infix
@@ -108,7 +108,7 @@ public class Patterns {
     public final Tag getSuffix(ArrayList<? extends Token> tokens, Affix suffix, Debugger debugger) throws Exception {
 
         Debugger newDebugger = new Debugger(DebuggingClients.PATTERNS, debugger.depth() + 1);
-        Tagger tagger = new Tagger(this.conditions, this, Tagger.Client.PATTERN_SUFFIX, newDebugger);
+        Tagger tagger = new Tagger(this.conditions, this, newDebugger);
         if (suffix.isComplete()) {
             for (Tag tag : tagger.tag(tokens, suffix.getValue())) {
                 if (tag.getStart() == tokens.get(0).getIndex() && tag.getEnd() == tokens.get(tokens.size() - 1).getIndex()) {

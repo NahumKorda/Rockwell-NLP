@@ -10,8 +10,9 @@ public enum DebuggingClients {
     PATTERNS(4),
     NER(8),
     NOMINALS(16),
-    SHAYENNE_REVIEWER(32),
-    PIPELINE(64),
+    INTERPRETER(32),
+    EXTRACTOR(64),
+    PIPELINE(128),
 
     ;
     
