@@ -23,6 +23,7 @@ import com.itcag.rockwell.lang.Token;
 import com.itcag.util.Converter;
 import com.itcag.rockwell.vocabulator.Exclusions;
 import com.itcag.rockwell.vocabulator.res.Stopwords;
+import com.itcag.util.txt.TextToolbox;
 
 import java.util.HashSet;
 
@@ -39,6 +40,8 @@ public class Validator {
      * @throws Exception if anything goes wrong.
      */
     public static boolean isValidWord(String word, long exclusions) throws Exception {
+        
+        if (TextToolbox.isReallyEmpty(word)) return false;
         
         if ((exclusions & Exclusions.CONTRACTIONS.getInstruction()) == Exclusions.CONTRACTIONS.getInstruction()) {
             if (word.startsWith("'")) return false;

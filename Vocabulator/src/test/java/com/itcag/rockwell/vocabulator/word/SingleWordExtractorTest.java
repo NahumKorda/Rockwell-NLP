@@ -21,8 +21,8 @@ public class SingleWordExtractorTest {
     @Test
     public void testProcess() throws Exception {
         
-        String folderPath = "/home/nahum/Desktop/reviews/";
-        String filePath = "/home/nahum/code/Rockwell-NLP/Playground/src/main/resources/data/techcrunch";
+        String folderPath = System.getProperty("user.home") + "/Desktop/reviews/";
+        String filePath = System.getProperty("user.home") + "/code/Rockwell-NLP/Playground/src/main/resources/data/techcrunch";
         
         int threshold = 1000;
         String exclusions = Exclusions.STOPWORDS.name() + "," + Exclusions.CONTRACTIONS.name() + "," + Exclusions.SYMBOLS.name() + "," + Exclusions.DIGITS.name();
@@ -34,8 +34,8 @@ public class SingleWordExtractorTest {
         
         this.extractor = new VocabularyExtractor(properties);
         
-        processFolder(folderPath);
-//        processFile(filePath);
+//        processFolder(folderPath);
+        processFile(filePath);
         
         Printer.print();
         Printer.print("---------------------------------------------------");

@@ -20,13 +20,13 @@ public class LemmaExtractorTest {
     @Test
     public void testProcess() throws Exception {
         
-        String folderPath = "/home/nahum/Desktop/reviews/";
-        String filePath = "/home/nahum/code/Rockwell-NLP/Playground/src/main/resources/data/techcrunch";
+        String folderPath = System.getProperty("user.home") + "/Desktop/reviews/";
+        String filePath = System.getProperty("user.home") + "/code/Rockwell-NLP/Playground/src/main/resources/data/techcrunch";
         
         String exclusions = Exclusions.STOPWORDS.name() + "," + Exclusions.CONTRACTIONS.name() + "," + Exclusions.SYMBOLS.name() + "," + Exclusions.DIGITS.name();
-        int threshold = 10000;
+        int threshold = 100;
 
-        String positive = null;
+        String positive = "fund,funding,invest,investment";
         
         Properties properties = new Properties();
         properties.put(PropertyFields.TASK.getField(), VocabularyExtractor.Tasks.EXTRACT_LEMMAS.name());
@@ -38,7 +38,8 @@ public class LemmaExtractorTest {
         
         this.extractor = new VocabularyExtractor(properties);
         
-        processFolder(folderPath);
+//        processFolder(folderPath);
+        processFile(filePath);
         
         this.extractor.print(true);
         

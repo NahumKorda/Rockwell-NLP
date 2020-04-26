@@ -20,7 +20,8 @@ public class PhraserTest {
     @Test
     public void testProcess() throws Exception {
 
-        String folderPath = "/home/nahum/Desktop/reviews/";
+        String folderPath = System.getProperty("user.home") + "/Desktop/reviews/";
+        String filePath = System.getProperty("user.home") + "/code/Rockwell-NLP/Playground/src/main/resources/data/techcrunch";
         
         int max = 6;
         int min = 0;
@@ -37,15 +38,15 @@ public class PhraserTest {
         String required = "acquisition, acquired, acquiring, purchas";
         */
 
-        /*
         String positive = "investment, invest, funding, funded";
         String negative = null;
         String required = "investment, invest, funding, funded";
-        */
 
+        /*
         String positive = "ipo,offering";
         String negative = null;
         String required = "ipo,offering";
+        */
 
         Properties properties = new Properties();
         properties.put(PropertyFields.TASK.getField(), VocabularyExtractor.Tasks.EXTRACT_PHRASES.name());
@@ -72,7 +73,7 @@ public class PhraserTest {
         this.extractor = new VocabularyExtractor(properties);
 
 //        processFolder(folderPath);
-        processFile("/home/nahum/code/Rockwell-NLP/Playground/src/main/resources/data/techcrunch");
+        processFile(filePath);
         
         extractor.print(true);
         
