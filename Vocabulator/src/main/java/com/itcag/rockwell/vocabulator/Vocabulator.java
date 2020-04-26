@@ -14,6 +14,7 @@ import java.util.TreeMap;
  */
 public interface Vocabulator {
 
+    
     /**
      * This method processes a single text item. To process an entire corpus, text items must be fed one by one.
      * @param text String holding a text item to be processed.

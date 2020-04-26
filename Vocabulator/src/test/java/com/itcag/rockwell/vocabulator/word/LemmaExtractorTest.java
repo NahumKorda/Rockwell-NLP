@@ -21,7 +21,7 @@ public class LemmaExtractorTest {
     public void testProcess() throws Exception {
         
         String folderPath = "/home/nahum/Desktop/reviews/";
-        String filePath = "/home/nahum/Desktop/reviews/0.txt";
+        String filePath = "/home/nahum/code/Rockwell-NLP/Playground/src/main/resources/data/techcrunch";
         
         String exclusions = Exclusions.STOPWORDS.name() + "," + Exclusions.CONTRACTIONS.name() + "," + Exclusions.SYMBOLS.name() + "," + Exclusions.DIGITS.name();
         int threshold = 10000;
