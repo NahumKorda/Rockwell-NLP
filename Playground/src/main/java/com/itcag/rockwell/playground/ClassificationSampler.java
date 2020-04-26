@@ -26,22 +26,22 @@ public class ClassificationSampler {
         /**
          * File holding TechCrunch articles.
          */
-        String filePath = "/home/nahum/code/Rockwell-NLP/Playground/src/main/resources/data/techcrunch";
+        String filePath = System.getProperty("user.home") + "/code/Rockwell-NLP/Playground/src/main/resources/data/techcrunch";
         
         /**
          * Additional Rockwell patterns.
          */
-        String patterns = "/home/nahum/code/Rockwell-NLP/Playground/src/main/resources/script/patterns";
+        String patterns = System.getProperty("user.home") + "/code/Rockwell-NLP/Playground/src/main/resources/script/patterns";
         
         /**
          * Rockwell expressions used for classification.
          */
-        String concepts = "/home/nahum/code/Rockwell-NLP/Playground/src/main/resources/script/concepts";
+        String concepts = System.getProperty("user.home") + "/code/Rockwell-NLP/Playground/src/main/resources/script/concepts";
         
         /**
          * Rockwell expressions used for classification.
          */
-        String expressions = "/home/nahum/code/Rockwell-NLP/Playground/src/main/resources/script/expressions";
+        String expressions = System.getProperty("user.home") + "/code/Rockwell-NLP/Playground/src/main/resources/script/expressions";
         
         /**
          * Configuration parameters.

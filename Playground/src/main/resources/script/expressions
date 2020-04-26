@@ -2,6 +2,7 @@
 ########## FUNDING ##########
 #############################
 
+@lemma :raise ; @pos :XZ2 ; @pos :CRD ; @cain :million ; @cain :in ; @cain+infix{*} :funding+*funding_type* | funding
 @role :_funding_action_ ; @pos+infix{*} :XZ2+*amount_qualifier* ; @pos :CRD ; @cain :million ; @cain :in ; @cain+infix{*} :funding+*funding_type* | funding
 
 #@lemma :raise ; @pos+infix{*} :XZ2+*amount_qualifier* ; @pos :CRD ; @cain :million ; @cain :in ; @cain+infix{*} :funding+*funding_type* | funding
@@ -29,11 +30,11 @@
 
 #use of @lemma to ensure that all inflections are identified
 #use of infix to identify a preceding noun phrase, as in "announced earlier today the acquisition of" 
-@lemma :announce ; @cain+infix{*} :the+noun ; @cain :acquisition ; @cain :of | acquisition
-@cain :recent ; @cain :acquisition ; @cain :of | acquisition
-@cain :today ; @pos :POS ; @cain :acquisition ; @cain :of | acquisition
-@lemma :be ; @cain :buying ; @pos :XXX | acquisition
-@lemma :be ; @cain :acquiring ; @pos :XXX | acquisition
+#@lemma :announce ; @cain+infix{*} :the+noun ; @cain :acquisition ; @cain :of | acquisition
+#@cain :recent ; @cain :acquisition ; @cain :of | acquisition
+#@cain :today ; @pos :POS ; @cain :acquisition ; @cain :of | acquisition
+#@lemma :be ; @cain :buying ; @pos :XXX | acquisition
+#@lemma :be ; @cain :acquiring ; @pos :XXX | acquisition
 
 
 
@@ -41,10 +42,10 @@
 ########## MERGER ##########
 ############################
 
-@role :_merger_action_ ; @pos :DT0 ; @cain :merger | merger
-@role :_merger_action_ ; @cain :that ; @pos :PNP ; @lemma+infix{*} :merge+*auxiliary_verb* | merger
-@cain :is ; @cain :merging ; @cain :with | merger
-@cain :is ; @cain :getting ; @cain :merged ; @cain :with | merger
+#@role :_merger_action_ ; @pos :DT0 ; @cain :merger | merger
+#@role :_merger_action_ ; @cain :that ; @pos :PNP ; @lemma+infix{*} :merge+*auxiliary_verb* | merger
+#@cain :is ; @cain :merging ; @cain :with | merger
+#@cain :is ; @cain :getting ; @cain :merged ; @cain :with | merger
 
 
 
@@ -52,8 +53,8 @@
 ########## IPO ##########
 #########################
 
-@role :_ipo_action_ ; @cain :an ; @role+infix{*}+suffix :_ipo_+adjective+*recently* | ipo
-@role :_ipo_action_ ; @cain :its ; @role+infix{*}+suffix :_ipo_+adjective+*recently* | ipo
-@cain :just ; @role :_ipo_action_ ; @cain :an ; @role+infix{*} :_ipo_+adjective | ipo
-@cain :just ; @role :_ipo_action_ ; @cain :its ; @role+infix{*} :_ipo_+adjective | ipo
+#@role :_ipo_action_ ; @cain :an ; @role+infix{*}+suffix :_ipo_+adjective+*recently* | ipo
+#@role :_ipo_action_ ; @cain :its ; @role+infix{*}+suffix :_ipo_+adjective+*recently* | ipo
+#@cain :just ; @role :_ipo_action_ ; @cain :an ; @role+infix{*} :_ipo_+adjective | ipo
+#@cain :just ; @role :_ipo_action_ ; @cain :its ; @role+infix{*} :_ipo_+adjective | ipo
 
