@@ -74,7 +74,7 @@ public class ExtractorTester {
                         ArrayList<Token> tokens = pipeline.lemmatize(pipeline.tokenize(sentence));
                         ArrayList<Extract> extracts = pipeline.extract(tokens);
                         extracts.forEach((extract) -> {
-                            Printer.print(extract.toString()+ "\t" + sentence);
+                            Printer.print(extract.toString() + "\t" + sentence);
                         });
                     }
                     
