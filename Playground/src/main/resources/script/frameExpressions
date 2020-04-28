@@ -1,0 +1,3 @@
+@role :_funding_action_ ; @pos+infix{*} :XZ2+*amount_qualifier* | -funding_amount_from-
+@cain :in ; @cain+infix{*} :funding+*funding_type* | -funding_amount_until-
+@pos :CRD ; @cain :million | -funding_amount_filter-

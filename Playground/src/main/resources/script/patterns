@@ -1,6 +1,13 @@
+########## determiners ##########
+@lemma+suffix{*} :a+adjective | *extended_determiner*
+@cain+suffix{*} :the+adjective | *extended_determiner*
+@pos+suffix{*} :PNS+adjective | *extended_determiner*
+
+
 ########## auxiliary verbs ##########
 @lemma :have | *auxiliary_verb*
 @lemma :be | *auxiliary_verb*
+
 
 ########## amount qualifier ##########
 

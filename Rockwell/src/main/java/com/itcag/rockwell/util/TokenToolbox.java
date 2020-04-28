@@ -91,7 +91,7 @@ public class TokenToolbox {
         tokens.forEach((token) -> {
             if (token instanceof Semtoken) {
                 Semtoken tmp = (Semtoken) token;
-                retVal.append(" ").append(tmp.toStringWithPOSAndRoles());
+                retVal.append(" (").append(tmp.toStringWithPOSAndRoles()).append(")");
             } else {
                 retVal.append(" ").append(token.toStringWithPOS());
             }

@@ -80,7 +80,7 @@ public class Pipeline {
                 this.splitter = new Splitter();
                 this.tokenizer = new Tokenizer();
                 this.lemmatizer = new Lemmatizer();
-                this.tagger = getTagger(properties);
+                this.tagger = null;
                 this.semantex = getSemantex(properties);
                 this.extractor = getExtractor(properties);
                 break;
@@ -225,10 +225,10 @@ public class Pipeline {
 
     private Extractor getExtractor(Properties properties) throws Exception {
         
-        String frameExpressionPath = properties.getProperty(PropertyFields.FRAME_EXPRESSION_PATH.getField(), null);
-        if (frameExpressionPath == null) throw new IllegalArgumentException("No extraction rules were specificed in the properties used in the constructor.");
+        String frameExpressionPath = properties.getProperty(PropertyFields.FRAME_EXPRESSIONS.getField(), null);
+        if (frameExpressionPath == null) throw new IllegalArgumentException("No extraction expressions were specificed in the properties used in the constructor.");
         
-        String framePath = properties.getProperty(PropertyFields.FRAME_PATH.getField(), null);
+        String framePath = properties.getProperty(PropertyFields.FRAMES.getField(), null);
         if (framePath == null) throw new IllegalArgumentException("No extraction frames were specificed in the properties used in the constructor.");
         
         return new Extractor(frameExpressionPath, framePath);
@@ -441,7 +441,11 @@ public class Pipeline {
     public ArrayList<Extract> extract(ArrayList<Token> tokens) throws Exception {
         if (this.extractor == null) throw new IllegalArgumentException("This pipeline was initiated for " + this.currentTask.name() + " and not for " + Tasks.EXTRACT.name() + ".");
         if (this.semantex != null) {
-            return this.extractor.extract(insertNamedEntities(tokens));
+            if (this.semantex.isNERConfigured()) {
+                return this.extractor.extract(insertNamedEntities(tokens));
+            } else {
+                return this.extractor.extract(insertConcepts(tokens));
+            }
         } else {
             return this.extractor.extract(tokens);
         }
@@ -458,8 +462,14 @@ public class Pipeline {
         if (this.extractor == null) throw new IllegalArgumentException("This pipeline was initiated for " + this.currentTask.name() + " and not for " + Tasks.EXTRACT.name() + ".");
         ArrayList<ArrayList<Extract>> retVal = new ArrayList<>();
         if (this.semantex != null) {
-            for (ArrayList<Token> sentence : insertNamedEntities(text)) {
-                retVal.add(this.extractor.extract(sentence));
+            if (this.semantex.isNERConfigured()) {
+                for (ArrayList<Token> sentence : insertNamedEntities(text)) {
+                    retVal.add(this.extractor.extract(sentence));
+                }
+            } else {
+                for (ArrayList<Token> sentence : insertConcepts(text)) {
+                    retVal.add(this.extractor.extract(sentence));
+                }
             }
         } else {
             for (ArrayList<Token> sentence : lemmatize(text)) {

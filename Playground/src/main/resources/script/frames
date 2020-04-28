@@ -1,0 +1,1 @@
+from: -funding_amount_from-, until: -funding_amount_until-, filter:-funding_amount_filter-, meaning: funding_amount

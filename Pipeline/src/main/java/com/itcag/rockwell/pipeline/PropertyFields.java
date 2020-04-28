@@ -17,9 +17,9 @@ public enum PropertyFields {
     /** Local path to a text file containing Rockwell expressions that identify concepts that are inserted as {@link com.itcag.rockwell.lang.Semtoken semtokens} into the array list of {@link com.itcag.rockwell.lang.Token tokens} representing a sentence. */
     CONCEPTS("concepts"),
     /** Local path to a text file containing script describing Rockwell frame expressions. */
-    FRAME_EXPRESSION_PATH("frameExpressions"),
+    FRAME_EXPRESSIONS("frameExpressions"),
     /** Local path to a text file containing Rockwell frames. */
-    FRAME_PATH("frames"),
+    FRAMES("frames"),
 
     ;
 

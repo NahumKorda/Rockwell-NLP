@@ -259,8 +259,8 @@ public class PipelineTest {
         Properties properties = new Properties();
         properties.put(PropertyFields.TASK.getField(), Pipeline.Tasks.CLASSIFY.name());
         properties.put(PropertyFields.INSTRUCTIONS.getField(), instructions);
-        properties.put(PropertyFields.FRAME_EXPRESSION_PATH.getField(), frameSelectorPath);
-        properties.put(PropertyFields.FRAME_PATH.getField(), framePath);
+        properties.put(PropertyFields.FRAME_EXPRESSIONS.getField(), frameSelectorPath);
+        properties.put(PropertyFields.FRAMES.getField(), framePath);
         
         Pipeline pipeline = new Pipeline(properties);
         ArrayList<ArrayList<Token>> sentences = pipeline.lemmatize(text);
@@ -286,8 +286,8 @@ public class PipelineTest {
         Properties properties = new Properties();
         properties.put(PropertyFields.TASK.getField(), Pipeline.Tasks.EXTRACT.name());
         properties.put(PropertyFields.INSTRUCTIONS.getField(), instructions);
-        properties.put(PropertyFields.FRAME_EXPRESSION_PATH.getField(), frameSelectorPath);
-        properties.put(PropertyFields.FRAME_PATH.getField(), framePath);
+        properties.put(PropertyFields.FRAME_EXPRESSIONS.getField(), frameSelectorPath);
+        properties.put(PropertyFields.FRAMES.getField(), framePath);
         
         Pipeline pipeline = new Pipeline(properties);
         
