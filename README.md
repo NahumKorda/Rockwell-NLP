@@ -1,7 +1,7 @@
 <h1>Rockwell</h1>
 <p>Rockwell is a natural language processing (NLP) platform designed specifically for term and information extraction.</p>
 <p>Here you can find a demonstration of what can be accomplished using Rockwell: <a href="https://www.it-consulting-ag.com/" target="_blank">https://www.it-consulting-ag.com/</a>.</p>
-
+<p>If this is the first time that you encountered Rockwell, please, start <a href="https://docs.google.com/document/d/16nKRYP3EPy2j8VgdZYZXXQHIqGU8gvrJSRCJPmbnWIs/edit?usp=sharing" target="_blank">here</a>.</p> 
 <p><b>Term extraction</b> is a NLP task that extracts relevant terminology from a corpus of documents. Although term extraction can in some cases be successfully applied to a single document, the results are always better when a larger number of documents is processed. However, the term extraction assumes that the processed documents are thematically homogeneous, and that indeed they contain shared terminology.</p>
 <p>The following term extraction methods are supported by Rockwell:</p>
 <ul>
