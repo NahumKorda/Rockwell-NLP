@@ -100,7 +100,7 @@ public enum POSTag {
     VDI(POSType.VA),
     /** The past participle form of the verb DO: "done". */
     VDN(POSType.VA),
-    /** The -s form of the verb DO: "does", "'s". */
+    /** The -s form of the verb DO: "does". */
     VDZ(POSType.VA),
     /** The finite base form of the verb HAVE: "have", "'ve". */
     VHB(POSType.VA),

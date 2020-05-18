@@ -22,9 +22,9 @@ public class PhraseExtractionTester {
         int threshold = 10;
         int trimThreshold = 2;
 
-        String positive = "investment, invest, funding, funded";
+        String positive = "acquir, merger, acquisition, merging, merged";
         String negative = null;
-        String required = "investment, invest, funding, funded";
+        String required = "acquir, merger, acquisition, merging, merged";
 
         Properties properties = new Properties();
         properties.put(PropertyFields.TASK.getField(), VocabularyExtractor.Tasks.EXTRACT_PHRASES.name());

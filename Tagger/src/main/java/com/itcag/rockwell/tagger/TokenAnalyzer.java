@@ -163,9 +163,11 @@ public class TokenAnalyzer {
 
         if (this.matches.size() == 1) {
             State match = this.matches.get(0);
-            Tag tag = new Tag(match.getTag(), match.getScript(), match.getFirstMatch(), match.getLastMatch());
-            tag.setSentenceId(sentenceID);
-            retVal.add(tag);
+            if (!this.rejecting.containsKey(match.getConditionId())) {
+                Tag tag = new Tag(match.getTag(), match.getScript(), match.getFirstMatch(), match.getLastMatch());
+                tag.setSentenceId(sentenceID);
+                retVal.add(tag);
+            }
             return retVal;
         }
 
