@@ -29,9 +29,9 @@ public class NERTest {
     @org.junit.jupiter.api.Test
     public void testExtract() throws Exception {
 
-        ArrayList<Test> tests = Tests.getNERDateTests();
+//        ArrayList<Test> tests = Tests.getNERDateTests();
 //        ArrayList<Test> tests = Tests.getNERPersonTests();
-//        ArrayList<Test> tests = Tests.getNERCorporationTests();
+        ArrayList<Test> tests = Tests.getNERCorporationTests();
 //        ArrayList<Test> tests = Tests.getNERCurrencyTests();
 
         NER ner = new NER();
@@ -82,9 +82,9 @@ public class NERTest {
     @org.junit.jupiter.api.Test
     public void testInsert() throws Exception {
 
-        ArrayList<Test> tests = Tests.getNERDateTests();
+//        ArrayList<Test> tests = Tests.getNERDateTests();
 //        ArrayList<Test> tests = Tests.getNERPersonTests();
-//        ArrayList<Test> tests = Tests.getNERCorporationTests();
+        ArrayList<Test> tests = Tests.getNERCorporationTests();
 //        ArrayList<Test> tests = Tests.getNERCurrencyTests();
 
         NER ner = new NER();

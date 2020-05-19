@@ -77,6 +77,9 @@ public class Extractor {
         ArrayList<Tag> tags = this.tagger.tag(tokens);
         if (tags.isEmpty()) return retVal;
 
+        Corrector corrector = new Corrector(this.frames);
+        corrector.correct(tags);
+        
         for (Tag tag : tags) {
             
             if (this.frames.isEdge(tag)) {
@@ -213,8 +216,10 @@ public class Extractor {
                 if (tag.getEnd() > extracted.get(extracted.size() - 1).getIndex()) continue;
 
                 for (Token token : extracted) {
-                    if (tag.getStart() >= token.getIndex() && tag.getEnd() <= token.getIndex()) {
+                    if (token.getIndex() >= tag.getStart() && token.getIndex() <= tag.getEnd()) {
                         retVal.add(token);
+                    } else {
+                        break;
                     }
                 }
                 

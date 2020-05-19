@@ -43,10 +43,9 @@ public class TaggerTest {
 
     private void run() throws Exception {
         
-        StringBuilder text = new StringBuilder("it's chemical free");
+        StringBuilder text = new StringBuilder("The New York Times Company said it expects advertising revenue to fall between 50-55% year-over-year in the second quarter as impacts of the pandemic are hitting demand for advertisers.");
         ArrayList<String> expressions = new ArrayList<>();
-        expressions.add("@cain+prefix{x*} :chemical+adjective | negative_feature_attribute_ingredients");
-        expressions.add("@cain+prefix{x*} :chemical+adjective ; @cain+suffix{x*} :free+adjective | positive_feature_attribute_ingredients");
+        expressions.add("@cain+prefix{x*} :company+noun | test");
         
         for (StringBuilder sentence : splitter.split(text)) {
 

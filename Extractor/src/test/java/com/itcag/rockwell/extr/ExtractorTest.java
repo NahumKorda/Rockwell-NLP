@@ -1,14 +1,13 @@
-package com.itcag.extr;
+package com.itcag.rockwell.extr;
 
-import com.itcag.rockwell.extr.Extractor;
 import com.itcag.rockwell.lang.Extract;
 import com.itcag.rockwell.lang.Token;
-import com.itcag.rockwell.tokenizer.Lemmatizer;
-import com.itcag.rockwell.tokenizer.Tokenizer;
-import com.itcag.rockwell.util.TokenToolbox;
 import com.itcag.rockwell.semantex.Semantex;
 import com.itcag.rockwell.semantex.ner.NER;
 import com.itcag.rockwell.split.Splitter;
+import com.itcag.rockwell.tokenizer.Lemmatizer;
+import com.itcag.rockwell.tokenizer.Tokenizer;
+import com.itcag.rockwell.util.TokenToolbox;
 import com.itcag.util.Printer;
 
 import java.util.ArrayList;
@@ -31,14 +30,20 @@ public class ExtractorTest {
     @Test
     public void testExtract() throws Exception {
         
-        String frameRulePath = "/home/nahum/Desktop/code/rockwell/Extractor/src/main/resources/testExtractionSelectors";
-        String framePath = "/home/nahum/Desktop/code/rockwell/Extractor/src/main/resources/testExtractionFrames";
+        String frameRulePath = "/home/nahum/code/Rockwell-NLP/Extractor/src/main/resources/testExtractionSelectors";
+        String framePath = "/home/nahum/code/Rockwell-NLP/Extractor/src/main/resources/testExtractionFrames";
         
         ArrayList<String> tests = new ArrayList<>();
-        tests.add("Dr Alicja J Gruzdz was born on June 26, 1982 in Warsaw.");
-//        tests.add("Dr Gruzdz is the owner of IT Consulting AG Ltd.");
+//        tests.add("Apple acquired NextVR, suggesting it still harbors VR ambitions");
+//        tests.add("Blue Ocean Robotics Acquires Beam Telepresence Robot From Suitable Technologies");
+//        tests.add("Uber Said to Be in Talks to Acquire Grubhub");
+//        tests.add("Uber reportedly offered to acquire Grubhub");
+        tests.add("Happiest Minds looks to acquire small firms for faster revenue growth");
+//        tests.add("");
+//        tests.add("");
+//        tests.add("");
 
-        long instructions = NER.Instructions.PERSONS.getInstruction() | NER.Instructions.ORGANIZATIONS.getInstruction() | NER.Instructions.DATES.getInstruction() | NER.Instructions.CURRENCIES.getInstruction();
+        long instructions = NER.Instructions.DATES.getInstruction() | NER.Instructions.CURRENCIES.getInstruction();
         Semantex semantex = new Semantex(instructions);
 
         for (String test : tests) {

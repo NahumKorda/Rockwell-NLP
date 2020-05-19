@@ -46,7 +46,8 @@
 ########## ORGANIZATIONS ##########
 ###################################
 
-@role+prefix :corp_title+07 | corporation
+#@role+prefix :corp_title+07 | corporation
+@role+prefix :corp_title+noun | corporation
 
 
 

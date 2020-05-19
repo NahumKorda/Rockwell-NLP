@@ -53,7 +53,7 @@ public final class NER {
     public enum Instructions {
         
         PERSONS("person", 2),
-        ORGANIZATIONS("organization", 4),
+        ORGANIZATIONS("corporation", 4),
         DATES("date", 8),
         CURRENCIES("currency", 16),
         
@@ -102,23 +102,24 @@ public final class NER {
             Iterator<String> ruleIterator = rules.iterator();
             while (ruleIterator.hasNext()) {
                 String rule = ruleIterator.next();
-                if ((instructions & Instructions.PERSONS.getInstruction()) != Instructions.PERSONS.getInstruction()) {
-                    if (rule.endsWith("| " + Instructions.PERSONS.getTag())) {
+                if (rule.endsWith("| " + Instructions.PERSONS.getTag())) {
+                    if ((instructions & Instructions.PERSONS.getInstruction()) != Instructions.PERSONS.getInstruction()) {
                         ruleIterator.remove();
                     }
-                } else if ((instructions & Instructions.ORGANIZATIONS.getInstruction()) != Instructions.ORGANIZATIONS.getInstruction()) {
-                    if (rule.endsWith("| " + Instructions.ORGANIZATIONS.getTag())) {
+                } else if (rule.endsWith("| " + Instructions.ORGANIZATIONS.getTag())) {
+                    if ((instructions & Instructions.ORGANIZATIONS.getInstruction()) != Instructions.ORGANIZATIONS.getInstruction()) {
                         ruleIterator.remove();
                     }
-                } else if ((instructions & Instructions.DATES.getInstruction()) != Instructions.DATES.getInstruction()) {
-                    if (rule.endsWith("| " + Instructions.DATES.getTag())) {
+                } else if (rule.endsWith("| " + Instructions.DATES.getTag())) {
+                    if ((instructions & Instructions.DATES.getInstruction()) != Instructions.DATES.getInstruction()) {
                         ruleIterator.remove();
                     }
-                } else if ((instructions & Instructions.CURRENCIES.getInstruction()) != Instructions.CURRENCIES.getInstruction()) {
-                    if (rule.endsWith("| " + Instructions.CURRENCIES.getTag())) {
+                } else if (rule.endsWith("| " + Instructions.CURRENCIES.getTag())) {
+                    if ((instructions & Instructions.CURRENCIES.getInstruction()) != Instructions.CURRENCIES.getInstruction()) {
                         ruleIterator.remove();
                     }
                 }
+                
             }
         }
         

@@ -76,21 +76,29 @@ public class Inserter {
 
         ArrayList<Token> retVal = new ArrayList<>();
 
+        Token[] tmp = new Token[tokens.size()];
+        int count = 0;
+        
         for (int i = 0; i < tokens.size(); i++) {
             
             Token token = tokens.get(i);
             
             if (semtokens.containsKey(token.getIndex())) {
                 Semtoken semtoken = semtokens.get(token.getIndex());
-                semtoken.setIndex(retVal.size());
-                retVal.add(semtoken);
+                semtoken.setIndex(count);
+                tmp[count] = semtoken;
                 i = semtoken.getTokens().get(semtoken.getTokens().size() - 1).getIndex();
             } else {
-                token.setIndex(retVal.size());
-                retVal.add(token);
+                token.setIndex(count);
+                tmp[count] = token;
             }
+            count++;
         }
 
+        for (Token token : tmp) {
+            if (token != null) retVal.add(token);
+        }
+        
         return retVal;
 
     }

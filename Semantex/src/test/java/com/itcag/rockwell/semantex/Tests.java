@@ -88,14 +88,10 @@ public class Tests {
         
         ArrayList<Test> retVal = new ArrayList<>();
         
-        String text = "Dr Alicja Gruzdz is the owner of IT Consulting AG Ltd.";
+        String text = "The New York Times Company said it expects advertising revenue to fall between 50-55% year-over-year in the second quarter as impacts of the pandemic are hitting demand for advertisers.";
         Test test = new Test(text, null, 0, 2);
         retVal.add(test);
         
-        text = "THIS AGREEMENT made as of the 22nd day of February, 2020, between IT Consulting AG Ltd. a corporation incorporated under the laws of the Province of Ontario, and having its principal place of business at Warsaw, Poland (the \"Employer\"); and Alicja Gruzdz, of the City of Toronto in the Province of Ontario (the \"Employee\").";
-        test = new Test(text, null, 14, 17);
-        retVal.add(test);
-
         return retVal;
         
     }

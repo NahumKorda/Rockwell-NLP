@@ -105,6 +105,8 @@ public class TokenAnalyzer {
     
     private void validateStates(ArrayList<State> newStates) {
         
+        if (newStates.isEmpty()) return;
+        
         HashMap<String, ArrayList<State>> validator = new HashMap<>();
         Iterator<State> stateIterator = newStates.iterator();
         while (stateIterator.hasNext()) {

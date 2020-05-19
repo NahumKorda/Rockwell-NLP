@@ -1,5 +1,29 @@
-@cain :born ; @cain :on | birth_date_from
-@cain :made ; @cain :as ; @cain :of | agreement_date
+#@cain :born ; @cain :on | birth_date_from
+#@cain :made ; @cain :as ; @cain :of | agreement_date
 
-@role :date | _date
-@role :legal_date | _date
+#@role :date | _date
+#@role :legal_date | _date
+
+@cain :acquires | acquisition_completed
+@cain :acquired | acquisition_completed
+@cain :has ; @cain :acquired | acquisition_completed
+@cain :have ; @cain :acquired | acquisition_completed
+@cain :is ; @cain :acquiring | acquisition_completed
+@cain :are ; @cain :acquiring | acquisition_completed
+
+@cain :looks ; @cain :to ; @cain :acquire | acquisition_intended
+@cain :plans ; @cain :to ; @cain :acquire | acquisition_intended
+@cain :wants ; @cain :to ; @cain :acquire | acquisition_intended
+@cain :hopes ; @cain :to ; @cain :acquire | acquisition_intended
+@cain :offered ; @cain :to ; @cain :acquire | acquisition_intended
+
+@cain :in ; @cain :talks ; @cain :to ; @cain :acquire | acquisition_in_progress
+@cain :is ; @cain :in ; @cain :talks ; @cain :to ; @cain :acquire | acquisition_in_progress
+@cain :are ; @cain :in ; @cain :talks ; @cain :to ; @cain :acquire | acquisition_in_progress
+
+@cain :said ; @cain :to ; @cain :be ; @cain :in ; @cain :talks ; @cain :to ; @cain :acquire | acquisition_rumored
+@cain :reportedly ; @cain :offered ; @cain :to ; @cain :acquire | acquisition_rumored
+
+@type+suffix{x} :NN+noun | organization
+@type+prefix{x} :NN+noun | organization
+

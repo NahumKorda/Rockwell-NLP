@@ -65,7 +65,8 @@ public class Validator {
             if (!Character.isUpperCase(token.getWord().charAt(0))) return null;
         }
         
-        return validateFirstToken(tag, tokens);
+//        return validateFirstToken(tag, tokens);
+        return tag;
         
     }
     

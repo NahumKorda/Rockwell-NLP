@@ -29,8 +29,8 @@ public final class Tag {
     private final String script;
 
     private String sentenceId = null;
-    private final int start;
-    private final int end;
+    private int start;
+    private int end;
 
     /**
      * @param tag String indicating the meaning of the expression identified in a sentence. For example, if the expression identifies a date, its tag could be "date".
@@ -80,11 +80,19 @@ public final class Tag {
         return start;
     }
     
+    public final void setStart(int start) {
+        this.start = start;
+    }
+    
     /**
      * @return Index of the last token identified by the expression.
      */
     public final int getEnd() {
         return end;
+    }
+    
+    public final void setEnd(int end) {
+        this.end = end;
     }
     
     @Override
