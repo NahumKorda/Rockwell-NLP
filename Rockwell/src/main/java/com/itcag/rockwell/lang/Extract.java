@@ -26,8 +26,8 @@ public class Extract {
     private final String script;
     
     private final String meaning;
-    private final String value;
     
+    private String value;
     private String sentenceId = null;
     
     /**
@@ -62,6 +62,10 @@ public class Extract {
         return value;
     }
 
+    public void setValue(String value) {
+        this.value = value;
+    }
+    
     /**
      * @return String holding the ID of the sentence from which the datum was extracted.
      */

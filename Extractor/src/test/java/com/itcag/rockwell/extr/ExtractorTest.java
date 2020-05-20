@@ -34,12 +34,12 @@ public class ExtractorTest {
         String framePath = "/home/nahum/code/Rockwell-NLP/Extractor/src/main/resources/testExtractionFrames";
         
         ArrayList<String> tests = new ArrayList<>();
-//        tests.add("Apple acquired NextVR, suggesting it still harbors VR ambitions");
+        tests.add("Apple acquired NextVR, suggesting it still harbors VR ambitions");
 //        tests.add("Blue Ocean Robotics Acquires Beam Telepresence Robot From Suitable Technologies");
 //        tests.add("Uber Said to Be in Talks to Acquire Grubhub");
 //        tests.add("Uber reportedly offered to acquire Grubhub");
-        tests.add("Happiest Minds looks to acquire small firms for faster revenue growth");
-//        tests.add("");
+//        tests.add("Happiest Minds looks to acquire small firms for faster revenue growth");
+//        tests.add("Metro West plan revealed: Rydalmere station scrapped, 150 properties to be acquired");
 //        tests.add("");
 //        tests.add("");
 

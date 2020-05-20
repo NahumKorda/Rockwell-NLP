@@ -112,7 +112,7 @@ public class Frame {
         
         String[] elts = script.split(",");
         for (String elt : elts) {
-            elt = elt.toLowerCase().trim();
+            elt = elt.trim();
             if (elt.startsWith(field)) {
                 elt = elt.replace(field, "").trim();
                 if (elt.isEmpty()) {
