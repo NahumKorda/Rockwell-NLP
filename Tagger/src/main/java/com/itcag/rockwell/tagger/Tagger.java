@@ -134,7 +134,8 @@ public class Tagger {
             analyzer.analyze(token);
         }
 
-        return analyzer.getTags(DebuggingClients.INTERPRETER.equals(this.debugger.client()));
+        boolean allowMultipleTags = DebuggingClients.INTERPRETER.equals(this.debugger.client()) || DebuggingClients.EXTRACTOR.equals(this.debugger.client());
+        return analyzer.getTags(allowMultipleTags);
         
     }
     
