@@ -24,8 +24,8 @@ import com.itcag.rockwell.lang.Token;
 import com.itcag.rockwell.tagger.Tagger;
 import com.itcag.rockwell.tagger.debug.Debugger;
 import com.itcag.rockwell.tagger.debug.DebuggingClients;
+import com.itcag.rockwell.util.TokenToolbox;
 import com.itcag.util.io.TextFileReader;
-import com.itcag.util.txt.TextToolbox;
 
 import java.util.ArrayList;
 
@@ -36,6 +36,68 @@ import java.util.ArrayList;
  */
 public class Extractor {
 
+    private class Holder {
+
+        private final Frame frame;
+        
+        private Tag from = null;
+        private boolean fromInclusive = false;
+        
+        private Tag until = null;
+        private boolean untilInclusive = false;
+        
+        private final ArrayList<Tag> conditions = new ArrayList<>();
+        
+        private Holder(Frame frame) {
+            this.frame = frame;
+        }
+        
+        private Frame getFrame() {
+            return frame;
+        }
+        
+        private Tag getFrom() {
+            return from;
+        }
+
+        private void setFrom(Tag from) {
+            this.from = from;
+        }
+
+        private boolean isFromInclusive() {
+            return fromInclusive;
+        }
+        
+        private void setFromInclusive(boolean inclusive) {
+            fromInclusive = inclusive;
+        }
+        
+        private Tag getUntil() {
+            return until;
+        }
+
+        private void setUntil(Tag until) {
+            this.until = until;
+        }
+
+        private boolean isUntilInclusive() {
+            return untilInclusive;
+        }
+        
+        private void setUntilInclusive(boolean inclusive) {
+            untilInclusive = inclusive;
+        }
+        
+        private ArrayList<Tag> getConditions() {
+            return conditions;
+        }
+
+        private void addCondition(Tag condition) {
+            this.conditions.add(condition);
+        }
+        
+    }
+    
     private final Tagger tagger;
 
     private final Frames frames;
@@ -77,175 +139,238 @@ public class Extractor {
         ArrayList<Tag> tags = this.tagger.tag(tokens);
         if (tags.isEmpty()) return retVal;
 
-        Corrector corrector = new Corrector(this.frames);
-        corrector.correct(tags);
+        correct(tags);
+        
+        ArrayList<Holder> holders = getHolders(tags);
+        if (holders.isEmpty()) return retVal;
+        
+        for (Holder holder : holders) {
+            Extract test = processHolder(holder, tokens);
+            if(test != null) retVal.add(test);
+        }
+        
+        return retVal;
+        
+    }
+    
+    private void correct(ArrayList<Tag> tags) throws Exception {
         
         for (Tag tag : tags) {
             
             if (this.frames.isEdge(tag)) {
-                
-                for (Frame frame : this.frames.getFrames(tag)) {
-        
-                    if (frame.getFrom() != null && frame.getUntil() != null) {
-                
-                        Tag until = getUntilTag(frame.getUntil().getTag(), tags);
-                        if (until == null) continue;
-                        
-                        ArrayList<Token> extracted = extractValue(tag, until, frame, tokens);
-                        if (frame.getCondition() != null) extracted = applyCondition(frame.getCondition(), tags, extracted);
-                        if (extracted.isEmpty()) continue;
-                        
-                        String value = getValueFromTokens(extracted);
-                        Extract extract = new Extract(frame.getScript(), frame.getMeaning(), value);
-                        retVal.add(extract);
-                    
-                    } else {
-                        
-                        ArrayList<Token> extracted = extractValue(tag, frame, tokens);
-                        if (frame.getCondition() != null) extracted = applyCondition(frame.getCondition(), tags, extracted);
-                        if (extracted.isEmpty()) continue;
-                        
-                        String value = getValueFromTokens(extracted);
-                        Extract extract = new Extract(frame.getScript(), frame.getMeaning(), value);
-                        retVal.add(extract);
-                    
-                    }
-                
-                }
-            
+                inspect(tag, tags);
             }
         
         }
-
-        return retVal;
         
     }
     
-    private Tag getUntilTag(String target, ArrayList<Tag> tags) {
+    private void inspect (Tag left, ArrayList<Tag> tags) throws Exception {
+        
+        for (Tag right : tags) {
+            if (right.equals(left)) continue;
+            if (right.getStart() <= left.getEnd() && right.getStart() >= left.getStart()) {
+                right.setStart(left.getEnd() + 1);
+            }
+            if (right.getEnd() >= left.getStart() && right.getEnd() <= left.getEnd()) {
+                right.setEnd(left.getStart() - 1);
+            }
+        }
+        
+    }
+    
+    
+    private ArrayList<Holder> getHolders(ArrayList<Tag> tags) {
+        ArrayList<Holder> retVal = new ArrayList<>();
         for (Tag tag : tags) {
-            if (tag.getTag().equals(target)) return tag;
+            if (this.frames.isEdge(tag)) {
+                for (Frame frame : this.frames.getFrames(tag)) {
+                    retVal.add(getHolder(frame, tags));
+                }
+            }
+        }
+        return retVal;
+    }
+    
+    private Holder getHolder(Frame frame, ArrayList<Tag> tags) {
+        Holder retVal = new Holder(frame);
+        for (Tag tag : tags) {
+            if (frame.getFrom() != null && frame.getFrom().getTag().equals(tag.getTag())) {
+                retVal.setFrom(tag);
+                retVal.setFromInclusive(frame.getFrom().isIncluded());
+            } else if (frame.getUntil() != null && frame.getUntil().getTag().equals(tag.getTag())) {
+                retVal.setUntil(tag);
+                retVal.setUntilInclusive(frame.getUntil().isIncluded());
+            } else if (frame.getCondition() != null && frame.getCondition().equals(tag.getTag())) {
+                retVal.addCondition(tag);
+            }
+        }
+        if (!isValid(retVal, frame)) return null;
+        return retVal;
+    }
+    
+    private boolean isValid(Holder holder, Frame frame) {
+        if (frame.getFrom() != null && holder.getFrom() == null) return false;
+        if (frame.getUntil() != null && holder.getUntil() == null) return false;
+        if (frame.getCondition() != null && holder.getConditions().isEmpty()) return false;
+        return true;
+    }
+    
+    private Extract processHolder(Holder holder, ArrayList<Token> tokens) {
+        if (holder.getFrom() != null && holder.getUntil() != null) {
+            return between(holder, tokens);
+        } else if (holder.getUntil() != null) {
+            return left(holder, tokens);
+        } else if (holder.getFrom() != null) {
+            return right(holder, tokens);
         }
         return null;
     }
     
-    private ArrayList<Token> extractValue(Tag from, Tag until, Frame frame, ArrayList<Token> tokens) {
+    private Extract between(Holder holder, ArrayList<Token> tokens) {
         
-        ArrayList<Token> retVal = new ArrayList();
+        ArrayList<Token> extracted;
         
-        for (Token token : tokens) {
-            if (frame.getFrom().isIncluded()) {
-                if (token.getIndex() >= from.getEnd()) {
-                    if (frame.getUntil().isIncluded()) {
-                        if (token.getIndex() <= until.getStart()) {
-                            retVal.add(token);
-                        }
-                    } else {
-                        if (token.getIndex() < until.getStart()) {
-                            retVal.add(token);
-                        }
-                    }
-                }
-            } else {
-                if (token.getIndex() > from.getEnd()) {
-                    if (frame.getUntil().isIncluded()) {
-                        if (token.getIndex() <= until.getStart()) {
-                            retVal.add(token);
-                        }
-                    } else {
-                        if (token.getIndex() < until.getStart()) {
-                            retVal.add(token);
-                        }
-                    }
-                }
-            }
+        if (holder.isFromInclusive() && holder.isUntilInclusive()) {
+            extracted = new ArrayList<>(tokens.subList(holder.getFrom().getStart(), holder.getUntil().getEnd()));
+        } else if (holder.isFromInclusive()) {
+            extracted = new ArrayList<>(tokens.subList(holder.getFrom().getStart(), holder.getUntil().getStart()));
+        } else if (holder.isUntilInclusive()) {
+            extracted = new ArrayList<>(tokens.subList(holder.getFrom().getEnd(), holder.getUntil().getStart()));
+        } else {
+            extracted = new ArrayList<>(tokens.subList(holder.getFrom().getEnd(), holder.getUntil().getStart()));
         }
         
-        return retVal;
-        
-    }
-    
-    private ArrayList<Token> extractValue(Tag tag, Frame frame, ArrayList<Token> tokens) {
-
-        ArrayList<Token> retVal = new ArrayList();
-        
-        if (frame.getFrom() != null && frame.getUntil() == null) {
-
-            for (Token token : tokens) {
-                if (frame.getFrom().isIncluded()) {
-                    if (token.getIndex() >= tag.getEnd()) {
-                        retVal.add(token);
+        if (!holder.getConditions().isEmpty()) {
+            boolean validated = false;
+            for (Tag condition : holder.getConditions()) {
+                if (holder.isFromInclusive() && holder.isUntilInclusive()) {
+                    if (holder.getFrom().getStart() - condition.getStart() == 0 && holder.getUntil().getEnd() - condition.getEnd() == 0) {
+                        /**
+                         * Only the validated part is extracted.
+                         */
+                        extracted = new ArrayList<>(tokens.subList(condition.getStart(), condition.getEnd() + 1));
+                        validated = true;
+                        break;
+                    }
+                } else if (holder.isFromInclusive()) {
+                    if (holder.getFrom().getStart() - condition.getStart() == 0 && holder.getUntil().getStart() - condition.getEnd() == 1) {
+                        /**
+                         * Only the validated part is extracted.
+                         */
+                        extracted = new ArrayList<>(tokens.subList(condition.getStart(), condition.getEnd() + 1));
+                        validated = true;
+                        break;
+                    }
+                } else if (holder.isUntilInclusive()) {
+                    if (holder.getFrom().getEnd() - condition.getStart() == 1 && holder.getUntil().getEnd() - condition.getEnd() == 0) {
+                        /**
+                         * Only the validated part is extracted.
+                         */
+                        extracted = new ArrayList<>(tokens.subList(condition.getStart(), condition.getEnd() + 1));
+                        validated = true;
+                        break;
                     }
                 } else {
-                    if (token.getIndex() > tag.getEnd()) {
-                        retVal.add(token);
-                    }
-                }
-            }
-            
-        } else if (frame.getUntil() != null && frame.getFrom() == null) {
-
-            for (Token token : tokens) {
-                if (frame.getUntil().isIncluded()) {
-                    if (token.getIndex() <= tag.getStart()) {
-                        retVal.add(token);
-                    }
-                } else {
-                    if (token.getIndex() < tag.getStart()) {
-                        retVal.add(token);
-                    }
-                }
-            }
-
-        }
-
-        return retVal;
-        
-    }
-    
-    private ArrayList<Token> applyCondition(String condition, ArrayList<Tag> tags, ArrayList<Token> extracted) {
-        
-        ArrayList<Token> retVal = new ArrayList();
-        
-        for (Tag tag : tags) {
-            if (tag.getTag().equals(condition)) {
-                
-                /**
-                 * Check whether the tag is contained within the extracted tokens.
-                 */
-                if (tag.getStart() < extracted.get(0).getIndex()) continue;
-                if (tag.getEnd() > extracted.get(extracted.size() - 1).getIndex()) continue;
-
-                for (Token token : extracted) {
-                    if (token.getIndex() >= tag.getStart() && token.getIndex() <= tag.getEnd()) {
-                        retVal.add(token);
-                    } else {
+                    if (holder.getFrom().getEnd() - condition.getStart() == 1 && holder.getUntil().getStart() - condition.getEnd() == 1) {
+                        /**
+                         * Only the validated part is extracted.
+                         */
+                        extracted = new ArrayList<>(tokens.subList(condition.getStart(), condition.getEnd() + 1));
+                        validated = true;
                         break;
                     }
                 }
-                
             }
+            if (!validated) return null;
         }
+        
+        String value = TokenToolbox.getStringFromTokens(extracted);
+        return new Extract(holder.getFrame().getScript(), holder.getFrame().getMeaning(), value);
 
-        return retVal;
-        
     }
     
-    private String getValueFromTokens(ArrayList<Token> tokens) {
+    private Extract left(Holder holder, ArrayList<Token> tokens) {
         
-        StringBuilder retVal = new StringBuilder();
+        ArrayList<Token> extracted;
         
-        for (Token token : tokens) {
-            if (token.getWord().startsWith("'")) {
-                retVal.append(token.getWord());
-            } else {
-                retVal.append(" ").append(token.getWord());
-            }
+        if (holder.isUntilInclusive()) {
+            extracted = new ArrayList<>(tokens.subList(0, holder.getUntil().getEnd()));
+        } else {
+            extracted = new ArrayList<>(tokens.subList(0, holder.getUntil().getStart()));
         }
         
-        TextToolbox.trim(retVal);
+        if (!holder.getConditions().isEmpty()) {
+            boolean validated = false;
+            for (Tag condition : holder.getConditions()) {
+                if (holder.isUntilInclusive()) {
+                    if (holder.getUntil().getEnd() - condition.getEnd() == 0) {
+                        /**
+                         * Only the validated part is extracted.
+                         */
+                        extracted = new ArrayList<>(tokens.subList(condition.getStart(), condition.getEnd() + 1));
+                        validated = true;
+                        break;
+                    }
+
+                } else {
+                    if (holder.getUntil().getStart() - condition.getEnd() == 1) {
+                        /**
+                         * Only the validated part is extracted.
+                         */
+                        extracted = new ArrayList<>(tokens.subList(condition.getStart(), condition.getEnd() + 1));
+                        validated = true;
+                        break;
+                    }
+                }
+            }
+            if (!validated) return null;
+        }
         
-        return retVal.toString();
-        
+        String value = TokenToolbox.getStringFromTokens(extracted);
+        return new Extract(holder.getFrame().getScript(), holder.getFrame().getMeaning(), value);
+
     }
     
+    private Extract right(Holder holder, ArrayList<Token> tokens) {
+        
+        ArrayList<Token> extracted;
+        
+        if (holder.isFromInclusive()) {
+            extracted = new ArrayList<>(tokens.subList(0, holder.getFrom().getStart()));
+        } else {
+            extracted = new ArrayList<>(tokens.subList(0, holder.getFrom().getEnd()));
+        }
+        
+        if (!holder.getConditions().isEmpty()) {
+            boolean validated = false;
+            for (Tag condition : holder.getConditions()) {
+                if (holder.isFromInclusive()) {
+                    if (holder.getFrom().getStart() - condition.getStart() == 0) {
+                        /**
+                         * Only the validated part is extracted.
+                         */
+                        extracted = new ArrayList<>(tokens.subList(condition.getStart(), condition.getEnd() + 1));
+                        validated = true;
+                        break;
+                    }
+                } else {
+                    if (condition.getStart() - holder.getFrom().getEnd() == 1) {
+                        /**
+                         * Only the validated part is extracted.
+                         */
+                        extracted = new ArrayList<>(tokens.subList(condition.getStart(), condition.getEnd() + 1));
+                        validated = true;
+                        break;
+                    }
+                }
+            }
+            if (!validated) return null;
+        }
+        
+        String value = TokenToolbox.getStringFromTokens(extracted);
+        return new Extract(holder.getFrame().getScript(), holder.getFrame().getMeaning(), value);
+
+    }
+
 }

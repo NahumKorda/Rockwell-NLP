@@ -22,6 +22,7 @@ import com.itcag.rockwell.tokenizer.res.Lexicon;
 import com.itcag.rockwell.tokenizer.res.LexicalResources;
 import com.itcag.util.punct.PunctuationToolbox;
 import com.itcag.rockwell.POSTag;
+import com.itcag.rockwell.lang.Alternatives;
 import com.itcag.rockwell.lang.Token;
 import com.itcag.util.Converter;
 import com.itcag.util.punct.Abbreviations;
@@ -124,8 +125,14 @@ public final class Lemmatizer {
                  */
             } else {
                 Token token = NumberDetector.identify(word, retVal.size());
-                if (token == null) token = new Token(word, POSTag.XXX, word, retVal.size());
-                retVal.add(token);
+                if (token == null) {
+                    if (!isCompoundWord(word, cain, retVal)) {
+                        token = new Token(word, POSTag.XXX, word, retVal.size());
+                        retVal.add(token);
+                    }
+                } else {
+                    retVal.add(token);
+                }
             }
 
         }
@@ -203,6 +210,27 @@ public final class Lemmatizer {
         
         return true;
 
+    }
+    
+    private boolean isCompoundWord(String word, String cain, ArrayList<Token> tokens) {
+
+        if (word.contains("-")) {
+            String[] elts = cain.split("-");
+            String last = elts[elts.length - 1];
+            if (this.lexicon.isKnown(last)) {
+                Alternatives alternatives = this.lexicon.getAlternatives(last);
+                for (Token alternative : alternatives.getAlternatives()) {
+                    if (POSTag.VVN.equals(alternative.getPos()) || POSTag.VVG.equals(alternative.getPos())) {
+                        Token token = new Token(word, POSTag.AJ0, word, tokens.size());
+                        tokens.add(token);
+                        return true;
+                    }
+                }
+            }
+        }
+        
+        return false;
+        
     }
     
 }

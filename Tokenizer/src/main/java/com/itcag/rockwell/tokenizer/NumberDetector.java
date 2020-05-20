@@ -235,6 +235,14 @@ public final class NumberDetector {
                 return 1000000000l;
             case "trillion":
                 return 1000000000000l;
+            case "crore":
+            case "karor":
+            case "koti":
+                return 10000000l;
+            case "lakh":
+            case "lac":
+            case "lacs":
+                return 100000l;
             default:
                 return null;
         }
