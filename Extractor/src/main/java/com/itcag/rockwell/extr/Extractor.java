@@ -25,7 +25,6 @@ import com.itcag.rockwell.tagger.Tagger;
 import com.itcag.rockwell.tagger.debug.Debugger;
 import com.itcag.rockwell.tagger.debug.DebuggingClients;
 import com.itcag.rockwell.util.TokenToolbox;
-import com.itcag.util.Printer;
 import com.itcag.util.io.TextFileReader;
 
 import java.util.ArrayList;
@@ -158,6 +157,9 @@ public class Extractor {
     
     private void compactConditions(ArrayList<Tag> tags) {
 
+        /**
+         * Remove conditions that are included in other conditions.
+         */
         Iterator<Tag> tagIterator = tags.iterator();
         while (tagIterator.hasNext()) {
             Tag tag = tagIterator.next();
@@ -177,13 +179,17 @@ public class Extractor {
     
     private void correct(ArrayList<Tag> tags) throws Exception {
 
+        /**
+         * Correct conditions that overlap with edges.
+         * Overlapping condition will be contracted to exclude the edge.
+         */
         for (Tag tag : tags) {
-            
             if (this.frames.isEdge(tag)) {
                 inspect(tag, tags);
             }
-        
         }
+        
+        removeErroneous(tags);
         
     }
     
@@ -201,6 +207,20 @@ public class Extractor {
         
     }
     
+    
+    private void removeErroneous(ArrayList<Tag> tags) {
+
+        /**
+         * Remove tags that have end > start.
+         * This could be potentially caused by the corrections.
+         */
+        Iterator<Tag> tagIterator = tags.iterator();
+        while (tagIterator.hasNext()) {
+            Tag tag = tagIterator.next();
+            if (tag.getStart() > tag.getEnd()) tagIterator.remove();
+        }
+
+    }
     
     private ArrayList<Holder> getHolders(ArrayList<Tag> tags) {
         ArrayList<Holder> retVal = new ArrayList<>();
