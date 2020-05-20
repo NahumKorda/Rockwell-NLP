@@ -25,9 +25,11 @@ import com.itcag.rockwell.tagger.Tagger;
 import com.itcag.rockwell.tagger.debug.Debugger;
 import com.itcag.rockwell.tagger.debug.DebuggingClients;
 import com.itcag.rockwell.util.TokenToolbox;
+import com.itcag.util.Printer;
 import com.itcag.util.io.TextFileReader;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 /**
  * <p>This class extracts data from text using Rockwell frames.</p>
@@ -139,6 +141,7 @@ public class Extractor {
         ArrayList<Tag> tags = this.tagger.tag(tokens);
         if (tags.isEmpty()) return retVal;
 
+        compactConditions(tags);
         correct(tags);
         
         ArrayList<Holder> holders = getHolders(tags);
@@ -153,8 +156,27 @@ public class Extractor {
         
     }
     
+    private void compactConditions(ArrayList<Tag> tags) {
+
+        Iterator<Tag> tagIterator = tags.iterator();
+        while (tagIterator.hasNext()) {
+            Tag tag = tagIterator.next();
+            boolean remove = false;
+            for (Tag other : tags) {
+                if (other.equals(tag)) continue;
+                if (other.getStart() <= tag.getStart() && other.getEnd() >= tag.getEnd()) {
+                    if (!tag.getTag().equals(other.getTag())) continue;
+                    remove = true;
+                    break;
+                }
+            }
+            if (remove) tagIterator.remove();
+        }
+
+    }
+    
     private void correct(ArrayList<Tag> tags) throws Exception {
-        
+
         for (Tag tag : tags) {
             
             if (this.frames.isEdge(tag)) {
@@ -169,11 +191,11 @@ public class Extractor {
         
         for (Tag right : tags) {
             if (right.equals(left)) continue;
-            if (right.getStart() <= left.getEnd() && right.getStart() >= left.getStart()) {
-                right.setStart(left.getEnd() + 1);
-            }
-            if (right.getEnd() >= left.getStart() && right.getEnd() <= left.getEnd()) {
+            if (this.frames.isEdge(right)) continue;
+            if (right.getStart() < left.getStart() && right.getEnd() >= left.getStart()) {
                 right.setEnd(left.getStart() - 1);
+            } else if (right.getStart() <= left.getEnd() && right.getEnd() > left.getEnd()) {
+                right.setStart(left.getEnd() + 1);
             }
         }
         
