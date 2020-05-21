@@ -224,9 +224,12 @@ public class Extractor {
     
     private ArrayList<Holder> getHolders(ArrayList<Tag> tags) {
         ArrayList<Holder> retVal = new ArrayList<>();
+        ArrayList<String> control = new ArrayList<>();
         for (Tag tag : tags) {
             if (this.frames.isEdge(tag)) {
                 for (Frame frame : this.frames.getFrames(tag)) {
+                    if (control.contains(frame.getScript())) continue;
+                    control.add(frame.getScript());
                     retVal.add(getHolder(frame, tags));
                 }
             }
@@ -280,14 +283,14 @@ public class Extractor {
         } else if (holder.isUntilInclusive()) {
             extracted = new ArrayList<>(tokens.subList(holder.getFrom().getEnd(), holder.getUntil().getStart()));
         } else {
-            extracted = new ArrayList<>(tokens.subList(holder.getFrom().getEnd(), holder.getUntil().getStart()));
+            extracted = new ArrayList<>(tokens.subList(holder.getFrom().getEnd() + 1, holder.getUntil().getStart()));
         }
         
         if (!holder.getConditions().isEmpty()) {
             boolean validated = false;
             for (Tag condition : holder.getConditions()) {
                 if (holder.isFromInclusive() && holder.isUntilInclusive()) {
-                    if (holder.getFrom().getStart() - condition.getStart() == 0 && holder.getUntil().getEnd() - condition.getEnd() == 0) {
+                    if (condition.getStart() - holder.getFrom().getStart() == 0 && holder.getUntil().getEnd() - condition.getEnd() == 0) {
                         /**
                          * Only the validated part is extracted.
                          */
@@ -296,7 +299,7 @@ public class Extractor {
                         break;
                     }
                 } else if (holder.isFromInclusive()) {
-                    if (holder.getFrom().getStart() - condition.getStart() == 0 && holder.getUntil().getStart() - condition.getEnd() == 1) {
+                    if (condition.getStart() - holder.getFrom().getStart() == 0 && holder.getUntil().getStart() - condition.getEnd() == 1) {
                         /**
                          * Only the validated part is extracted.
                          */
@@ -305,7 +308,7 @@ public class Extractor {
                         break;
                     }
                 } else if (holder.isUntilInclusive()) {
-                    if (holder.getFrom().getEnd() - condition.getStart() == 1 && holder.getUntil().getEnd() - condition.getEnd() == 0) {
+                    if (condition.getStart() - holder.getFrom().getEnd() == 1 && holder.getUntil().getEnd() - condition.getEnd() == 0) {
                         /**
                          * Only the validated part is extracted.
                          */
@@ -314,7 +317,7 @@ public class Extractor {
                         break;
                     }
                 } else {
-                    if (holder.getFrom().getEnd() - condition.getStart() == 1 && holder.getUntil().getStart() - condition.getEnd() == 1) {
+                    if (condition.getStart() - holder.getFrom().getEnd() == 1 && holder.getUntil().getStart() - condition.getEnd() == 1) {
                         /**
                          * Only the validated part is extracted.
                          */

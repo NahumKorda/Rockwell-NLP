@@ -60,7 +60,8 @@ public class Frames {
                 } else {
                     edges.put(frame.getFrom().getTag(), new ArrayList<>(Arrays.asList(frame)));
                 }
-            } else if (frame.getUntil() != null) {
+            } 
+            if (frame.getUntil() != null) {
                 if (edges.containsKey(frame.getUntil().getTag())) {
                     edges.get(frame.getUntil().getTag()).add(frame);
                 } else {

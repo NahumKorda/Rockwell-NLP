@@ -24,5 +24,7 @@
 @cain :said ; @cain :to ; @cain :be ; @cain :in ; @cain :talks ; @cain :to ; @cain :acquire | acquisition_rumored
 @cain :reportedly ; @cain :offered ; @cain :to ; @cain :acquire | acquisition_rumored
 
+@cain :to ; @cain :be ; @cain :acquired ; @cain :by | acquisition_rumored_passive
+
 @type+suffix{x} :NN+noun | organization
 @type+prefix{x} :NN+noun | organization

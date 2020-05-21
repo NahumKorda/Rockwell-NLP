@@ -30,17 +30,19 @@ public class ExtractorTest {
     @Test
     public void testExtract() throws Exception {
         
-        String frameRulePath = "/home/nahum/code/Rockwell-NLP/Extractor/src/main/resources/testExtractionSelectors";
-        String framePath = "/home/nahum/code/Rockwell-NLP/Extractor/src/main/resources/testExtractionFrames";
+//        String frameRulePath = "/home/nahum/code/Rockwell-NLP/Extractor/src/main/resources/testExtractionSelectors";
+//        String framePath = "/home/nahum/code/Rockwell-NLP/Extractor/src/main/resources/testExtractionFrames";
+        String frameRulePath = "/home/nahum/code/News-Analyzer/Analyzer/src/main/resources/events/scripts";
+        String framePath = "/home/nahum/code/News-Analyzer/Analyzer/src/main/resources/frames/frames";
         
         ArrayList<String> tests = new ArrayList<>();
 //        tests.add("Apple acquired NextVR, suggesting it still harbors VR ambitions");
 //        tests.add("Blue Ocean Robotics Acquires Beam Telepresence Robot From Suitable Technologies");
 //        tests.add("Uber Said to Be in Talks to Acquire Grubhub");
 //        tests.add("Uber reportedly offered to acquire Grubhub");
-        tests.add("Happiest Minds looks to acquire small firms for faster revenue growth");
+//        tests.add("Happiest Minds looks to acquire small firms for faster revenue growth");
 //        tests.add("Metro West plan revealed: Rydalmere station scrapped, 150 properties to be acquired");
-//        tests.add("");
+        tests.add("Verizon wraps up BlueJeans acquisition lickety split");
 //        tests.add("");
 
         long instructions = NER.Instructions.DATES.getInstruction() | NER.Instructions.CURRENCIES.getInstruction();
