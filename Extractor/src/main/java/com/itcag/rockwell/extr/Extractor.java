@@ -29,6 +29,7 @@ import com.itcag.util.io.TextFileReader;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.ListIterator;
 
 /**
  * <p>This class extracts data from text using Rockwell frames.</p>
@@ -181,13 +182,24 @@ public class Extractor {
 
         /**
          * Correct conditions that overlap with edges.
-         * Overlapping condition will be contracted to exclude the edge.
+         * Overlapping condition will be contracted or split to exclude the edge.
          */
-        for (Tag tag : tags) {
+        
+        ArrayList<Tag> edges = new ArrayList<>();
+        Iterator<Tag> tagIterator = tags.iterator();
+        while (tagIterator.hasNext()) {
+            Tag tag = tagIterator.next();
             if (this.frames.isEdge(tag)) {
-                inspect(tag, tags);
+                edges.add(tag);
+                tagIterator.remove();
             }
         }
+        
+        for (Tag edge : edges) {
+            inspect(edge, tags);
+        }
+        
+        tags.addAll(edges);
         
         removeErroneous(tags);
         
@@ -195,12 +207,37 @@ public class Extractor {
     
     private void inspect (Tag left, ArrayList<Tag> tags) throws Exception {
         
-        for (Tag right : tags) {
+        ListIterator<Tag> tagIterator = tags.listIterator();
+        while (tagIterator.hasNext()) {
+            Tag right = tagIterator.next();
             if (right.equals(left)) continue;
             if (this.frames.isEdge(right)) continue;
-            if (right.getStart() < left.getStart() && right.getEnd() >= left.getStart()) {
+            if (right.getStart() < left.getStart() && right.getEnd() > left.getEnd()) {
+                /**
+                 * Edge is completely enclosed in a conditions
+                 * (there is at least one token before the edge,
+                 * and there is at least one token after the edge).
+                 * Create two tags from the tokens before and after.
+                 * One replaces the existing tag, the other is added.
+                 * For example, the sentence: "Facebook buys Giphy".
+                 * The condition is a noun phrase: "Facebook buys Giphy".
+                 * Edge is "buys". We want two new tags: "Facebook" and "Giphy".
+                 */
+                Tag before = new Tag(right.getTag(), right.getScript(), right.getStart(), left.getStart() - 1);
+                Tag after = new Tag(right.getTag(), right.getScript(), left.getEnd() + 1, right.getEnd());
+                tagIterator.set(before);
+                tagIterator.add(after);
+            } else if (right.getStart() < left.getStart() && right.getEnd() >= left.getStart()) {
+                /**
+                 * Edge overlaps the beginning of the condition.
+                 * Contract condition to exclude the edge.
+                 */
                 right.setEnd(left.getStart() - 1);
             } else if (right.getStart() <= left.getEnd() && right.getEnd() > left.getEnd()) {
+                /**
+                 * Edge overlaps the end of the condition.
+                 * Contract condition to exclude the edge.
+                 */
                 right.setStart(left.getEnd() + 1);
             }
         }
@@ -230,7 +267,9 @@ public class Extractor {
                 for (Frame frame : this.frames.getFrames(tag)) {
                     if (control.contains(frame.getScript())) continue;
                     control.add(frame.getScript());
-                    retVal.add(getHolder(frame, tags));
+                    Holder test = getHolder(frame, tags);
+                    if (test == null) continue;
+                    retVal.add(test);
                 }
             }
         }
@@ -379,42 +418,31 @@ public class Extractor {
     
     private Extract right(Holder holder, ArrayList<Token> tokens) {
         
-        ArrayList<Token> extracted;
-        
-        if (holder.isFromInclusive()) {
-            extracted = new ArrayList<>(tokens.subList(0, holder.getFrom().getStart()));
-        } else {
-            extracted = new ArrayList<>(tokens.subList(0, holder.getFrom().getEnd()));
-        }
-        
         if (!holder.getConditions().isEmpty()) {
-            boolean validated = false;
             for (Tag condition : holder.getConditions()) {
                 if (holder.isFromInclusive()) {
                     if (holder.getFrom().getStart() - condition.getStart() == 0) {
                         /**
                          * Only the validated part is extracted.
                          */
-                        extracted = new ArrayList<>(tokens.subList(condition.getStart(), condition.getEnd() + 1));
-                        validated = true;
-                        break;
+                        ArrayList<Token> extracted = new ArrayList<>(tokens.subList(condition.getStart(), condition.getEnd() + 1));
+                        String value = TokenToolbox.getStringFromTokens(extracted);
+                        return new Extract(holder.getFrame().getScript(), holder.getFrame().getMeaning(), value);
                     }
                 } else {
                     if (condition.getStart() - holder.getFrom().getEnd() == 1) {
                         /**
                          * Only the validated part is extracted.
                          */
-                        extracted = new ArrayList<>(tokens.subList(condition.getStart(), condition.getEnd() + 1));
-                        validated = true;
-                        break;
+                        ArrayList<Token> extracted = new ArrayList<>(tokens.subList(condition.getStart(), condition.getEnd() + 1));
+                        String value = TokenToolbox.getStringFromTokens(extracted);
+                        return new Extract(holder.getFrame().getScript(), holder.getFrame().getMeaning(), value);
                     }
                 }
             }
-            if (!validated) return null;
         }
-        
-        String value = TokenToolbox.getStringFromTokens(extracted);
-        return new Extract(holder.getFrame().getScript(), holder.getFrame().getMeaning(), value);
+
+        return null;
 
     }
 

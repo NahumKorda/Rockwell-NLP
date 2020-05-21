@@ -42,7 +42,7 @@ public class ExtractorTest {
 //        tests.add("Uber reportedly offered to acquire Grubhub");
 //        tests.add("Happiest Minds looks to acquire small firms for faster revenue growth");
 //        tests.add("Metro West plan revealed: Rydalmere station scrapped, 150 properties to be acquired");
-        tests.add("Verizon wraps up BlueJeans acquisition lickety split");
+        tests.add("Walmart CEO Doug McMillon: Jet.com acquisition was worthwhile");
 //        tests.add("");
 
         long instructions = NER.Instructions.DATES.getInstruction() | NER.Instructions.CURRENCIES.getInstruction();
