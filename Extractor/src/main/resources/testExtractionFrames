@@ -1,18 +1,18 @@
 #from: birth_date_from, if: _date, meaning: birthday
 #from: agreement_date, if: _date, meaning: agreement_valid_from_date
 
-until: acquisition_completed, if: organization, meaning:ACQUIRING_CORPORATION
-from: acquisition_completed, if: organization, meaning:ACQUIRED_CORPORATION
+until: acquisition_completed, if: organization, meaning:ACQUIRING_0
+from: acquisition_completed, if: organization, meaning:ACQUIRED_0
 
-until: acquisition_in_progress, if: organization, meaning:ACQUIRING_CORPORATION_2
-from: acquisition_in_progress, if: organization, meaning:ACQUIRED_CORPORATION_2
+until: acquisition_in_progress, if: organization, meaning:ACQUIRING_2
+from: acquisition_in_progress, if: organization, meaning:ACQUIRED_2
 
-until: acquisition_intended, if: organization, meaning:ACQUIRING_CORPORATION_1
-from: acquisition_intended, if: organization, meaning:ACQUIRED_CORPORATION_1
+until: acquisition_intended, if: organization, meaning:ACQUIRING_1
+from: acquisition_intended, if: organization, meaning:ACQUIRED_1
 
-until: acquisition_rumored, if: organization, meaning:ACQUIRING_CORPORATION_3
-from: acquisition_rumored, if: organization, meaning:ACQUIRED_CORPORATION_3
+until: acquisition_rumored, if: organization, meaning:ACQUIRING_3
+from: acquisition_rumored, if: organization, meaning:ACQUIRED_3
 
-until: acquisition_rumored_passive, if: organization, meaning:ACQUIRED_CORPORATION_3
-from: acquisition_rumored_passive, if: organization, meaning:ACQUIRING_CORPORATION_3
+until: acquisition_rumored_passive, if: organization, meaning:ACQUIRED_3
+from: acquisition_rumored_passive, if: organization, meaning:ACQUIRING_3
 
