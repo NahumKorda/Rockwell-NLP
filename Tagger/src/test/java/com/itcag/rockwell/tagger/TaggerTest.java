@@ -43,9 +43,13 @@ public class TaggerTest {
 
     private void run() throws Exception {
         
-        StringBuilder text = new StringBuilder("The New York Times Company said it expects advertising revenue to fall between 50-55% year-over-year in the second quarter as impacts of the pandemic are hitting demand for advertisers.");
+//        StringBuilder text = new StringBuilder("Stakes in Facebook, Boeing, Disney");
+//        ArrayList<String> expressions = new ArrayList<>();
+//        expressions.add("@cain+suffix{} :in+noun | test");
+
+        StringBuilder text = new StringBuilder("Stakes in Facebook, Boeing, Disney");
         ArrayList<String> expressions = new ArrayList<>();
-        expressions.add("@cain+prefix{x*} :company+noun | test");
+        expressions.add("@cain+suffix :in+noun | test ");
         
         for (StringBuilder sentence : splitter.split(text)) {
 

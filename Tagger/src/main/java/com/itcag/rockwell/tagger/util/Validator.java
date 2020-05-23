@@ -129,7 +129,7 @@ public class Validator {
         ArrayList<Token> retVal = new ArrayList<>();
         
         int first = 0;
-        if (anchor.getIndex() > Conditions.MAX_OPTIONAL) first = anchor.getIndex()- Conditions.MAX_OPTIONAL;
+        if (anchor.getIndex() > Conditions.MAX_OPTIONAL) first = anchor.getIndex() - Conditions.MAX_OPTIONAL;
         
         for (Token token : tokens) {
             if (token.getIndex() >= first && token.getIndex() < anchor.getIndex()) {
