@@ -63,6 +63,7 @@
 @cain :, ; @type+infix{*}+suffix{*} :NN+02+03 | 03
 @pos :CJC ; @type+infix{*}+suffix{*} :NN+02+03 | 03
 @pos :POS ; @type+infix{*}+suffix{*} :NN+02+03 | 03
+@cain :of ; @type+infix{*}+suffix{*} :NN+02+03 | 03
 
 
 
