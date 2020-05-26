@@ -60,10 +60,10 @@
 @pos :CRD ; @pos+suffix{*} :PNS+02 | 030
 
 @type+suffix{*} :NN+03 | 03
-@cain :, ; @type+infix{*}+suffix{*} :NN+02+03 | 03
-@pos :CJC ; @type+infix{*}+suffix{*} :NN+02+03 | 03
-@pos :POS ; @type+infix{*}+suffix{*} :NN+02+03 | 03
-@cain :of ; @type+infix{*}+suffix{*} :NN+02+03 | 03
+@cain :, ; @type+infix{*}+suffix{*} :NN+030+03 | 03
+@pos :CJC ; @type+infix{*}+suffix{*} :NN+030+03 | 03
+@pos :POS ; @type+infix{*}+suffix{*} :NN+030+03 | 03
+@cain :of ; @type+infix{*}+suffix{*} :NN+030+03 | 03
 
 
 

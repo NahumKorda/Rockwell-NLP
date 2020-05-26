@@ -142,9 +142,24 @@ public class Extractor {
         ArrayList<Tag> tags = this.tagger.tag(tokens);
         if (tags.isEmpty()) return retVal;
 
-        compactConditions(tags);
-        correct(tags, tokens);
+        ArrayList<Tag> edges = new ArrayList<>();
+        Iterator<Tag> tagIterator = tags.iterator();
+        while (tagIterator.hasNext()) {
+            Tag tag = tagIterator.next();
+            if (this.frames.isEdge(tag)) {
+                edges.add(tag);
+                tagIterator.remove();
+            }
+        }
         
+        compactConditions(tags);
+        for (Tag edge : edges) {
+            correct(edge, tags, tokens);
+        }
+        
+        tags.addAll(edges);
+        removeErroneous(tags);
+
         ArrayList<Holder> holders = getHolders(tags);
         if (holders.isEmpty()) return retVal;
         
@@ -179,41 +194,16 @@ public class Extractor {
 
     }
     
-    private void correct(ArrayList<Tag> tags, ArrayList<Token> tokens) throws Exception {
-
+    private void correct (Tag edge, ArrayList<Tag> tags, ArrayList<Token> tokens) throws Exception {
+        
         /**
          * Correct conditions that overlap with edges.
          * Overlapping condition will be contracted or split to exclude the edge.
          */
-        
-        ArrayList<Tag> edges = new ArrayList<>();
-        Iterator<Tag> tagIterator = tags.iterator();
-        while (tagIterator.hasNext()) {
-            Tag tag = tagIterator.next();
-            if (this.frames.isEdge(tag)) {
-                edges.add(tag);
-                tagIterator.remove();
-            }
-        }
-        
-        for (Tag edge : edges) {
-            inspect(edge, tags, tokens);
-        }
-        
-        tags.addAll(edges);
-        
-        removeErroneous(tags);
-        
-    }
-    
-    private void inspect (Tag left, ArrayList<Tag> tags, ArrayList<Token> tokens) throws Exception {
-        
         ListIterator<Tag> tagIterator = tags.listIterator();
         while (tagIterator.hasNext()) {
-            Tag right = tagIterator.next();
-            if (right.equals(left)) continue;
-            if (this.frames.isEdge(right)) continue;
-            if (right.getStart() < left.getStart() && right.getEnd() > left.getEnd()) {
+            Tag condition = tagIterator.next();
+            if (condition.getStart() < edge.getStart() && condition.getEnd() > edge.getEnd()) {
                 /**
                  * Edge is completely enclosed in a conditions
                  * (there is at least one token before the edge,
@@ -224,24 +214,24 @@ public class Extractor {
                  * The condition is a noun phrase: "Facebook buys Giphy".
                  * Edge is "buys". We want two new tags: "Facebook" and "Giphy".
                  */
-                Tag before = new Tag(right.getTag(), right.getScript(), right.getStart(), left.getStart() - 1);
+                Tag before = new Tag(condition.getTag(), condition.getScript(), condition.getStart(), edge.getStart() - 1);
                 evaluateLast(before, tokens);
-                Tag after = new Tag(right.getTag(), right.getScript(), left.getEnd() + 1, right.getEnd());
+                Tag after = new Tag(condition.getTag(), condition.getScript(), edge.getEnd() + 1, condition.getEnd());
                 tagIterator.set(before);
                 tagIterator.add(after);
-            } else if (right.getStart() < left.getStart() && right.getEnd() >= left.getStart()) {
+            } else if (condition.getStart() < edge.getStart() && condition.getEnd() >= edge.getStart()) {
                 /**
                  * Edge overlaps the end of the condition.
                  * Contract condition to exclude the edge.
                  */
-                right.setEnd(left.getStart() - 1);
-                evaluateLast(right, tokens);
-            } else if (right.getStart() <= left.getEnd() && right.getEnd() > left.getEnd()) {
+                condition.setEnd(edge.getStart() - 1);
+                evaluateLast(condition, tokens);
+            } else if (condition.getStart() <= edge.getEnd() && condition.getEnd() > edge.getEnd()) {
                 /**
                  * Edge overlaps the beginning of the condition.
                  * Contract condition to exclude the edge.
                  */
-                right.setStart(left.getEnd() + 1);
+                condition.setStart(edge.getEnd() + 1);
             }
         }
         
