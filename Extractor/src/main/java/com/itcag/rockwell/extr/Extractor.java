@@ -18,6 +18,7 @@
 
 package com.itcag.rockwell.extr;
 
+import com.itcag.rockwell.POSTag;
 import com.itcag.rockwell.lang.Extract;
 import com.itcag.rockwell.lang.Tag;
 import com.itcag.rockwell.lang.Token;
@@ -142,7 +143,7 @@ public class Extractor {
         if (tags.isEmpty()) return retVal;
 
         compactConditions(tags);
-        correct(tags);
+        correct(tags, tokens);
         
         ArrayList<Holder> holders = getHolders(tags);
         if (holders.isEmpty()) return retVal;
@@ -178,7 +179,7 @@ public class Extractor {
 
     }
     
-    private void correct(ArrayList<Tag> tags) throws Exception {
+    private void correct(ArrayList<Tag> tags, ArrayList<Token> tokens) throws Exception {
 
         /**
          * Correct conditions that overlap with edges.
@@ -196,7 +197,7 @@ public class Extractor {
         }
         
         for (Tag edge : edges) {
-            inspect(edge, tags);
+            inspect(edge, tags, tokens);
         }
         
         tags.addAll(edges);
@@ -205,7 +206,7 @@ public class Extractor {
         
     }
     
-    private void inspect (Tag left, ArrayList<Tag> tags) throws Exception {
+    private void inspect (Tag left, ArrayList<Tag> tags, ArrayList<Token> tokens) throws Exception {
         
         ListIterator<Tag> tagIterator = tags.listIterator();
         while (tagIterator.hasNext()) {
@@ -224,18 +225,20 @@ public class Extractor {
                  * Edge is "buys". We want two new tags: "Facebook" and "Giphy".
                  */
                 Tag before = new Tag(right.getTag(), right.getScript(), right.getStart(), left.getStart() - 1);
+                evaluateLast(before, tokens);
                 Tag after = new Tag(right.getTag(), right.getScript(), left.getEnd() + 1, right.getEnd());
                 tagIterator.set(before);
                 tagIterator.add(after);
             } else if (right.getStart() < left.getStart() && right.getEnd() >= left.getStart()) {
                 /**
-                 * Edge overlaps the beginning of the condition.
+                 * Edge overlaps the end of the condition.
                  * Contract condition to exclude the edge.
                  */
                 right.setEnd(left.getStart() - 1);
+                evaluateLast(right, tokens);
             } else if (right.getStart() <= left.getEnd() && right.getEnd() > left.getEnd()) {
                 /**
-                 * Edge overlaps the end of the condition.
+                 * Edge overlaps the beginning of the condition.
                  * Contract condition to exclude the edge.
                  */
                 right.setStart(left.getEnd() + 1);
@@ -244,6 +247,21 @@ public class Extractor {
         
     }
     
+    private void evaluateLast(Tag tag, ArrayList<Token> tokens) {
+        
+        /**
+         * Ensure that the last token in condition is not punctuation
+         */
+        while (tag.getEnd() - tag.getStart() > 0) {
+            Token token = tokens.get(tag.getEnd());
+            if (token.getPos() != null && POSTag.PC1.equals(token.getPos())) {
+                tag.setEnd(tag.getEnd() - 1);
+            } else {
+                return;
+            }
+        }
+        
+    }
     
     private void removeErroneous(ArrayList<Tag> tags) {
 

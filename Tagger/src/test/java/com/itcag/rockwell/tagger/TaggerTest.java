@@ -47,9 +47,9 @@ public class TaggerTest {
 //        ArrayList<String> expressions = new ArrayList<>();
 //        expressions.add("@cain+suffix{} :in+noun | test");
 
-        StringBuilder text = new StringBuilder("Stakes in Facebook, Boeing, Disney");
+        StringBuilder text = new StringBuilder("JioMart, the e-commerce venture from India’s richest man, launches in 200 cities and towns");
         ArrayList<String> expressions = new ArrayList<>();
-        expressions.add("@cain+suffix :in+noun | test ");
+        expressions.add("@type+suffix{x} :NN+noun | test ");
         
         for (StringBuilder sentence : splitter.split(text)) {
 
