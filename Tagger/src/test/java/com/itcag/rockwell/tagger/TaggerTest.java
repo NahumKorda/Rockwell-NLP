@@ -47,9 +47,9 @@ public class TaggerTest {
 //        ArrayList<String> expressions = new ArrayList<>();
 //        expressions.add("@cain+suffix{} :in+noun | test");
 
-        StringBuilder text = new StringBuilder("BSNL launches Rs 699 prepaid plan");
+        StringBuilder text = new StringBuilder("Coronavirus forces iconic US department store JC Penney into bankruptcy");
         ArrayList<String> expressions = new ArrayList<>();
-        expressions.add("@pos+suffix :CRD+noun | test ");
+        expressions.add("@cain+prefix :into+noun | test ");
         
         for (StringBuilder sentence : splitter.split(text)) {
 
