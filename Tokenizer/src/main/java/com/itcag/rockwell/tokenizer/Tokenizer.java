@@ -79,7 +79,7 @@ public final class Tokenizer {
                 retVal.add(tmp);
                 quote = true;
             } else if (token.endsWith("'") && quote) {
-                String tmp = token.substring(token.length() - 1);
+                String tmp = token.substring(0, token.length() - 1);
                 if (tmp.isEmpty()) continue;
                 retVal.add(tmp);
                 quote = false;

@@ -74,16 +74,12 @@ public final class NumberDetector {
             }
         }
         
-        {
-            if (isOrdinal(word)) {
-                return new Token(word, POSTag.ORD, word, index);
-            }
+        if (isOrdinal(word)) {
+            return new Token(word, POSTag.ORD, word, index);
         }
         
-        {
-            if (isProportion(word)) {
-                return new Token(word, POSTag.CRD, word, index);
-            }
+        if (isProportion(word)) {
+            return new Token(word, POSTag.CRD, word, index);
         }
         
         return null;

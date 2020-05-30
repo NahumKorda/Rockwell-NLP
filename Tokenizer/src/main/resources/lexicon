@@ -3475,6 +3475,8 @@ approximation|NN1|approximation
 approx|AV0|approx
 appro|NN0|appro
 appro|NN1|appro
+apps|NN2|app
+app|NN1|app
 appurtenances|NN2|appurtenance
 appurtenance|NN1|appurtenance
 apres-ski|AJ0|apres-ski
@@ -7567,6 +7569,7 @@ billington|NP0|billington
 billing|NN1|billing
 billing|VVG|bill
 billions|NN2|billion
+billions|CRD|billion
 billion|NN1|billion
 billowed|VVD|billow
 billowed|VVN|billow
@@ -12922,12 +12925,14 @@ centring|AJ0|centring
 centring|VVG|centre
 centripetal|AJ0|centripetal
 cents|NN2|cent
+cents|XZ2|cent
 centuries|NN2|century
 centurions|NN2|centurion
 centurion|NN1|centurion
 century|NN1|century
 cent|NN0|cent
 cent|NN1|cent
+cent|XZ2|cent
 ceramics|NN1|ceramic
 ceramics|NN2|ceramic
 ceramic|AJ0|ceramic
@@ -25820,7 +25825,9 @@ dole|VVB|dole
 dole|VVI|dole
 doling|VVG|dole
 dollars|NN2|dollar
+dollars|XZ2|dollar
 dollar|NN1|dollar
+dollar|XZ2|dollar
 dolled|VVD|doll
 dolled|VVN|doll
 dollies|NN2|dolly
@@ -29996,7 +30003,6 @@ eventual|AJ0|eventual
 event|NN1|event
 even|AJ0|even
 even|AV0|even
-even|NN1|even
 even|VVB|even
 even|VVI|even
 evergreens|NN2|evergreen
@@ -32708,7 +32714,9 @@ firstborn|NN1|firstborn
 firstly|AV0|firstly
 firsts|NN2|first
 first|AV0|first
+first|AJ0|first
 first|NN1|first
+first|ORD|first
 firs|NN2|fir
 firths|NN2|firth
 firth|NN1|firth
@@ -41812,6 +41820,7 @@ hunch|VVB|hunch
 hunch|VVI|hunch
 hundredfold|AV0|hundredfold
 hundreds|NN2|hundred
+hundreds|CRD|hundred
 hundredweights|NN2|hundredweight
 hundredweight|NN1|hundredweight
 hungarians|NN2|hungarians
@@ -53483,6 +53492,7 @@ millionaires|NN2|millionaire
 millionaire|NN1|millionaire
 millionfold|AV0|millionfold
 millions|NN2|million
+millions|CRD|million
 million|NN1|million
 millipedes|NN2|millipede
 millipede|NN1|millipede
@@ -65287,6 +65297,7 @@ pounding|NN1|pounding
 pounding|VVG|pound
 pounds|NN2|pound
 pounds|VVZ|pound
+pound|XZ2|pound
 pound|NN1|pound
 pound|VVB|pound
 pound|VVI|pound
@@ -76883,6 +76894,7 @@ second|NN1|second
 second|ORD|second
 second|VVB|second
 second|VVI|second
+second|AJ0|second
 secrecy|NN1|secrecy
 secretarial|AJ0|secretarial
 secretariats|NN2|secretariat
@@ -89327,6 +89339,7 @@ though|CJS|though
 thousandfold|AJ0|thousandfold
 thousandfold|AV0|thousandfold
 thousands|NN2|thousand
+thousands|CRD|thousand
 thou|PNP|thou
 thraldom|NN1|thraldom
 thralls|NN2|thrall
