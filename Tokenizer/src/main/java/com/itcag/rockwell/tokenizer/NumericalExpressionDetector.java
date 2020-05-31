@@ -79,6 +79,8 @@ public final class NumericalExpressionDetector {
     public final boolean split(char[] chars) {
         
         if (chars.length == 0) return false;
+
+        if (Character.isLetter(chars[0])) return false;
         
         /**
          * Plus sign.
