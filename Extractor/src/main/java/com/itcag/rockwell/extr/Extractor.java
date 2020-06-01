@@ -160,13 +160,15 @@ public class Extractor {
         tags.addAll(edges);
         removeErroneous(tags);
 
-        ArrayList<Holder> holders = getHolders(tags);
-        if (holders.isEmpty()) return retVal;
-        
-        for (Holder holder : holders) {
-            Extract test = processHolder(holder, tokens);
-            if(test != null) retVal.add(test);
+        ArrayList<Holder> holders = getHolders(tags, tokens);
+        if (!holders.isEmpty()) {
+            for (Holder holder : holders) {
+                Extract test = processHolder(holder, tokens);
+                if(test != null) retVal.add(test);
+            }
         }
+        
+        
         
         return retVal;
         
@@ -267,17 +269,20 @@ public class Extractor {
 
     }
     
-    private ArrayList<Holder> getHolders(ArrayList<Tag> tags) {
+    private ArrayList<Holder> getHolders(ArrayList<Tag> tags, ArrayList<Token> tokens) {
         ArrayList<Holder> retVal = new ArrayList<>();
         ArrayList<String> control = new ArrayList<>();
         for (Tag tag : tags) {
             if (this.frames.isEdge(tag)) {
                 for (Frame frame : this.frames.getFrames(tag)) {
+                    
                     if (control.contains(frame.getScript())) continue;
                     control.add(frame.getScript());
+                    
                     Holder test = getHolder(frame, tags);
                     if (test == null) continue;
                     retVal.add(test);
+                
                 }
             }
         }
@@ -426,6 +431,14 @@ public class Extractor {
     
     private Extract right(Holder holder, ArrayList<Token> tokens) {
         
+        ArrayList<Token> extracted;
+        
+        if (holder.isFromInclusive()) {
+            extracted = new ArrayList<>(tokens.subList(holder.getFrom().getStart(), tokens.size()));
+        } else {
+            extracted = new ArrayList<>(tokens.subList(holder.getFrom().getEnd(), tokens.size()));
+        }
+
         if (!holder.getConditions().isEmpty()) {
             for (Tag condition : holder.getConditions()) {
                 if (holder.isFromInclusive()) {
@@ -433,7 +446,7 @@ public class Extractor {
                         /**
                          * Only the validated part is extracted.
                          */
-                        ArrayList<Token> extracted = new ArrayList<>(tokens.subList(condition.getStart(), condition.getEnd() + 1));
+                        extracted = new ArrayList<>(tokens.subList(condition.getStart(), condition.getEnd() + 1));
                         String value = TokenToolbox.getStringFromTokens(extracted);
                         return new Extract(holder.getFrame().getScript(), holder.getFrame().getMeaning(), value);
                     }
@@ -442,7 +455,7 @@ public class Extractor {
                         /**
                          * Only the validated part is extracted.
                          */
-                        ArrayList<Token> extracted = new ArrayList<>(tokens.subList(condition.getStart(), condition.getEnd() + 1));
+                        extracted = new ArrayList<>(tokens.subList(condition.getStart(), condition.getEnd() + 1));
                         String value = TokenToolbox.getStringFromTokens(extracted);
                         return new Extract(holder.getFrame().getScript(), holder.getFrame().getMeaning(), value);
                     }
@@ -450,7 +463,8 @@ public class Extractor {
             }
         }
 
-        return null;
+        String value = TokenToolbox.getStringFromTokens(extracted);
+        return new Extract(holder.getFrame().getScript(), holder.getFrame().getMeaning(), value);
 
     }
 
