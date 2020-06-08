@@ -18,6 +18,7 @@
 
 package com.itcag.rockwell.split;
 
+import com.itcag.util.punct.Locker;
 import com.itcag.util.punct.Abbreviations;
 import com.itcag.util.punct.Punctuation;
 import com.itcag.util.txt.TextToolbox;
@@ -62,13 +63,7 @@ public final class Splitter {
         if (TextToolbox.isEmpty(input)) throw new IllegalArgumentException("Input is empty after cleaning.");
         
         /**
-         * Lock abbreviations.
-         */
-        Abbreviations abbreviations = Abbreviations.getInstance();
-        abbreviations.lock(input);
-        
-        /**
-         * Lock URLs, acronyms, decimal numbers.
+         * Lock URLs, abbreviations, acronyms, decimal numbers.
          */
         Locker locker = new Locker();
         locker.lock(input);

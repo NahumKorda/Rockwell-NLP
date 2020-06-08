@@ -25,9 +25,6 @@ import com.itcag.util.txt.TextToolbox;
  */
 public final class Punctuation {
     
-    public final static String ABBREVIATION_PERIOD = Character.toString((char) 1);
-    public final static String ACRONYM_PERIOD = Character.toString((char) 2);
-
     /**
      * @param input string builder holding text to be normalized. 
      */

@@ -84,7 +84,7 @@ public class Acronyms {
     private void replace(StringBuilder input, int start, int end) {
         for (int i = start; i <= end; i++) {
             if (input.charAt(i) == 46) {
-                input.replace(i, i + 1, Punctuation.ACRONYM_PERIOD);
+                input.replace(i, i + 1, Characters.ACRONYM.getReplacement());
             }
         }
     }
@@ -94,7 +94,7 @@ public class Acronyms {
      * @param input String builder holding text.
      */
     public final synchronized void unlock(StringBuilder input) {
-        TextToolbox.replaceCaIn(input, Punctuation.ACRONYM_PERIOD, ".");
+        TextToolbox.replaceCaIn(input, Characters.ACRONYM.getReplacement(), ".");
     }
     
     /**
@@ -103,7 +103,7 @@ public class Acronyms {
      * @return Unlocked text.
      */
     public final synchronized String unlock(String input) {
-        return TextToolbox.replaceCaIn(input, Punctuation.ACRONYM_PERIOD, ".");
+        return TextToolbox.replaceCaIn(input, Characters.ACRONYM.getReplacement(), ".");
     }
     
 }

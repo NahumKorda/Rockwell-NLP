@@ -20,10 +20,9 @@ package com.itcag.rockwell.tokenizer;
 
 import com.itcag.rockwell.tokenizer.res.Toklex;
 import com.itcag.rockwell.tokenizer.res.Misspellings;
+import com.itcag.util.punct.Locker;
 import com.itcag.util.punct.PunctuationToolbox;
 import com.itcag.util.txt.TextToolbox;
-import com.itcag.util.punct.Abbreviations;
-import com.itcag.util.punct.Acronyms;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -34,15 +33,13 @@ import java.util.List;
  */
 public final class Tokenizer {
     
-    private final Abbreviations abbrevations;
-    private final Acronyms acronyms;
+    private final Locker locker;
     
     private final Toklex toklex;
     private final Misspellings misspellings;
 
     public Tokenizer() throws Exception {
-        this.abbrevations = Abbreviations.getInstance();
-        this.acronyms = Acronyms.getInstance();
+        this.locker = new Locker();
         this.toklex = Toklex.getInstance();
         this.misspellings = Misspellings.getInstance();
     }
@@ -50,15 +47,15 @@ public final class Tokenizer {
     /**
      * @param sentence String builder holding a sentence.
      * @return Array list of strings - each representing a token.
+     * @throws java.lang.Exception if anything goes wrong.
      */
-    public final synchronized ArrayList<String> getTokens(StringBuilder sentence) {
+    public final synchronized ArrayList<String> getTokens(StringBuilder sentence) throws Exception {
         
         ArrayList<String> retVal = new ArrayList<>();
         
-        this.abbrevations.lock(sentence);
-        this.acronyms.lock(sentence);
+        this.locker.lock(sentence);
         
-        List<String> tokens = tokenize(sentence);
+        ArrayList<String> tokens = tokenize(sentence);
         boolean quote = false;
         for (String token : tokens) {
             

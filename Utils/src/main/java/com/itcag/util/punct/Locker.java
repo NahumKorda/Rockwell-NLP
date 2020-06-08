@@ -16,7 +16,7 @@
  *
  */
 
-package com.itcag.rockwell.split;
+package com.itcag.util.punct;
 
 import com.itcag.util.txt.TextToolbox;
 
@@ -31,6 +31,14 @@ import org.nibor.autolink.LinkType;
  */
 public final class Locker {
 
+    private final Abbreviations abbrevations;
+    private final Acronyms acronyms;
+    
+    public Locker() throws Exception {
+        this.abbrevations = Abbreviations.getInstance();
+        this.acronyms = Acronyms.getInstance();
+    }
+    
     /**
      * @param input String builder holding the original text.
      * @throws Exception if anything goes wrong.
@@ -38,6 +46,9 @@ public final class Locker {
     public final synchronized void lock(StringBuilder input) throws Exception {
         
         lockURL(input);
+        
+        this.abbrevations.lock(input);
+        this.acronyms.lock(input);
         
         lockPeriods(input);
         lockColons(input);
@@ -109,7 +120,7 @@ public final class Locker {
                 if (i == letter + 1) {
                     dot = i;
                     if (i == (input.length() - 1) && i >= start + 2) {
-                        TextToolbox.replaceWithin(input, input.substring(start, i + 1), ".", Characters.PERIOD.getReplacement());
+                        TextToolbox.replaceWithin(input, input.substring(start, i + 1), ".", Characters.ACRONYM.getReplacement());
                         input.append(".");
                     }
                 } else {
@@ -123,7 +134,7 @@ public final class Locker {
                 }
             } else {
                 if (i > start + 2) {
-                    TextToolbox.replaceWithin(input, input.substring(start, i), ".", Characters.PERIOD.getReplacement());
+                    TextToolbox.replaceWithin(input, input.substring(start, i), ".", Characters.ACRONYM.getReplacement());
                 }
                 break;
             }
@@ -133,6 +144,10 @@ public final class Locker {
     
     public final void unlock(StringBuilder input) throws Exception {
         decode(input);
+    }
+    
+    public final String unlock(String input) throws Exception {
+        return decode(input);
     }
     
     private String encode(String input) {
@@ -164,4 +179,38 @@ public final class Locker {
         
     }
     
+    private String decode(String input) {
+        
+        input = TextToolbox.replace(input, Characters.PERIOD.getReplacement(), ".");
+        input = TextToolbox.replace(input, Characters.EXCLAMATION.getReplacement(), "!");
+        input = TextToolbox.replace(input, Characters.QUESTION.getReplacement(), "?");
+        input = TextToolbox.replace(input, Characters.COLON.getReplacement(), ":");
+        input = TextToolbox.replace(input, Characters.SEMICOLON.getReplacement(), ";");
+        input = TextToolbox.replace(input, Characters.COMMA.getReplacement(), ",");
+        input = TextToolbox.replace(input, Characters.SLASH.getReplacement(), "/");
+        input = TextToolbox.replace(input, Characters.HYPHEN.getReplacement(), "-");
+        
+        return input;
+        
+    }
+
+    /**
+     * This method "unlocks" locked text by replacing the inserted non-printable characters with the periods.
+     * @param input String holding text.
+     * @return Unlocked text.
+     */
+    public final synchronized String unlockAbbreviation(String input) {
+        return TextToolbox.replaceCaIn(input, Characters.ABBREVIATION.getReplacement(), ".");
+    }
+    
+    /**
+     * This method "unlocks" locked text by replacing the inserted non-printable characters with the periods.
+     * @param input String holding text.
+     * @return Unlocked text.
+     */
+    public final synchronized String unlockAcronym(String input) {
+        return TextToolbox.replaceCaIn(input, Characters.ACRONYM.getReplacement(), ".");
+    }
+    
+
 }

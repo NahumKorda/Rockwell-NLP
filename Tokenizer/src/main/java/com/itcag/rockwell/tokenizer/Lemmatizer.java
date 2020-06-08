@@ -25,9 +25,8 @@ import com.itcag.rockwell.POSTag;
 import com.itcag.rockwell.lang.Alternatives;
 import com.itcag.rockwell.lang.Token;
 import com.itcag.util.Converter;
-import com.itcag.util.punct.Abbreviations;
-import com.itcag.util.punct.Acronyms;
-import com.itcag.util.punct.Punctuation;
+import com.itcag.util.punct.Characters;
+import com.itcag.util.punct.Locker;
 
 import java.util.ArrayList;
 
@@ -36,8 +35,7 @@ import java.util.ArrayList;
  */
 public final class Lemmatizer {
     
-    private final Abbreviations abbrevations;
-    private final Acronyms acronyms;
+    private final Locker locker;
     
     private final Lexicon lexicon;
     private final Lexer lexer;
@@ -46,8 +44,7 @@ public final class Lemmatizer {
 
     public Lemmatizer() throws Exception {
 
-        this.abbrevations = Abbreviations.getInstance();
-        this.acronyms = Acronyms.getInstance();
+        this.locker = new Locker();
 
         this.lexicon = Lexicon.getInstance();
         this.lexicalResources = LexicalResources.getInstance();
@@ -73,11 +70,11 @@ public final class Lemmatizer {
                 retVal.add(new Token(word, POSTag.PC0, word, retVal.size()));
             } else if (PunctuationToolbox.isNonTerminalPunctuation(cain)) {
                 retVal.add(new Token(word, POSTag.PC1, word, retVal.size()));
-            } else if (word.contains(Punctuation.ABBREVIATION_PERIOD)) {
-                word = this.abbrevations.unlock(word);
+            } else if (word.contains(Characters.ABBREVIATION.getReplacement())) {
+                word = this.locker.unlockAbbreviation(word);
                 retVal.add(new Token(word, POSTag.ABB, word, retVal.size()));
-            } else if (cain.contains(Punctuation.ACRONYM_PERIOD)) {
-                word = this.acronyms.unlock(word);
+            } else if (cain.contains(Characters.ACRONYM.getReplacement())) {
+                word = this.locker.unlockAcronym(word);
                 retVal.add(new Token(word, POSTag.ACR, word, retVal.size()));
             } else if ("(".equals(cain) || "[".equals(cain) || "{".equals(cain)) {
                 retVal.add(new Token(word, POSTag.PC2, word, retVal.size()));

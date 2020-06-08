@@ -84,7 +84,7 @@ public final class Abbreviations {
     private void replace(StringBuilder input, int start, int end) {
         for (int i = start; i <= end; i++) {
             if (input.charAt(i) == 46) {
-                input.replace(i, i + 1, Punctuation.ABBREVIATION_PERIOD);
+                input.replace(i, i + 1, Characters.ABBREVIATION.getReplacement());
             }
         }
     }
@@ -94,7 +94,7 @@ public final class Abbreviations {
      * @param input String builder holding text.
      */
     public final synchronized void unlock(StringBuilder input) {
-        TextToolbox.replaceCaIn(input, Punctuation.ABBREVIATION_PERIOD, ".");
+        TextToolbox.replaceCaIn(input, Characters.ABBREVIATION.getReplacement(), ".");
     }
 
     /**
@@ -103,7 +103,7 @@ public final class Abbreviations {
      * @return Unlocked text.
      */
     public final synchronized String unlock(String input) {
-        return TextToolbox.replaceCaIn(input, Punctuation.ABBREVIATION_PERIOD, ".");
+        return TextToolbox.replaceCaIn(input, Characters.ABBREVIATION.getReplacement(), ".");
     }
     
 }
