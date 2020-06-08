@@ -26,7 +26,6 @@ import com.itcag.util.txt.TextToolbox;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.List;
 
 /**
  * <p>This class splits text into individual strings. Punctuation is detached, but punctuation characters that are not used for punctuation (dual purpose characters) are recognized and left intact (e.g., in decimal numbers, URLs, acronyms, etc.).</p>
@@ -59,6 +58,12 @@ public final class Tokenizer {
         boolean quote = false;
         for (String token : tokens) {
             
+            /**
+             * Release all locks except abbreviations and acronyms.
+             * They are required for lemmatization.
+             */
+            token = this.locker.unlock(token);
+            
             if (misspellings.contains(token)) token = misspellings.getReplacement(token);
             
             if (toklex.isRecognized(token.toLowerCase())) {
@@ -73,8 +78,13 @@ public final class Tokenizer {
             } else if (token.startsWith("'")) {
                 String tmp = token.substring(1, token.length());
                 if (tmp.isEmpty()) continue;
-                retVal.add(tmp);
-                quote = true;
+                if (tmp.endsWith("'")) {
+                    tmp = tmp.substring(0, tmp.length() - 1);
+                    retVal.add(tmp);
+                } else {
+                    retVal.add(tmp);
+                    quote = true;
+                }
             } else if (token.endsWith("'") && quote) {
                 String tmp = token.substring(0, token.length() - 1);
                 if (tmp.isEmpty()) continue;

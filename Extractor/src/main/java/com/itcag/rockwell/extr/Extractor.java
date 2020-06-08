@@ -436,7 +436,7 @@ public class Extractor {
         if (holder.isFromInclusive()) {
             extracted = new ArrayList<>(tokens.subList(holder.getFrom().getStart(), tokens.size()));
         } else {
-            extracted = new ArrayList<>(tokens.subList(holder.getFrom().getEnd(), tokens.size()));
+            extracted = new ArrayList<>(tokens.subList(holder.getFrom().getEnd() + 1, tokens.size()));
         }
 
         if (!holder.getConditions().isEmpty()) {

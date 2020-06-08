@@ -20,6 +20,7 @@ package com.itcag.rockwell.tokenizer;
 
 import com.itcag.rockwell.tokenizer.res.LexicalResources;
 import com.itcag.util.Converter;
+import com.itcag.util.txt.TextToolbox;
 
 import java.util.ArrayList;
 
@@ -203,6 +204,7 @@ public final class NumericalExpressionDetector {
     
     private void extractNumber() {
         String chars = digits.stream().map(e -> e.toString()).reduce((acc, e) -> acc  + e).get();
+        if (chars.contains(",")) chars = TextToolbox.replace(chars, ",", "");
         Double test = Converter.convertStringToDouble(chars);
         if (test != null) {
             if (negative) {

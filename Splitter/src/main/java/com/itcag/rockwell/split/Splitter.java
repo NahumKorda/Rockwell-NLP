@@ -19,7 +19,6 @@
 package com.itcag.rockwell.split;
 
 import com.itcag.util.punct.Locker;
-import com.itcag.util.punct.Abbreviations;
 import com.itcag.util.punct.Punctuation;
 import com.itcag.util.txt.TextToolbox;
 
