@@ -103,6 +103,32 @@ public final class PunctuationToolbox {
     }
     
     /**
+     * Evaluates whether the input string is an extended terminal punctuation character.
+     * Terminal punctuation characters include all characters that terminate a sentence
+     * (i.e. ".", "!", "?", "…"), plus the colon (":") and the semicolon (";").
+     * @param input String holding input text.
+     * @return Boolean indicating whether input is extended terminal punctuation.
+     */
+    public final static boolean isExtendedTerminalPunctuation(String input) {
+
+        if (input.length() != 1) return false;
+        if (TextToolbox.isEmpty(input)) return false;
+
+        switch (input) {
+            case".":
+            case"!":
+            case"?":
+            case"…":
+            case":":
+            case";":
+                return true;
+            default:
+                return false;
+        }
+
+    }
+    
+    /**
      * Evaluates whether the input string is a non-terminal punctuation character. Non-terminal punctuation characters can be encountered in the middle of a sentence (i.e. ",", ";", ":").
      * @param input String holding input text.
      * @return Boolean indicating whether input is non-terminal punctuation.

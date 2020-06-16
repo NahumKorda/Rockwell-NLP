@@ -32,6 +32,20 @@ import java.util.Iterator;
 public final class Splitter {
 
     /**
+     * Extended split includes splitting not only on sentence terminating characters, but also on colon and semicolon.
+     * This is required, for example, in case of newspaper titles and social posts.
+     */
+    private final boolean extended;
+    
+    public Splitter() {
+        this.extended = false;
+    }
+    
+    public Splitter(boolean extended) {
+        this.extended = extended;
+    }
+    
+    /**
      * @param input String builder holding the original text.
      * @return Array list containing string builders holding individual sentences.
      * @throws Exception if anything goes wrong.
@@ -77,7 +91,7 @@ public final class Splitter {
         /**
          * Split into sentences.
          */
-        Split split = new Split();
+        Split split = new Split(this.extended);
         ArrayList<StringBuilder> sentences = split.split(input);
 
         /**

@@ -28,6 +28,12 @@ import java.util.ArrayList;
  */
 public final class Split {
     
+    private final boolean extended;
+    
+    public Split(boolean extended) {
+        this.extended = extended;
+    }
+    
     /**
      * @param input String builder holding the original text.
      * @return Array list containing string builders holding individual sentences.
@@ -124,7 +130,11 @@ public final class Split {
          */
         if (lastWord.length() == 1) return false;
         
-        if (!PunctuationToolbox.isTerminalPunctuation(Character.toString(p))) return false;
+        if (this.extended) {
+            if (!PunctuationToolbox.isExtendedTerminalPunctuation(Character.toString(p))) return false;
+        } else {
+            if (!PunctuationToolbox.isTerminalPunctuation(Character.toString(p))) return false;
+        }
         
         return true;
         

@@ -95,7 +95,7 @@ public class Pipeline {
         switch (this.currentTask) {
             case EXTRACT:
             {
-                this.splitter = new Splitter();
+                this.splitter = getSplitter(properties);
                 this.tokenizer = new Tokenizer();
                 this.lemmatizer = new Lemmatizer();
                 this.tagger = null;
@@ -105,7 +105,7 @@ public class Pipeline {
             }
             case CLASSIFY:
             {
-                this.splitter = new Splitter();
+                this.splitter = getSplitter(properties);
                 this.tokenizer = new Tokenizer();
                 this.lemmatizer = new Lemmatizer();
                 this.tagger = getTagger(properties);
@@ -115,7 +115,7 @@ public class Pipeline {
             }
             case NER:
             {
-                this.splitter = new Splitter();
+                this.splitter = getSplitter(properties);
                 this.tokenizer = new Tokenizer();
                 this.lemmatizer = new Lemmatizer();
                 this.tagger = null;
@@ -125,7 +125,7 @@ public class Pipeline {
             }
             case INSERT_NER:
             {
-                this.splitter = new Splitter();
+                this.splitter = getSplitter(properties);
                 this.tokenizer = new Tokenizer();
                 this.lemmatizer = new Lemmatizer();
                 this.tagger = null;
@@ -135,7 +135,7 @@ public class Pipeline {
             }
             case INSERT_CONCEPTS:
             {
-                this.splitter = new Splitter();
+                this.splitter = getSplitter(properties);
                 this.tokenizer = new Tokenizer();
                 this.lemmatizer = new Lemmatizer();
                 this.tagger = null;
@@ -145,7 +145,7 @@ public class Pipeline {
             }
             case LEMMATIZE:
             {
-                this.splitter = new Splitter();
+                this.splitter = getSplitter(properties);
                 this.tokenizer = new Tokenizer();
                 this.lemmatizer = new Lemmatizer();
                 this.tagger = null;
@@ -155,7 +155,7 @@ public class Pipeline {
             }
             case TOKENIZE:
             {
-                this.splitter = new Splitter();
+                this.splitter = getSplitter(properties);
                 this.tokenizer = new Tokenizer();
                 this.lemmatizer = null;
                 this.tagger = null;
@@ -166,7 +166,7 @@ public class Pipeline {
             case SPLIT:
             default:
             {
-                this.splitter = new Splitter();
+                this.splitter = getSplitter(properties);
                 this.tokenizer = null;
                 this.lemmatizer = null;
                 this.tagger = null;
@@ -178,6 +178,17 @@ public class Pipeline {
         
     }
 
+    private Splitter getSplitter(Properties properties) throws Exception {
+        
+        String test = properties.getProperty(PropertyFields.EXTENDED_SPLITTING.getField(), null);
+        if (test == null) {
+            return new Splitter();
+        } else {
+            return new Splitter(Boolean.parseBoolean(test.toUpperCase()));
+        }
+
+    }
+    
     private Tagger getTagger(Properties properties) throws Exception {
 
         String expressionPath = properties.getProperty(PropertyFields.EXPRESSIONS.getField(), null);

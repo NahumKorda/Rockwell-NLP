@@ -38,6 +38,8 @@ public enum PropertyFields {
     FRAME_EXPRESSIONS("frameExpressions"),
     /** Local path to a text file containing Rockwell frames. */
     FRAMES("frames"),
+    /** Indicates whether extended splitting must be carried out. Extended splitting splits sentences not only on the sentence terminating characters, but also on colons and semicolons. */
+    EXTENDED_SPLITTING("extendedSplitting"),
 
     ;
 
