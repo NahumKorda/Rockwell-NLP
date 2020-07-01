@@ -76,6 +76,9 @@ public final class Lemmatizer {
             } else if (cain.contains(Characters.ACRONYM.getReplacement())) {
                 word = this.locker.unlockAcronym(word);
                 retVal.add(new Token(word, POSTag.ACR, word, retVal.size()));
+            } else if (cain.contains(Characters.DOMAIN.getReplacement())) {
+                word = this.locker.unlockDomain(word);
+                retVal.add(new Token(word, POSTag.ACR, word, retVal.size()));
             } else if ("(".equals(cain) || "[".equals(cain) || "{".equals(cain)) {
                 retVal.add(new Token(word, POSTag.PC2, word, retVal.size()));
             } else if (")".equals(cain) || "]".equals(cain) || "}".equals(cain)) {

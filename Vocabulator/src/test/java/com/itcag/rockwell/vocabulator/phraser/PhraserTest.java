@@ -20,7 +20,7 @@ public class PhraserTest {
     @Test
     public void testProcess() throws Exception {
 
-        String folderPath = System.getProperty("user.home") + "/Desktop/reviews/";
+        String folderPath = System.getProperty("user.home") + "/Desktop/analyzerInput/business/titles";
         String filePath = System.getProperty("user.home") + "/code/Rockwell-NLP/Playground/src/main/resources/data/techcrunch";
         
         int max = 6;
@@ -28,7 +28,7 @@ public class PhraserTest {
 
 //        String exclusions = Exclusions.STOPPHRASES.name() + ", " + Exclusions.ADJECTIVE_PHRASES.name() + ", " + Exclusions.VERB_PHRASES.name();
         String exclusions = Exclusions.STOPPHRASES.name();
-        int threshold = 10;
+        int threshold = 20;
         int trimThreshold = 2;
 
         
@@ -38,9 +38,9 @@ public class PhraserTest {
         String required = "acquisition, acquired, acquiring, purchas";
         */
 
-        String positive = "investment, invest, funding, funded";
+        String positive = null;
         String negative = null;
-        String required = "investment, invest, funding, funded";
+        String required = null;
 
         /*
         String positive = "ipo,offering";
@@ -72,10 +72,12 @@ public class PhraserTest {
         
         this.extractor = new VocabularyExtractor(properties);
 
-//        processFolder(folderPath);
-        processFile(filePath);
+        processFolder(folderPath);
+        folderPath = System.getProperty("user.home") + "/Desktop/analyzerInput/business/descriptions";
+        processFolder(folderPath);
+//        processFile(filePath);
         
-        extractor.print(true);
+        extractor.print(false);
         
     }
 

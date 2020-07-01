@@ -64,10 +64,10 @@ public enum POSTag {
     ORD(POSType.NM),
     /** Indefinite pronoun (e.g., "none", "everything", "one", "nobody"). */
     PNI(POSType.PN),
-    /** Wh-pronoun (e.g., "who", "whoever", "whom"). */
-    PNQ(POSType.PN),
     /** Personal pronoun (e.g., "I", "you", "them", "ours"). */
     PNP(POSType.PN),
+    /** Wh-pronoun (e.g., "who", "whoever", "whom"). */
+    PNQ(POSType.PN),
     /** Possessive determiner-pronoun (e.g., "your", "their", "his"). */
     PNS(POSType.PN),
     /** Reflexive pronoun (e.g., "myself", "yourself", "itself", "ourselves"). */

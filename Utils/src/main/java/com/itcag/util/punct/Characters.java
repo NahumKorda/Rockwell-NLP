@@ -35,6 +35,7 @@ public enum Characters {
     SPACE((char) 11),
     ABBREVIATION((char) 14),
     ACRONYM((char) 15),
+    DOMAIN((char) 16),
 
     ;
 

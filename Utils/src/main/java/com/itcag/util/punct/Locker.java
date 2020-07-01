@@ -33,10 +33,12 @@ public final class Locker {
 
     private final Abbreviations abbrevations;
     private final Acronyms acronyms;
+    private final Domains domains;
     
     public Locker() throws Exception {
         this.abbrevations = Abbreviations.getInstance();
         this.acronyms = Acronyms.getInstance();
+        this.domains = Domains.getInstance();
     }
     
     /**
@@ -49,6 +51,7 @@ public final class Locker {
         
         this.abbrevations.lock(input);
         this.acronyms.lock(input);
+        this.domains.lock(input);
         
         lockPeriods(input);
         lockColons(input);
@@ -97,9 +100,8 @@ public final class Locker {
     private void lockURL(StringBuilder input) {
 
         LinkExtractor linkExtractor = LinkExtractor.builder().linkTypes(EnumSet.of(LinkType.URL, LinkType.WWW, LinkType.EMAIL)).build();
-        Iterable<LinkSpan> links = linkExtractor.extractLinks(input);
-        while (links.iterator().hasNext()) {
-            LinkSpan link = links.iterator().next();
+        Iterable<LinkSpan> links = linkExtractor.extractLinks(input.toString());
+        for (LinkSpan link : links) {
             String original = input.substring(link.getBeginIndex(), link.getEndIndex());
             if (original.endsWith(".")) {
                 original = original.substring(0, original.length() - 2);
@@ -107,6 +109,22 @@ public final class Locker {
             String replacement = encode(original);
             TextToolbox.replace(input, original, replacement);
         }
+
+    }
+    
+    private String encode(String input) {
+
+        String retVal = input;
+
+        retVal = TextToolbox.replace(retVal, ".", Characters.PERIOD.getReplacement());
+        retVal = TextToolbox.replace(retVal, "!", Characters.EXCLAMATION.getReplacement());
+        retVal = TextToolbox.replace(retVal, "?", Characters.QUESTION.getReplacement());
+        retVal = TextToolbox.replace(retVal, "-", Characters.HYPHEN.getReplacement());
+        retVal = TextToolbox.replace(retVal, ":", Characters.COLON.getReplacement());
+        retVal = TextToolbox.replace(retVal, ";", Characters.SEMICOLON.getReplacement());
+        retVal = TextToolbox.replace(retVal, "/", Characters.SLASH.getReplacement());
+
+        return retVal;
 
     }
     
@@ -150,22 +168,6 @@ public final class Locker {
         return decode(input);
     }
     
-    private String encode(String input) {
-
-        String retVal = input;
-
-        retVal = TextToolbox.replace(retVal, ".", Characters.PERIOD.getReplacement());
-        retVal = TextToolbox.replace(retVal, "!", Characters.EXCLAMATION.getReplacement());
-        retVal = TextToolbox.replace(retVal, "?", Characters.QUESTION.getReplacement());
-        retVal = TextToolbox.replace(retVal, "-", Characters.HYPHEN.getReplacement());
-        retVal = TextToolbox.replace(retVal, ":", Characters.COLON.getReplacement());
-        retVal = TextToolbox.replace(retVal, ";", Characters.SEMICOLON.getReplacement());
-        retVal = TextToolbox.replace(retVal, "/", Characters.SLASH.getReplacement());
-
-        return retVal;
-
-    }
-    
     private void decode(StringBuilder input) {
         
         TextToolbox.replace(input, Characters.PERIOD.getReplacement(), ".");
@@ -176,6 +178,9 @@ public final class Locker {
         TextToolbox.replace(input, Characters.COMMA.getReplacement(), ",");
         TextToolbox.replace(input, Characters.SLASH.getReplacement(), "/");
         TextToolbox.replace(input, Characters.HYPHEN.getReplacement(), "-");
+        TextToolbox.replace(input, Characters.ABBREVIATION.getReplacement(), ".");
+        TextToolbox.replace(input, Characters.ACRONYM.getReplacement(), ".");
+        TextToolbox.replace(input, Characters.DOMAIN.getReplacement(), ".");
         
     }
     
@@ -189,6 +194,9 @@ public final class Locker {
         input = TextToolbox.replace(input, Characters.COMMA.getReplacement(), ",");
         input = TextToolbox.replace(input, Characters.SLASH.getReplacement(), "/");
         input = TextToolbox.replace(input, Characters.HYPHEN.getReplacement(), "-");
+        input = TextToolbox.replace(input, Characters.ABBREVIATION.getReplacement(), ".");
+        input = TextToolbox.replace(input, Characters.ACRONYM.getReplacement(), ".");
+        input = TextToolbox.replace(input, Characters.DOMAIN.getReplacement(), ".");
         
         return input;
         
@@ -212,5 +220,13 @@ public final class Locker {
         return TextToolbox.replaceCaIn(input, Characters.ACRONYM.getReplacement(), ".");
     }
     
-
+    /**
+     * This method "unlocks" locked text by replacing the inserted non-printable characters with the periods.
+     * @param input String holding text.
+     * @return Unlocked text.
+     */
+    public final synchronized String unlockDomain(String input) {
+        return TextToolbox.replaceCaIn(input, Characters.DOMAIN.getReplacement(), ".");
+    }
+    
 }
