@@ -55,7 +55,7 @@ public class PhraserTest {
         properties.put(PropertyFields.MAX_PHRASE_LENGTH.getField(), Integer.toString(max));
         
         properties.put(PropertyFields.EXCLUSIONS.getField(), exclusions);
-        properties.put(PropertyFields.THRESHOLD.getField(), Integer.toString(threshold));
+        properties.put(PropertyFields.WORD_THRESHOLD.getField(), Integer.toString(threshold));
         properties.put(PropertyFields.TRIM_THRESHOLD.getField(), Integer.toString(trimThreshold));
         
         if (positive != null) {

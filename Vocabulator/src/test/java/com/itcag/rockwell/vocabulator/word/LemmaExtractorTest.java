@@ -34,7 +34,7 @@ public class LemmaExtractorTest {
             properties.put(PropertyFields.POSITIVE_FILTER.getField(), positive);
         }
         properties.put(PropertyFields.EXCLUSIONS.getField(), exclusions);
-        properties.put(PropertyFields.THRESHOLD.getField(), Integer.toString(threshold));
+        properties.put(PropertyFields.WORD_THRESHOLD.getField(), Integer.toString(threshold));
         
         this.extractor = new VocabularyExtractor(properties);
         

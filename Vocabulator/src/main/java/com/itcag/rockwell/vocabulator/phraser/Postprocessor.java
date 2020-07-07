@@ -45,22 +45,25 @@ public final class Postprocessor {
     
     private final Pipeline pipeline;
     
+    private final long exclusions;
+    
     /**
      * @param pipeline Instance of the {@link com.itcag.rockwell.pipeline.Pipeline Pipeline} class used to validate phrases against predefined phrase structures defined as Rockwell expressions.
+     * @param exclusions Long number holding the instructions what phrases should be excluded.
      */
-    public Postprocessor(Pipeline pipeline) {
+    public Postprocessor(Pipeline pipeline, long exclusions) {
         this.pipeline = pipeline;
+        this.exclusions = exclusions;
     }
     
     /**
      * 
      * @param index Tree map containing the extracted phrases.
-     * @param exclusions Long number holding the instructions what phrases should be excluded.
      * @param threshold Integer specifying the minimum frequency of occurrence that a phrase must feature to be validated.
      * @return Tree map containing validated phrases sorted descending by their frequency of occurrence.
      * @throws Exception if anything goes wrong.
      */
-    public final TreeMap<Integer, ArrayList<Term>> sortOut(TreeMap<String, Term> index, long exclusions, int threshold) throws Exception {
+    public final TreeMap<Integer, ArrayList<Term>> sortOut(TreeMap<String, Term> index, int threshold) throws Exception {
         
         TreeMap<Integer, ArrayList<Term>> retVal = new TreeMap<>(Collections.reverseOrder());
 
@@ -72,7 +75,7 @@ public final class Postprocessor {
         /**
          * Ensure that phrases comply with the recognized phrase formats.
          */
-        validateFormat(index, exclusions);
+        validateFormat(index);
         
         /**
          * Combine phrases with identical lemmas.
@@ -104,7 +107,7 @@ public final class Postprocessor {
         
     }
     
-    private void validateFormat(TreeMap<String, Term> index, long exclusions) throws Exception {
+    private void validateFormat(TreeMap<String, Term> index) throws Exception {
 
         Iterator<Map.Entry<String, Term>> indexIterator = index.entrySet().iterator();
         while (indexIterator.hasNext()) {
@@ -115,8 +118,8 @@ public final class Postprocessor {
 
     }
     
-    public boolean isValidFormat(Term term, long exclusions) throws Exception {
-        
+    public boolean isValidFormat(Term term) throws Exception {
+
         for (ArrayList<Tag> tags : this.pipeline.classify(term.getText())) {
 
             /**
@@ -133,17 +136,17 @@ public final class Postprocessor {
 
                     switch (tag.getTag()) {
                         case "valid_noun_phrase":
-                            if ((exclusions & Exclusions.NOUN_PHRASES.getInstruction()) != Exclusions.NOUN_PHRASES.getInstruction()) {
+                            if ((this.exclusions & Exclusions.NOUN_PHRASES.getInstruction()) != Exclusions.NOUN_PHRASES.getInstruction()) {
                                 if (tag.getStart() == 0 && tag.getEnd() == tokens.size() - 1) return true;
                             }
                             break;
                         case "valid_adjective_phrase":
-                            if ((exclusions & Exclusions.ADJECTIVE_PHRASES.getInstruction()) != Exclusions.ADJECTIVE_PHRASES.getInstruction()) {
+                            if ((this.exclusions & Exclusions.ADJECTIVE_PHRASES.getInstruction()) != Exclusions.ADJECTIVE_PHRASES.getInstruction()) {
                                 if (tag.getStart() == 0 && tag.getEnd() == tokens.size() - 1) return true;
                             }
                             break;
                         case "valid_verb_phrase":
-                            if ((exclusions & Exclusions.VERB_PHRASES.getInstruction()) != Exclusions.VERB_PHRASES.getInstruction()) {
+                            if ((this.exclusions & Exclusions.VERB_PHRASES.getInstruction()) != Exclusions.VERB_PHRASES.getInstruction()) {
                                 if (tag.getStart() == 0 && tag.getEnd() == tokens.size() - 1) return true;
                             }
                             break;

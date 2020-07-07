@@ -21,7 +21,6 @@ package com.itcag.rockwell.vocabulator.word;
 import com.itcag.rockwell.vocabulator.PropertyFields;
 import com.itcag.rockwell.pipeline.Pipeline;
 import com.itcag.util.Converter;
-import com.itcag.rockwell.vocabulator.Exclusions;
 import com.itcag.rockwell.vocabulator.Term;
 
 import java.util.ArrayList;
@@ -34,16 +33,20 @@ import java.util.Properties;
 import java.util.TreeMap;
 
 import com.itcag.rockwell.vocabulator.Vocabulator;
+import com.itcag.rockwell.vocabulator.res.Synonyms;
 
 /**
  * <p>Extract single words as they occur in text. Results are sorted descending by the frequency of occurrence.</p>
  */
 public class SingleWordExtractor implements Vocabulator {
 
-    private final long exclusions;
     private final int threshold;
     
     private final Pipeline pipeline;
+
+    private final Validator validator;
+    
+    private final Synonyms synonyms;
 
     private HashMap<String, Term> index = new HashMap<>();
     
@@ -51,25 +54,12 @@ public class SingleWordExtractor implements Vocabulator {
 
     /**
      * SingleWordExtractor is initiated by providing processing instructions to it. These processing instructions are described in the {@link com.itcag.rockwell.vocabulator.PropertyFields} enum.
-     * @param properties Instance of Java {@link java.util.Properties Properties} class holding the processing instructions.
+     * @param config Instance of Java {@link java.util.Properties Properties} class holding the processing instructions.
      * @throws Exception if anything goes wrong.
      */
-    public SingleWordExtractor(Properties properties) throws Exception {
+    public SingleWordExtractor(Properties config) throws Exception {
 
-        long tmp = 0;
-        String test = properties.getProperty(PropertyFields.EXCLUSIONS.getField(), null);
-        if (test != null) {
-            String[] elts = test.split(",");
-            for (String elt : elts) {
-                elt = elt.trim().toUpperCase();
-                Exclusions instruction = Exclusions.valueOf(elt);
-                tmp = tmp | instruction.getInstruction();
-            }
-        }
-
-        this.exclusions = tmp;
-        
-        test = properties.getProperty(PropertyFields.THRESHOLD.getField(), null);
+        String test = config.getProperty(PropertyFields.WORD_THRESHOLD.getField(), null);
         if (test != null) {
             this.threshold = Converter.convertStringToInteger(test);
         } else {
@@ -77,6 +67,10 @@ public class SingleWordExtractor implements Vocabulator {
         }
         
         this.pipeline = getPipeline();
+    
+        this.validator = new Validator(config);
+        
+        this.synonyms = new Synonyms(config);
     
     }
     
@@ -112,7 +106,9 @@ public class SingleWordExtractor implements Vocabulator {
             
             token = token.toLowerCase();
             
-            if (!Validator.isValidWord(token, this.exclusions)) continue;
+            if (!this.validator.isValidWord(token)) continue;
+            
+            token = this.synonyms.getWordSynonym(token);
             
             if (index.containsKey(token)) {
                 Term word = index.get(token);

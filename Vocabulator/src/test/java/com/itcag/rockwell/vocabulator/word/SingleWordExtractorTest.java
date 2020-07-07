@@ -30,7 +30,7 @@ public class SingleWordExtractorTest {
         Properties properties = new Properties();
         properties.put(PropertyFields.TASK.getField(), VocabularyExtractor.Tasks.EXTRACT_SINGLE_WORDS.name());
         properties.put(PropertyFields.EXCLUSIONS.getField(), exclusions);
-        properties.put(PropertyFields.THRESHOLD.getField(), Integer.toString(threshold));
+        properties.put(PropertyFields.WORD_THRESHOLD.getField(), Integer.toString(threshold));
         
         this.extractor = new VocabularyExtractor(properties);
         

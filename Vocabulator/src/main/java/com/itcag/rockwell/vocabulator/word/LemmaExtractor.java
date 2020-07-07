@@ -22,9 +22,9 @@ import com.itcag.rockwell.vocabulator.PropertyFields;
 import com.itcag.rockwell.lang.Token;
 import com.itcag.rockwell.pipeline.Pipeline;
 import com.itcag.util.Converter;
-import com.itcag.rockwell.vocabulator.Exclusions;
 import com.itcag.rockwell.vocabulator.Term;
 import com.itcag.rockwell.vocabulator.Vocabulator;
+import com.itcag.rockwell.vocabulator.res.Synonyms;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -42,10 +42,13 @@ public class LemmaExtractor implements Vocabulator {
 
     private final ArrayList<String> filter;
 
-    private final long exclusions;
     private final int threshold;
     
     private final Pipeline pipeline;
+    
+    private final Validator validator;
+    
+    private final Synonyms synonyms;
 
     private final HashMap<String, Term> index = new HashMap<>();
 
@@ -53,12 +56,12 @@ public class LemmaExtractor implements Vocabulator {
 
     /**
      * LemmaExtractor is initiated by providing processing instructions to it. These processing instructions are described in the {@link com.itcag.rockwell.vocabulator.PropertyFields} enum.
-     * @param properties Instance of Java {@link java.util.Properties Properties} class holding the processing instructions.
+     * @param config Instance of Java {@link java.util.Properties Properties} class holding the processing instructions.
      * @throws Exception if anything goes wrong.
      */
-    public LemmaExtractor(Properties properties) throws Exception {
+    public LemmaExtractor(Properties config) throws Exception {
 
-        String test = properties.getProperty(PropertyFields.POSITIVE_FILTER.getField(), null);
+        String test = config.getProperty(PropertyFields.POSITIVE_FILTER.getField(), null);
         if (test != null) {
             this.filter = new ArrayList<>();
             String[] tmp = test.split(",");
@@ -71,19 +74,7 @@ public class LemmaExtractor implements Vocabulator {
             this.filter = null;
         }
         
-        long tmp = 0;
-        test = properties.getProperty(PropertyFields.EXCLUSIONS.getField(), null);
-        if (test != null) {
-            String[] elts = test.split(",");
-            for (String elt : elts) {
-                elt = elt.trim().toUpperCase();
-                Exclusions instruction = Exclusions.valueOf(elt);
-                tmp = tmp | instruction.getInstruction();
-            }
-        }
-        this.exclusions = tmp;
-        
-        test = properties.getProperty(PropertyFields.THRESHOLD.getField(), null);
+        test = config.getProperty(PropertyFields.WORD_THRESHOLD.getField(), null);
         if (test != null) {
             this.threshold = Converter.convertStringToInteger(test);
         } else {
@@ -91,6 +82,10 @@ public class LemmaExtractor implements Vocabulator {
         }
         
         this.pipeline = getPipeline();
+        
+        this.validator = new Validator(config);
+        
+        this.synonyms = new Synonyms(config);
     
     }
     
@@ -141,9 +136,12 @@ public class LemmaExtractor implements Vocabulator {
                     }
                 }
 
-                if (!Validator.isValidWord(token.getCain(), this.exclusions)) continue;
+                if (!this.validator.isValidWord(token.getCain())) continue;
 
-                for (String lemma : Validator.getValidLemmas(token, this.exclusions)) {
+                for (String lemma : this.validator.getValidLemmas(token)) {
+                    
+                    lemma = this.synonyms.getWordSynonym(lemma);
+                    
                     if (index.containsKey(lemma)) {
                         Term word = index.get(lemma);
                         word.incrementFOO();
@@ -153,6 +151,7 @@ public class LemmaExtractor implements Vocabulator {
                         word.addSentence(sentence);
                         index.put(lemma, word);
                     }
+                
                 }
 
             }

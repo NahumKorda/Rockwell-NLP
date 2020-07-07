@@ -18,6 +18,8 @@
 
 package com.itcag.rockwell.vocabulator.res;
 
+import com.itcag.util.io.TextFileReader;
+import java.util.ArrayList;
 import java.util.HashSet;
 
 /**
@@ -26,25 +28,13 @@ import java.util.HashSet;
  */
 public class Stopwords {
 
-    private static volatile Stopwords instance = null;
-    
-    /**
-     * This method is designed to throw an exception if lexical resources cannot be loaded, and therefore the double checked locking is necessary.
-     * @return Instance of this class.
-     * @throws Exception If anything goes wrong.
-     */
-    public static Stopwords getInstance() throws Exception {
-        if (instance == null) instance = new Stopwords();
-        return instance;
-    }
-    
     private final HashSet<String> index = new HashSet<>();
     
-    private Stopwords() throws Exception {
+    public Stopwords(String sourcePath) throws Exception {
         
-        Loader loader = new Loader();
-        for (String stopword : loader.load("stopwords")) {
-            this.index.add(stopword);
+        ArrayList<String> lines = TextFileReader.read(sourcePath);
+        for (String line : lines) {
+            this.index.add(line.trim());
         }
         
     }

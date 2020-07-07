@@ -26,7 +26,6 @@ import com.itcag.util.Converter;
 import com.itcag.util.txt.TextToolbox;
 import com.itcag.rockwell.vocabulator.Exclusions;
 import com.itcag.rockwell.vocabulator.PropertyFields;
-import com.itcag.rockwell.vocabulator.res.Stopphrases;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -34,7 +33,9 @@ import java.util.LinkedList;
 import java.util.Map;
 import java.util.Properties;
 import java.util.TreeMap;
+
 import com.itcag.rockwell.vocabulator.Vocabulator;
+import com.itcag.rockwell.vocabulator.res.Synonyms;
 
 /**
  * <p>Extracts word sequences (phrases). Results are sorted descending by the frequency of occurrence.</p>
@@ -110,6 +111,8 @@ public final class Phraser implements Vocabulator {
     private final Pipeline pipeline;
     
     private final Validator validator;
+    private final Synonyms synonyms;
+
     private final Postprocessor postprocessor;
     
     private final TreeMap<String, Term> index = new TreeMap<>();
@@ -118,19 +121,19 @@ public final class Phraser implements Vocabulator {
 
     /**
      * Phraser is initiated by providing processing instructions to it. These processing instructions are described in the {@link com.itcag.rockwell.vocabulator.PropertyFields} enum.
-     * @param properties Instance of Java {@link java.util.Properties Properties} class holding the processing instructions.
+     * @param config Instance of Java {@link java.util.Properties Properties} class holding the processing instructions.
      * @throws Exception if anything goes wrong.
      */
-    public Phraser(Properties properties) throws Exception {
+    public Phraser(Properties config) throws Exception {
         
-        String test = properties.getProperty(PropertyFields.MIN_PHRASE_LENGTH.getField(), null);
+        String test = config.getProperty(PropertyFields.MIN_PHRASE_LENGTH.getField(), null);
         if (test != null) {
             this.min = Converter.convertStringToInteger(test);
         } else {
             this.min = 0;
         }
         
-        test = properties.getProperty(PropertyFields.MAX_PHRASE_LENGTH.getField(), null);
+        test = config.getProperty(PropertyFields.MAX_PHRASE_LENGTH.getField(), null);
         if (test != null) {
             this.max = Converter.convertStringToInteger(test);
         } else {
@@ -138,7 +141,7 @@ public final class Phraser implements Vocabulator {
         }
         
         long tmp = 0;
-        test = properties.getProperty(PropertyFields.EXCLUSIONS.getField(), null);
+        test = config.getProperty(PropertyFields.EXCLUSIONS.getField(), null);
         if (test != null) {
             String[] elts = test.split(",");
             for (String elt : elts) {
@@ -149,14 +152,14 @@ public final class Phraser implements Vocabulator {
         }
         this.exclusions = tmp;
         
-        test = properties.getProperty(PropertyFields.THRESHOLD.getField(), null);
+        test = config.getProperty(PropertyFields.PHRASE_THRESHOLD.getField(), null);
         if (test != null) {
             this.threshold = Converter.convertStringToInteger(test);
         } else {
             this.threshold = 0;
         }
         
-        test = properties.getProperty(PropertyFields.TRIM_THRESHOLD.getField(), null);
+        test = config.getProperty(PropertyFields.TRIM_THRESHOLD.getField(), null);
         if (test != null) {
             this.trimThreshold = Converter.convertStringToInteger(test);
         } else {
@@ -164,19 +167,19 @@ public final class Phraser implements Vocabulator {
         }
         
         String[] positive = {};
-        test = properties.getProperty(PropertyFields.POSITIVE_FILTER.getField(), null);
+        test = config.getProperty(PropertyFields.POSITIVE_FILTER.getField(), null);
         if (test != null) {
             positive = test.split(",");
         }
         
         String[] negative = {};
-        test = properties.getProperty(PropertyFields.NEGATIVE_FILTER.getField(), null);
+        test = config.getProperty(PropertyFields.NEGATIVE_FILTER.getField(), null);
         if (test != null) {
             negative = test.split(",");
         }
         
         String[] required = {};
-        test = properties.getProperty(PropertyFields.REQUIRED_FILTER.getField(), null);
+        test = config.getProperty(PropertyFields.REQUIRED_FILTER.getField(), null);
         if (test != null) {
             required = test.split(",");
         }
@@ -185,9 +188,11 @@ public final class Phraser implements Vocabulator {
         
         this.pipeline = getPipeline();
         
-        this.validator = new Validator();
+        this.validator = new Validator(config.getProperty(PropertyFields.STOP_PHRASES.getField()));
         
-        this.postprocessor = new Postprocessor(this.pipeline);
+        this.synonyms = new Synonyms(config);
+    
+        this.postprocessor = new Postprocessor(this.pipeline, this.exclusions);
         
     }
     
@@ -211,6 +216,8 @@ public final class Phraser implements Vocabulator {
     public void process(String text) throws Exception {
 
         this.count++;
+        
+        if (this.count % 1000 == 0) trim();
         
         ArrayList<StringBuilder> sentences = this.pipeline.split(text);
         for (StringBuilder sentence : sentences) {
@@ -269,8 +276,10 @@ public final class Phraser implements Vocabulator {
             
             if (i < max) {
             
-                if (tmp.length() > 0 && !token.getCain().contains("'")) tmp.append(" ");
-                tmp.append(token.getCain());
+                String label = this.synonyms.getWordSynonym(token.getCain());
+                
+                if (tmp.length() > 0 && !label.contains("'")) tmp.append(" ");
+                tmp.append(label);
 
                 if (i >= min) {
                     
@@ -281,13 +290,15 @@ public final class Phraser implements Vocabulator {
                     if (tmp.toString().trim().isEmpty()) continue;
                     
                     if ((this.exclusions & Exclusions.STOPPHRASES.getInstruction()) == Exclusions.STOPPHRASES.getInstruction()) {
-                        Stopphrases stopphrases = Stopphrases.getInstance();
-                        if (stopphrases.isStopphrase(tmp.toString().trim())) continue;
+                        if (validator.isStopphrase(tmp.toString().trim())) continue;
                     }
                     
                     if (!this.filter.isAcceptablePhrase(tmp.toString())) continue;
                     
-                    Term phrase = new Term(tmp.toString());
+                    label = tmp.toString();
+                    label = this.synonyms.getPhraseSynonym(label);
+                    
+                    Term phrase = new Term(label);
                     
                     phrase.addSentence(sentence);
                     
@@ -319,7 +330,7 @@ public final class Phraser implements Vocabulator {
             Map.Entry<String, Term> entry = indexIterator.next();
             if (entry.getValue().getFOO() < this.trimThreshold) {
                 indexIterator.remove();
-            } else if (!this.postprocessor.isValidFormat(entry.getValue(), this.exclusions)) {
+            } else if (!this.postprocessor.isValidFormat(entry.getValue())) {
                 indexIterator.remove();
             }
 
@@ -343,7 +354,8 @@ public final class Phraser implements Vocabulator {
      */
     @Override
     public final TreeMap<Integer, ArrayList<Term>> getResults() throws Exception {
-        return postprocessor.sortOut(this.index, this.exclusions, this.threshold);
+        trim();
+        return postprocessor.sortOut(this.index, this.threshold);
     }
     
     /**
@@ -354,7 +366,9 @@ public final class Phraser implements Vocabulator {
     @Override
     public final void print(boolean includeSentences) throws Exception {
         
-        for (Map.Entry<Integer, ArrayList<Term>> entry : postprocessor.sortOut(this.index, this.exclusions, this.threshold).entrySet()) {
+        trim();
+        
+        for (Map.Entry<Integer, ArrayList<Term>> entry : postprocessor.sortOut(this.index, this.threshold).entrySet()) {
             entry.getValue().forEach((phrase) -> {
                 phrase.print(includeSentences);
             });

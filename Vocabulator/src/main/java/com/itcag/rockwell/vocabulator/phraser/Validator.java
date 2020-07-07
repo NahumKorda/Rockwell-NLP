@@ -20,11 +20,18 @@ package com.itcag.rockwell.vocabulator.phraser;
 
 import com.itcag.rockwell.POSType;
 import com.itcag.rockwell.lang.Token;
+import com.itcag.rockwell.vocabulator.res.Stopphrases;
 
 /**
  * <p>This class validates the first and the last token in a phrase. Not every sequence of words is considered to be a phrase. This class ensures that the selected phrases are not meaningless word sequences.</p>
  */
 public final class Validator {
+
+    private final Stopphrases stopphrases;
+    
+    public Validator(String sourcePath) throws Exception {
+        this.stopphrases = new Stopphrases(sourcePath);
+    }
     
     /**
      * Validates the first token in a phrase. If not validated, this token is removed, and the next token is validated as first.
@@ -119,4 +126,8 @@ public final class Validator {
         
     }
     
+    public boolean isStopphrase(String word) {
+        return  this.stopphrases.isStopphrase(word);
+    }
+
 }

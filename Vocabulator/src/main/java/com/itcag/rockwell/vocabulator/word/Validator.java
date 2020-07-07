@@ -22,45 +22,68 @@ import com.itcag.rockwell.POSType;
 import com.itcag.rockwell.lang.Token;
 import com.itcag.util.Converter;
 import com.itcag.rockwell.vocabulator.Exclusions;
+import com.itcag.rockwell.vocabulator.PropertyFields;
 import com.itcag.rockwell.vocabulator.res.Stopwords;
 import com.itcag.util.txt.TextToolbox;
 
 import java.util.HashSet;
+import java.util.Properties;
 
 /**
  * <p>This class validates extracted words against specified {@link com.itcag.rockwell.vocabulator.Exclusions exclusions}.</p>
  */
 public class Validator {
 
+    private final long exclusions; 
+    
+    private final Stopwords stopwords;
+    
+    public Validator(Properties config) throws Exception {
+        
+        long tmp = 0;
+        String test = config.getProperty(PropertyFields.EXCLUSIONS.getField(), null);
+        if (test != null) {
+            String[] elts = test.split(",");
+            for (String elt : elts) {
+                elt = elt.trim().toUpperCase();
+                Exclusions instruction = Exclusions.valueOf(elt);
+                tmp = tmp | instruction.getInstruction();
+            }
+        }
+
+        this.exclusions = tmp;
+        
+        this.stopwords = new Stopwords(config.getProperty(PropertyFields.STOPWORDS.getField()));
+        
+    }
+    
     /**
      * This method validates an extract word against {@link com.itcag.rockwell.vocabulator.Exclusions#STOPWORDS stop words}, {@link com.itcag.rockwell.vocabulator.Exclusions#CONTRACTIONS contractions}, {@link com.itcag.rockwell.vocabulator.Exclusions#DIGITS digits} and {@link com.itcag.rockwell.vocabulator.Exclusions#SYMBOLS symbols}.
      * @param word String holding the word to be validated.
-     * @param exclusions Long holding the instructions which exclusions should be used in validation.
      * @return Boolean indicating whether the word is validated or not.
      * @throws Exception if anything goes wrong.
      */
-    public static boolean isValidWord(String word, long exclusions) throws Exception {
+    public boolean isValidWord(String word) throws Exception {
         
         if (TextToolbox.isReallyEmpty(word)) return false;
         
-        if ((exclusions & Exclusions.CONTRACTIONS.getInstruction()) == Exclusions.CONTRACTIONS.getInstruction()) {
+        if ((this.exclusions & Exclusions.CONTRACTIONS.getInstruction()) == Exclusions.CONTRACTIONS.getInstruction()) {
             if (word.startsWith("'")) return false;
         }
         
-        if ((exclusions & Exclusions.SYMBOLS.getInstruction()) == Exclusions.SYMBOLS.getInstruction()) {
+        if ((this.exclusions & Exclusions.SYMBOLS.getInstruction()) == Exclusions.SYMBOLS.getInstruction()) {
             if (word.length() == 1 && !Character.isLetterOrDigit(word.charAt(0))) return false;
         }
         
-        if ((exclusions & Exclusions.DIGITS.getInstruction()) == Exclusions.DIGITS.getInstruction()) {
+        if ((this.exclusions & Exclusions.DIGITS.getInstruction()) == Exclusions.DIGITS.getInstruction()) {
             if (Character.isDigit(word.charAt(0)) && Character.isDigit(word.charAt(word.length() - 1))) {
                 if (Converter.convertStringToLong(word) != null) return false;
                 if (Converter.convertStringToDouble(word) != null) return false;
             }
         }
         
-        if ((exclusions & Exclusions.STOPWORDS.getInstruction()) == Exclusions.STOPWORDS.getInstruction()) {
-            Stopwords stopwords = Stopwords.getInstance();
-            if (stopwords.isStopword(word)) return false;
+        if ((this.exclusions & Exclusions.STOPWORDS.getInstruction()) == Exclusions.STOPWORDS.getInstruction()) {
+            if (this.stopwords.isStopword(word)) return false;
         }
         
         return true;
@@ -70,11 +93,10 @@ public class Validator {
     /**
      * This method validates an extract word against {@link com.itcag.rockwell.vocabulator.Exclusions#ALL_EXCEPT_NOUNS all but nouns}, {@link com.itcag.rockwell.vocabulator.Exclusions#ALL_EXCEPT_VERBS all but verbs} and {@link com.itcag.rockwell.vocabulator.Exclusions#ALL_EXCEPT_ADJECTIVES all but adjectives} exclusions.
      * @param word String holding the word to be validated.
-     * @param exclusions Long holding the instructions which exclusions should be used in validation.
      * @return Boolean indicating whether the word is validated or not.
      * @throws Exception if anything goes wrong.
      */
-    public static HashSet<String> getValidLemmas(Token word, long exclusions) throws Exception {
+    public HashSet<String> getValidLemmas(Token word) throws Exception {
         
         HashSet<String> retVal = new HashSet<>();
         
