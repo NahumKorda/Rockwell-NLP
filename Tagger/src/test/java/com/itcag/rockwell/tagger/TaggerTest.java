@@ -47,9 +47,9 @@ public class TaggerTest {
 //        ArrayList<String> expressions = new ArrayList<>();
 //        expressions.add("@cain+suffix{} :in+noun | test");
 
-        StringBuilder text = new StringBuilder("Moto G8 Power Lite");
+        StringBuilder text = new StringBuilder("3 ways your employees can accidentally expose your business data to hackers");
         ArrayList<String> expressions = new ArrayList<>();
-        expressions.add("@pos+prefix+suffix :CRD+noun+noun | test ");
+        expressions.add("@pos :VM0 ; @cain+infix :expose+adverb | test ");
         
         for (StringBuilder sentence : splitter.split(text)) {
 

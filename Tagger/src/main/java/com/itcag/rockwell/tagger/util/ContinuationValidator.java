@@ -67,6 +67,7 @@ public class ContinuationValidator extends Validator {
 
         State retVal = state.getCopy();
         retVal.incrementOptionalCount();
+        if (conditionElement.getOptionalMax() != null) retVal.setOptionalMax(conditionElement.getOptionalMax());
         retVal.setState(conditionElement.getOut());
         Match match = new Match(token);
         match.setQuodlibet(true);

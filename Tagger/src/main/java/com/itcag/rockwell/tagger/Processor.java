@@ -162,7 +162,11 @@ public class Processor {
                  * would create a match for every token
                  * until the end of the sentence.
                  */
-                if (state.getOptionalCount() >= Conditions.MAX_OPTIONAL) continue;
+                if (state.getOptionalMax() != null) {
+                    if (state.getOptionalCount() >= state.getOptionalMax()) continue;
+                } else if (state.getOptionalCount() >= Conditions.MAX_OPTIONAL) {
+                    continue;
+                }
 
                 if (medial.containsKey(state.getState())) {
                     HashMap<Integer, ConditionElement> inner = medial.get(state.getState());

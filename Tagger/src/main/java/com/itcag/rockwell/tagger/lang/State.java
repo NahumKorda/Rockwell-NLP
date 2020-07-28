@@ -40,6 +40,7 @@ public final class State {
     
     private final TreeMap<Integer, Match> matches = new TreeMap<>();
 
+    private Integer optionalMax = null;
     private int optionalCount = 0;
 
     /**
@@ -162,6 +163,22 @@ public final class State {
     }
 
     /**
+     * For practical reasons the size of the Kleene closure is restricted by the {@link com.itcag.rockwell.tagger.lang.Conditions#MAX_OPTIONAL preset limit}. This limit can be overridden for quodlibet condition elements.
+     * @return Integer holding the maximum allowed size of the Kleene closure.
+     */
+    public Integer getOptionalMax() {
+        return this.optionalMax;
+    }
+
+    /**
+     * For practical reasons the size of the Kleene closure is restricted by the {@link com.itcag.rockwell.tagger.lang.Conditions#MAX_OPTIONAL preset limit}. This limit can be overridden for quodlibet condition elements.
+     * @param optionalMax Integer holding the maximum allowed size of the Kleene closure.
+     */
+    public void setOptionalMax(int optionalMax) {
+        this.optionalMax = optionalMax;
+    }
+    
+    /**
      * For practical reasons the size of the Kleene closure is restricted by the {@link com.itcag.rockwell.tagger.lang.Conditions#MAX_OPTIONAL preset limit}. Therefore, every state counts consecutive quodlibet matches.
      * @return Integer holding the count of the consecutive quodlibet matches.
      */
@@ -170,6 +187,7 @@ public final class State {
     }
 
     /**
+     * For practical reasons the size of the Kleene closure is restricted by the {@link com.itcag.rockwell.tagger.lang.Conditions#MAX_OPTIONAL preset limit}. Therefore, every state counts consecutive quodlibet matches.
      * @param optionalCount Integer holding the count of the consecutive quodlibet matches.
      */
     public void setOptionalCount(int optionalCount) {
@@ -177,6 +195,7 @@ public final class State {
     }
     
     /**
+     * For practical reasons the size of the Kleene closure is restricted by the {@link com.itcag.rockwell.tagger.lang.Conditions#MAX_OPTIONAL preset limit}. Therefore, every state counts consecutive quodlibet matches.
      * Increments the count of the consecutive quodlibet matches by one.
      */
     public void incrementOptionalCount() {
@@ -184,6 +203,7 @@ public final class State {
     }
     
     /**
+     * For practical reasons the size of the Kleene closure is restricted by the {@link com.itcag.rockwell.tagger.lang.Conditions#MAX_OPTIONAL preset limit}. Therefore, every state counts consecutive quodlibet matches.
      * Resets the count of the consecutive quodlibet matches to zero.
      */
     public void resetOptionalCount() {

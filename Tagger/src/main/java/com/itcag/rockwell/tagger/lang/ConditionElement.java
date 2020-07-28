@@ -44,6 +44,8 @@ public final class ConditionElement extends MatchingSpecification {
     
     private boolean quodlibet = false;
 
+    private Integer optionalMax = null;
+
     private final ArrayList<MatchingSpecification> rejects = new ArrayList<>();
     
     private Integer in = null;
@@ -150,6 +152,22 @@ public final class ConditionElement extends MatchingSpecification {
     }
 
     /**
+     * For practical reasons the size of the Kleene closure is restricted by the {@link com.itcag.rockwell.tagger.lang.Conditions#MAX_OPTIONAL preset limit}. This limit can be overridden for quodlibet condition elements.
+     * @return Integer holding the maximum allowed size of the Kleene closure.
+     */
+    public Integer getOptionalMax() {
+        return this.optionalMax;
+    }
+
+    /**
+     * For practical reasons the size of the Kleene closure is restricted by the {@link com.itcag.rockwell.tagger.lang.Conditions#MAX_OPTIONAL preset limit}. This limit can be overridden for quodlibet condition elements.
+     * @param optionalMax Integer holding the maximum allowed size of the Kleene closure.
+     */
+    public void setOptionalMax(int optionalMax) {
+        this.optionalMax = optionalMax;
+    }
+    
+    /**
      * @return Array list containing rejecting instances of the {@link com.itcag.rockwell.tagger.lang.MatchingSpecification MatchingSpecification} class.
      */
     public ArrayList<MatchingSpecification> getRejects() {
@@ -191,6 +209,33 @@ public final class ConditionElement extends MatchingSpecification {
         this.out = out;
     }
 
+    public ConditionElement copy() {
+        
+        ConditionElement retVal = new ConditionElement(this.aspect, this.value);
+        
+        retVal.setConditionId(this.conditionId);
+        
+        for (MatchingSpecification specification : this.additionalSpecifications) {
+            retVal.addAdditionalCondition(specification);
+        }
+        
+        retVal.setPrefix(this.prefix);
+        retVal.setInfix(this.infix);
+        retVal.setSuffix(this.suffix);
+        
+        retVal.setQuodlibet(this.quodlibet);
+        
+        for (MatchingSpecification reject : this.rejects) {
+            retVal.addReject(reject);
+        }
+        
+        retVal.setIn(this.in);
+        retVal.setOut(this.out);
+        
+        return retVal;
+        
+    }
+    
     @Override
     public String toString() {
         return toString(0);

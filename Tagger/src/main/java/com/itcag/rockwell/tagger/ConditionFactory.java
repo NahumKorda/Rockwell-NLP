@@ -24,6 +24,7 @@ import com.itcag.rockwell.tagger.lang.AcceptingCondition;
 import com.itcag.rockwell.tagger.lang.ConditionElement;
 import com.itcag.rockwell.tagger.lang.Condition;
 import com.itcag.rockwell.tagger.lang.RejectingCondition;
+import com.itcag.util.Converter;
 import com.itcag.util.txt.TextToolbox;
 
 import java.util.ArrayList;
@@ -263,7 +264,9 @@ public class ConditionFactory {
                 throw new InvalidScriptException("Affixes cannot be the leading aspect: " + script);
             case QUODLIBET:
                 ConditionElement retVal = new ConditionElement(ConditionElement.Aspect.QUODLIBET, KLEENE);
-                retVal.setQuodlibet(optional);
+                retVal.setQuodlibet(true);
+                Integer max = Converter.convertStringToInteger(value);
+                if (max != null) retVal.setOptionalMax(max);
                 return retVal;
             case LEMMA:
                 /**
