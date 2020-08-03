@@ -91,6 +91,181 @@
 
 
 
+##################
+## VERB PHRASES ##
+##################
+@type :VV | verb
+@type :VA | verb
+
+@pos :VHG ; @pos+infix{*} :VVN+adverb | verb
+@lemma :not ; @pos :VHG ; @pos+infix{*} :VVN+adverb | verb
+
+@pos :VHB ; @pos+infix{*} :VBN+adverb | verb
+@pos :VHZ ; @pos+infix{*} :VBN+adverb | verb
+@pos :VHD ; @pos+infix{*} :VBN+adverb | verb
+
+@pos :VHB ; @lemma :not ; @pos+infix{*} :VBN+adverb | verb
+@pos :VHZ ; @lemma :not ; @pos+infix{*} :VBN+adverb | verb
+@pos :VHD ; @lemma :not ; @pos+infix{*} :VBN+adverb | verb
+
+@pos :VHB ; @pos+infix{*} :VDN+adverb | verb
+@pos :VHZ ; @pos+infix{*} :VDN+adverb | verb
+@pos :VHD ; @pos+infix{*} :VDN+adverb | verb
+
+@pos :VHB ; @lemma :not ; @pos+infix{*} :VDN+adverb | verb
+@pos :VHZ ; @lemma :not ; @pos+infix{*} :VDN+adverb | verb
+@pos :VHD ; @lemma :not ; @pos+infix{*} :VDN+adverb | verb
+
+@pos :VHB ; @pos+infix{*} :VVN+adverb | verb
+@pos :VHZ ; @pos+infix{*} :VVN+adverb | verb
+@pos :VHD ; @pos+infix{*} :VVN+adverb | verb
+
+@pos :VHB ; @lemma :not ; @pos+infix{*} :VVN+adverb | verb
+@pos :VHZ ; @lemma :not ; @pos+infix{*} :VVN+adverb | verb
+@pos :VHD ; @lemma :not ; @pos+infix{*} :VVN+adverb | verb
+
+@pos :VBB ; @pos+infix{*} :VBG+adverb | verb
+@pos :VBZ ; @pos+infix{*} :VBG+adverb | verb
+@pos :VBD ; @pos+infix{*} :VBG+adverb | verb
+
+@pos :VBB ; @lemma :not ; @pos+infix{*} :VBG+adverb | verb
+@pos :VBZ ; @lemma :not ; @pos+infix{*} :VBG+adverb | verb
+@pos :VBD ; @lemma :not ; @pos+infix{*} :VBG+adverb | verb
+
+@pos :VBB ; @pos+infix{*} :VDG+adverb | verb
+@pos :VBZ ; @pos+infix{*} :VDG+adverb | verb
+@pos :VBD ; @pos+infix{*} :VDG+adverb | verb
+
+@pos :VBB ; @lemma :not ; @pos+infix{*} :VDG+adverb | verb
+@pos :VBZ ; @lemma :not ; @pos+infix{*} :VDG+adverb | verb
+@pos :VBD ; @lemma :not ; @pos+infix{*} :VDG+adverb | verb
+
+@pos :VBB ; @pos+infix{*} :VHG+adverb | verb
+@pos :VBZ ; @pos+infix{*} :VHG+adverb | verb
+@pos :VBD ; @pos+infix{*} :VHG+adverb | verb
+
+@pos :VBB ; @lemma :not ; @pos+infix{*} :VHG+adverb | verb
+@pos :VBZ ; @lemma :not ; @pos+infix{*} :VHG+adverb | verb
+@pos :VBD ; @lemma :not ; @pos+infix{*} :VHG+adverb | verb
+
+@pos :VBB ; @pos+infix{*} :VVG+adverb | verb
+@pos :VBZ ; @pos+infix{*} :VVG+adverb | verb
+@pos :VBD ; @pos+infix{*} :VVG+adverb | verb
+
+@pos :VBB ; @lemma :not ; @pos+infix{*} :VVG+adverb | verb
+@pos :VBZ ; @lemma :not ; @pos+infix{*} :VVG+adverb | verb
+@pos :VBD ; @lemma :not ; @pos+infix{*} :VVG+adverb | verb
+
+@pos :VHB ; @pos+infix{*} :VBN+adverb ; @pos :VDG | verb
+@pos :VHZ ; @pos+infix{*} :VBN+adverb ; @pos :VDG | verb
+@pos :VHD ; @pos+infix{*} :VBN+adverb ; @pos :VDG | verb
+@pos :VHG ; @pos+infix{*} :VBN+adverb ; @pos :VDG | verb
+
+@pos :VHB ; @lemma :not ; @pos+infix{*} :VBN+adverb ; @pos :VDG | verb
+@pos :VHZ ; @lemma :not ; @pos+infix{*} :VBN+adverb ; @pos :VDG | verb
+@pos :VHD ; @lemma :not ; @pos+infix{*} :VBN+adverb ; @pos :VDG | verb
+@pos :VHG ; @lemma :not ; @pos+infix{*} :VBN+adverb ; @pos :VDG | verb
+
+@pos :VHB ; @pos+infix{*} :VBN+adverb ; @pos :VVG | verb
+@pos :VHZ ; @pos+infix{*} :VBN+adverb ; @pos :VVG | verb
+@pos :VHD ; @pos+infix{*} :VBN+adverb ; @pos :VVG | verb
+@pos :VHG ; @pos+infix{*} :VBN+adverb ; @pos :VVG | verb
+
+@pos :VHB ; @lemma :not ; @pos+infix{*} :VBN+adverb ; @pos :VVG | verb
+@pos :VHZ ; @lemma :not ; @pos+infix{*} :VBN+adverb ; @pos :VVG | verb
+@pos :VHD ; @lemma :not ; @pos+infix{*} :VBN+adverb ; @pos :VVG | verb
+@pos :VHG ; @lemma :not ; @pos+infix{*} :VBN+adverb ; @pos :VVG | verb
+
+@pos :VBB ; @pos+infix{*} :VDN+adverb | verb
+@pos :VBZ ; @pos+infix{*} :VDN+adverb | verb
+@pos :VBD ; @pos+infix{*} :VDN+adverb | verb
+
+@pos :VBB ; @lemma :not ; @pos+infix{*} :VDN+adverb | verb
+@pos :VBZ ; @lemma :not ; @pos+infix{*} :VDN+adverb | verb
+@pos :VBD ; @lemma :not ; @pos+infix{*} :VDN+adverb | verb
+
+@pos :VBB ; @pos+infix{*} :VVN+adverb | verb
+@pos :VBZ ; @pos+infix{*} :VVN+adverb | verb
+@pos :VBD ; @pos+infix{*} :VVN+adverb | verb
+
+@pos :VBB ; @lemma :not ; @pos+infix{*} :VVN+adverb | verb
+@pos :VBZ ; @lemma :not ; @pos+infix{*} :VVN+adverb | verb
+@pos :VBD ; @lemma :not ; @pos+infix{*} :VVN+adverb | verb
+
+@pos :VHB ; @pos+infix{*} :VBN+adverb ; @pos :VDN | verb
+@pos :VHZ ; @pos+infix{*} :VBN+adverb ; @pos :VDN | verb
+@pos :VHD ; @pos+infix{*} :VBN+adverb ; @pos :VDN | verb
+@pos :VHG ; @pos+infix{*} :VBN+adverb ; @pos :VDN | verb
+
+@pos :VHB ; @lemma :not ; @pos+infix{*} :VBN+adverb ; @pos :VDN | verb
+@pos :VHZ ; @lemma :not ; @pos+infix{*} :VBN+adverb ; @pos :VDN | verb
+@pos :VHD ; @lemma :not ; @pos+infix{*} :VBN+adverb ; @pos :VDN | verb
+@pos :VHG ; @lemma :not ; @pos+infix{*} :VBN+adverb ; @pos :VDN | verb
+
+@pos :VHB ; @pos+infix{*} :VBN+adverb ; @pos :VVN | verb
+@pos :VHZ ; @pos+infix{*} :VBN+adverb ; @pos :VVN | verb
+@pos :VHD ; @pos+infix{*} :VBN+adverb ; @pos :VVN | verb
+@pos :VHG ; @pos+infix{*} :VBN+adverb ; @pos :VVN | verb
+
+@pos :VHB ; @lemma :not ; @pos+infix{*} :VBN+adverb ; @pos :VVN | verb
+@pos :VHZ ; @lemma :not ; @pos+infix{*} :VBN+adverb ; @pos :VVN | verb
+@pos :VHD ; @lemma :not ; @pos+infix{*} :VBN+adverb ; @pos :VVN | verb
+@pos :VHG ; @lemma :not ; @pos+infix{*} :VBN+adverb ; @pos :VVN | verb
+
+@pos :VM0 ; @pos+infix{*} :VBI+adverb | verb
+@pos :VM0 ; @pos+infix{*} :VDI+adverb | verb
+@pos :VM0 ; @pos+infix{*} :VHI+adverb | verb
+@pos :VM0 ; @pos+infix{*} :VVI+adverb | verb
+
+@pos :VM0 ; @lemma :not ; @pos+infix{*} :VBI+adverb | verb
+@pos :VM0 ; @lemma :not ; @pos+infix{*} :VDI+adverb | verb
+@pos :VM0 ; @lemma :not ; @pos+infix{*} :VHI+adverb | verb
+@pos :VM0 ; @lemma :not ; @pos+infix{*} :VVI+adverb | verb
+
+@pos :VM1 ; @pos+infix{*} :VBI+adverb | verb
+@pos :VM1 ; @pos+infix{*} :VDI+adverb | verb
+@pos :VM1 ; @pos+infix{*} :VHI+adverb | verb
+@pos :VM1 ; @pos+infix{*} :VVI+adverb | verb
+
+@pos :VM1 ; @lemma :not ; @pos+infix{*} :VBI+adverb | verb
+@pos :VM1 ; @lemma :not ; @pos+infix{*} :VDI+adverb | verb
+@pos :VM1 ; @lemma :not ; @pos+infix{*} :VHI+adverb | verb
+@pos :VM1 ; @lemma :not ; @pos+infix{*} :VVI+adverb | verb
+
+@pos :VM0 ; @pos+infix{*} :VBI+adverb ; @pos :VVN | verb
+@pos :VM1 ; @pos+infix{*} :VBI+adverb ; @pos :VVN | verb
+
+@pos :VM0 ; @lemma :not ; @pos+infix{*} :VBI+adverb ; @pos :VVN | verb
+@pos :VM1 ; @lemma :not ; @pos+infix{*} :VBI+adverb ; @pos :VVN | verb
+
+@pos :VM0 ; @pos+infix{*} :VBI+adverb ; @pos :VVG | verb
+@pos :VM1 ; @pos+infix{*} :VBI+adverb ; @pos :VVG | verb
+
+@pos :VM0 ; @lemma :not ; @pos+infix{*} :VBI+adverb ; @pos :VVG | verb
+@pos :VM1 ; @lemma :not ; @pos+infix{*} :VBI+adverb ; @pos :VVG | verb
+
+@pos :VM0 ; @pos+infix{*} :VHI+adverb ; @pos :VVN | verb
+@pos :VM1 ; @pos+infix{*} :VHI+adverb ; @pos :VVN | verb
+
+@pos :VM0 ; @lemma :not ; @pos+infix{*} :VHI+adverb ; @pos :VVN | verb
+@pos :VM1 ; @lemma :not ; @pos+infix{*} :VHI+adverb ; @pos :VVN | verb
+
+@pos :VM0 ; @pos+infix{*} :VHI+adverb ; @pos :VBN ; @pos :VVG | verb
+@pos :VM1 ; @pos+infix{*} :VHI+adverb ; @pos :VBN ; @pos :VVG | verb
+
+@pos :VM0 ; @lemma :not ; @pos+infix{*} :VHI+adverb ; @pos :VBN ; @pos :VVG | verb
+@pos :VM1 ; @lemma :not ; @pos+infix{*} :VHI+adverb ; @pos :VBN ; @pos :VVG | verb
+
+@pos :VDB ; @pos :VVI | verb
+@pos :VDZ ; @pos :VVI | verb
+@pos :VDD ; @pos :VVI | verb
+
+@pos :VDB ; @lemma :not; @pos :VVI | verb
+@pos :VDZ ; @lemma :not; @pos :VVI | verb
+@pos :VDD ; @lemma :not; @pos :VVI | verb
+
+
+
 #########################
 ########## NER ##########
 ######## 06 - 09 ########
@@ -104,6 +279,7 @@
 
 ## NUMBERS ##
 @pos+suffix{*} :CRD+08 | 08
+
 
 
 #############################

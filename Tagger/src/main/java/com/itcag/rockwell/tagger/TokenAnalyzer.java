@@ -21,6 +21,7 @@ package com.itcag.rockwell.tagger;
 import com.itcag.rockwell.lang.Semtoken;
 import com.itcag.rockwell.lang.Tag;
 import com.itcag.rockwell.lang.Token;
+import com.itcag.rockwell.tagger.debug.Debugger;
 import com.itcag.rockwell.tagger.lang.Conditions;
 import com.itcag.rockwell.tagger.lang.Match;
 import com.itcag.rockwell.tagger.lang.State;
@@ -39,6 +40,7 @@ public class TokenAnalyzer {
     private final String sentenceID = UUID.randomUUID().toString().replace("-", "").trim();
         
     private final Processor processor;
+    private final Debugger debugger;
     
     private ArrayList<State> currentStates = new ArrayList<>();
     private ArrayList<State> newStates = new ArrayList<>();
@@ -49,8 +51,9 @@ public class TokenAnalyzer {
     /**
      * @param processor Instance of the {@link com.itcag.rockwell.tagger.Processor Processor} class.
      */
-    public TokenAnalyzer(Processor processor) {
+    public TokenAnalyzer(Processor processor, Debugger debugger) {
         this.processor = processor;
+        this.debugger = debugger;
     }
 
     /**
@@ -58,6 +61,8 @@ public class TokenAnalyzer {
      * @throws Exception if anything goes wrong.
      */
     public void analyze(Token token) throws Exception {
+        
+        String ctrl = token.toString() + " " + this.debugger.client().name();
         
         /**
          * Some tokens have part of speech set during the tokenization.

@@ -127,7 +127,7 @@ public class Tagger {
     
     private ArrayList<Tag> run(ArrayList<? extends Token> tokens, Processor processor) throws Exception {
         
-        TokenAnalyzer analyzer = new TokenAnalyzer(processor);
+        TokenAnalyzer analyzer = new TokenAnalyzer(processor, this.debugger);
         
         for (int i = 0; i < tokens.size(); i++) {
             Token token = tokens.get(i);

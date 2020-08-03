@@ -114,7 +114,7 @@ public enum POSTag {
     VHN(POSType.VA),
     /** The -s form of the verb HAVE: "has", "'s". */
     VHZ(POSType.VA),
-    /** Modal auxiliary verb (e.g., "will", "would", "can", "could", "'d"). */
+    /** Modal auxiliary verb (e.g., "would", "can", "could", "'d"). */
     VM0(POSType.VM),
     /** Future auxiliaries: "will", "shall", "'ll". */
     VM1(POSType.VM),

@@ -47,9 +47,9 @@ public class TaggerTest {
 //        ArrayList<String> expressions = new ArrayList<>();
 //        expressions.add("@cain+suffix{} :in+noun | test");
 
-        StringBuilder text = new StringBuilder("3 ways your employees can accidentally expose your business data to hackers");
+        StringBuilder text = new StringBuilder("MGM Resorts Data Breach Might Have Impacted More Than 200 Million Guests");
         ArrayList<String> expressions = new ArrayList<>();
-        expressions.add("@pos :VM0 ; @cain+infix :expose+adverb | test ");
+        expressions.add("@cain :data ; @cain :breach ; @lemma+infix{x*} :impact+verb1 | data_breach");
         
         for (StringBuilder sentence : splitter.split(text)) {
 

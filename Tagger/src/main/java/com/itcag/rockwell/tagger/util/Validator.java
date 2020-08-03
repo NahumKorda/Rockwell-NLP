@@ -148,14 +148,36 @@ public class Validator {
         
         ArrayList<Token> retVal = new ArrayList<>();
         
+        Integer last = null;
         for (Map.Entry<Integer, Match> entry : matches.entrySet()) {
             Match match = entry.getValue();
+            /**
+             * Infix could be preceded by a quodlibet element,
+             * which would imply that some matches were collected by that element,
+             * and not by the infix element.
+             * Therefore, these matches should not be included in the infix list.
+             * Accordingly, when a match is encountered that is not quodlibet,
+             * the list is cleared, because all the previous matches
+             * must have been collected by the preceding quodlibet,
+             * and shouldn't be included.
+             */
             if (match.isQuodlibet()) {
+                /**
+                 * Leave it as is!
+                 * If a token has alternative lemmas,
+                 * the corresponding match will have only one of them,
+                 * while others might be required to complete the validation.
+                 * Therefore, instead of matches, the original tokens
+                 * (with all alternative lemmas) must be used.
+                 */
                 for (Token token : tokens) {
                     if (Objects.equals(token.getIndex(), match.getIndex())) {
                         retVal.add(token);
+                        last = token.getIndex();
                     }
                 }
+            } else if (last != null) {
+                retVal.clear();
             }
         }
         
