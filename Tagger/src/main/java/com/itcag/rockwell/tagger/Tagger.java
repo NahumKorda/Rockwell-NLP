@@ -39,16 +39,20 @@ public class Tagger {
     private final Conditions conditions;
     private final Patterns patterns;
     
+    private final EnclosedTagModes enclosedTagMode;
+
     private final Debugger debugger;
 
     /**
      * This constructor is used when only the generic Rockwell patterns need to be loaded. 
      * @param scripts Selected Rockwell expressions that are to be applied to text.
+     * @param enclosedTagMode
      * @param debugger Instance of the {@link com.itcag.rockwell.tagger.debug.Debugger Debugger} class use for debugging only.
      * @throws Exception if anything goes wrong.
      */
-    public Tagger(ArrayList<String> scripts, Debugger debugger) throws Exception {
+    public Tagger(ArrayList<String> scripts, EnclosedTagModes enclosedTagMode, Debugger debugger) throws Exception {
         this.conditions = new Conditions(scripts);
+        this.enclosedTagMode = enclosedTagMode;
         Loader loader = new Loader();
         this.patterns = new Patterns(loader.load("patterns"));
         this.debugger = debugger;
@@ -57,13 +61,16 @@ public class Tagger {
     /**
      * This constructor is used when additional, proprietary patterns need to be loaded together with the generic Rockwell patterns.
      * @param scripts Selected Rockwell expressions that are to be applied to text.
+     * @param enclosedTagMode
      * @param proprietaryPatternPath String holding the local path to a text file containing additional pattern expressions.
      * @param debugger Instance of the {@link com.itcag.rockwell.tagger.debug.Debugger Debugger} class use for debugging only.
      * @throws Exception if anything goes wrong.
      */
-    public Tagger(ArrayList<String> scripts, String proprietaryPatternPath, Debugger debugger) throws Exception {
+    public Tagger(ArrayList<String> scripts, EnclosedTagModes enclosedTagMode, String proprietaryPatternPath, Debugger debugger) throws Exception {
 
         this.conditions = new Conditions(scripts);
+
+        this.enclosedTagMode = enclosedTagMode;
 
         Loader loader = new Loader();
         ArrayList<String> patternScripts = loader.load("patterns");
@@ -85,15 +92,17 @@ public class Tagger {
     /**
      * This constructor is used only by the {@link com.itcag.rockwell.tagger.patterns.Patterns Patterns} class for affix validation against applicable patterns.
      * @param conditions Instance of the {@link com.itcag.rockwell.tagger.lang.Conditions Conditions} class containing the applicable Rockwell expressions.
+     * @param enclosedTagMode
      * @param patterns Instance of the {@link com.itcag.rockwell.tagger.patterns.Patterns Patterns} class containing the applicable patterns.
      * @param debugger Instance of the {@link com.itcag.rockwell.tagger.debug.Debugger Debugger} class use for debugging only.
      * @throws Exception if anything goes wrong.
      */
-    public Tagger(Conditions conditions, Patterns patterns, Debugger debugger) throws Exception {
+    public Tagger(Conditions conditions, EnclosedTagModes enclosedTagMode, Patterns patterns, Debugger debugger) throws Exception {
         /**
          * Used only by Patterns. -- No need to reload patterns once they are loaded by the main client.
          */
         this.conditions = conditions;
+        this.enclosedTagMode = enclosedTagMode;
         this.patterns = patterns;
         this.debugger = debugger;
     }
@@ -127,15 +136,14 @@ public class Tagger {
     
     private ArrayList<Tag> run(ArrayList<? extends Token> tokens, Processor processor) throws Exception {
         
-        TokenAnalyzer analyzer = new TokenAnalyzer(processor, this.debugger);
+        TokenAnalyzer analyzer = new TokenAnalyzer(processor, this.enclosedTagMode, this.debugger);
         
         for (int i = 0; i < tokens.size(); i++) {
             Token token = tokens.get(i);
             analyzer.analyze(token);
         }
 
-        boolean allowMultipleTags = DebuggingClients.INTERPRETER.equals(this.debugger.client()) || DebuggingClients.EXTRACTOR.equals(this.debugger.client());
-        return analyzer.getTags(allowMultipleTags);
+        return analyzer.getTags();
         
     }
     

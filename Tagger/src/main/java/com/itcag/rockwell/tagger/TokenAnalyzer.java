@@ -42,6 +42,8 @@ public class TokenAnalyzer {
     private final Processor processor;
     private final Debugger debugger;
     
+    private final EnclosedTagModes enclosedTagMode;
+    
     private ArrayList<State> currentStates = new ArrayList<>();
     private ArrayList<State> newStates = new ArrayList<>();
     
@@ -50,9 +52,12 @@ public class TokenAnalyzer {
         
     /**
      * @param processor Instance of the {@link com.itcag.rockwell.tagger.Processor Processor} class.
+     * @param enclosedTagMode
+     * @param debugger
      */
-    public TokenAnalyzer(Processor processor, Debugger debugger) {
+    public TokenAnalyzer(Processor processor, EnclosedTagModes enclosedTagMode, Debugger debugger) {
         this.processor = processor;
+        this.enclosedTagMode = enclosedTagMode;
         this.debugger = debugger;
     }
 
@@ -164,7 +169,7 @@ public class TokenAnalyzer {
         
     }
 
-    public ArrayList<Tag> getTags(boolean allowMultipleTags) {
+    public ArrayList<Tag> getTags() {
         
         ArrayList<Tag> retVal = new ArrayList<>();
 
@@ -182,7 +187,7 @@ public class TokenAnalyzer {
         while (matchIterator.hasNext()) {
             State match = matchIterator.next();
             if (!this.rejecting.containsKey(match.getConditionId())) {
-                if (!allowMultipleTags && isIncluded(match, retVal)) continue;
+                if (!EnclosedTagModes.ALL.equals(this.enclosedTagMode) && isEnclosed(match, retVal)) continue;
                 Tag tag = new Tag(match.getTag(), match.getScript(), match.getFirstMatch(), match.getLastMatch());
                 tag.setSentenceId(sentenceID);
                 retVal.add(tag);
@@ -193,7 +198,7 @@ public class TokenAnalyzer {
         
     }
     
-    private boolean isIncluded(State match, ArrayList<Tag> tags) {
+    private boolean isEnclosed(State match, ArrayList<Tag> tags) {
         
         if (tags.isEmpty()) return false;
         
@@ -201,15 +206,37 @@ public class TokenAnalyzer {
         while (tagIterator.hasNext()) {
             Tag tag = tagIterator.next();
             if (match.getStart() == tag.getStart() && match.getEnd() == tag.getEnd()) {
-                return true;
+                if (EnclosedTagModes.NON_IDENTICAL.equals(this.enclosedTagMode)) {
+                    return (tag.getTag().equals(match.getTag()));
+                } else if (EnclosedTagModes.NONE.equals(this.enclosedTagMode)) {
+                    return true;
+                }
             } else if (match.getStart() > tag.getStart() && match.getEnd() < tag.getEnd()) {
-                return true;
+                if (EnclosedTagModes.NON_IDENTICAL.equals(this.enclosedTagMode)) {
+                    return (tag.getTag().equals(match.getTag()));
+                } else if (EnclosedTagModes.NONE.equals(this.enclosedTagMode)) {
+                    return true;
+                }
             } else if (match.getStart() == tag.getStart() && match.getEnd() < tag.getEnd()) {
-                return true;
+                if (EnclosedTagModes.NON_IDENTICAL.equals(this.enclosedTagMode)) {
+                    return (tag.getTag().equals(match.getTag()));
+                } else if (EnclosedTagModes.NONE.equals(this.enclosedTagMode)) {
+                    return true;
+                }
             } else if (match.getStart() > tag.getStart() && match.getEnd() == tag.getEnd()) {
-                return true;
+                if (EnclosedTagModes.NON_IDENTICAL.equals(this.enclosedTagMode)) {
+                    return (tag.getTag().equals(match.getTag()));
+                } else if (EnclosedTagModes.NONE.equals(this.enclosedTagMode)) {
+                    return true;
+                }
             } else if (match.getStart() <= tag.getStart() && match.getEnd() >= tag.getEnd()) {
-                tagIterator.remove();
+                if (EnclosedTagModes.NON_IDENTICAL.equals(this.enclosedTagMode)) {
+                    if (tag.getTag().equals(match.getTag())) {
+                        tagIterator.remove();
+                    }
+                } else if (EnclosedTagModes.NONE.equals(this.enclosedTagMode)) {
+                    tagIterator.remove();
+                }
             }
         }
 

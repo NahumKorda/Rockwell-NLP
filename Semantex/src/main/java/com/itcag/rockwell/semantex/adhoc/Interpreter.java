@@ -22,6 +22,7 @@ import com.itcag.rockwell.semantex.Inserter;
 import com.itcag.rockwell.lang.Tag;
 import com.itcag.rockwell.lang.Token;
 import com.itcag.rockwell.semantex.Toolbox;
+import com.itcag.rockwell.tagger.EnclosedTagModes;
 import com.itcag.rockwell.tagger.Tagger;
 import com.itcag.rockwell.tagger.debug.Debugger;
 import com.itcag.rockwell.tagger.debug.DebuggingClients;
@@ -53,7 +54,7 @@ public class Interpreter {
 
         Debugger debugger = new Debugger(DebuggingClients.INTERPRETER, 0);
         
-        this.tagger = new Tagger(expressions, debugger);
+        this.tagger = new Tagger(expressions, EnclosedTagModes.ALL, debugger);
     
     }
 
@@ -75,7 +76,7 @@ public class Interpreter {
 
         Debugger debugger = new Debugger(DebuggingClients.INTERPRETER, 0);
         
-        this.tagger = new Tagger(expressions, patternPath, debugger);
+        this.tagger = new Tagger(expressions, EnclosedTagModes.ALL, patternPath, debugger);
     
     }
 

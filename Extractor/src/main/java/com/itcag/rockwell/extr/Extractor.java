@@ -22,6 +22,7 @@ import com.itcag.rockwell.POSTag;
 import com.itcag.rockwell.lang.Extract;
 import com.itcag.rockwell.lang.Tag;
 import com.itcag.rockwell.lang.Token;
+import com.itcag.rockwell.tagger.EnclosedTagModes;
 import com.itcag.rockwell.tagger.Tagger;
 import com.itcag.rockwell.tagger.debug.Debugger;
 import com.itcag.rockwell.tagger.debug.DebuggingClients;
@@ -124,7 +125,7 @@ public class Extractor {
 
         Debugger debugger = new Debugger(DebuggingClients.EXTRACTOR, 0);
         
-        this.tagger = new Tagger(expressions, debugger);
+        this.tagger = new Tagger(expressions, EnclosedTagModes.ALL, debugger);
         this.frames = new Frames(framePath);
         
     }

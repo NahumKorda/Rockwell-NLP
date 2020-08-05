@@ -47,9 +47,9 @@ public class TaggerTest {
 //        ArrayList<String> expressions = new ArrayList<>();
 //        expressions.add("@cain+suffix{} :in+noun | test");
 
-        StringBuilder text = new StringBuilder("MGM Resorts Data Breach Might Have Impacted More Than 200 Million Guests");
+        StringBuilder text = new StringBuilder("Researchers Expose a New Vulnerability in Intel's CPUs");
         ArrayList<String> expressions = new ArrayList<>();
-        expressions.add("@cain :data ; @cain :breach ; @lemma+infix{x*} :impact+verb1 | data_breach");
+        expressions.add("@lemma :vulnerability | threat");
         
         for (StringBuilder sentence : splitter.split(text)) {
 
@@ -65,7 +65,7 @@ public class TaggerTest {
 
             Debugger debugger = new Debugger(DebuggingClients.TESTING, 0);
 
-            Tagger tagger = new Tagger(expressions, debugger);
+            Tagger tagger = new Tagger(expressions, EnclosedTagModes.NONE, debugger);
             ArrayList<Tag> tags = tagger.tag(tokens);
 
             for (Tag tag : tags) {
@@ -98,7 +98,7 @@ public class TaggerTest {
 
                 Debugger debugger = new Debugger(DebuggingClients.TESTING, 0);
 
-                Tagger tagger = new Tagger(new ArrayList<>(Arrays.asList(test.getRule())), debugger);
+                Tagger tagger = new Tagger(new ArrayList<>(Arrays.asList(test.getRule())), EnclosedTagModes.NONE, debugger);
                 ArrayList<Tag> tags = tagger.tag(tokens);
 
                 if (isSuccessful(test, tags)) {

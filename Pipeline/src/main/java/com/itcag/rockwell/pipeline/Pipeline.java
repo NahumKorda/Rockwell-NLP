@@ -27,6 +27,7 @@ import com.itcag.rockwell.tokenizer.Tokenizer;
 import com.itcag.rockwell.semantex.Semantex;
 import com.itcag.rockwell.semantex.ner.NER;
 import com.itcag.rockwell.split.Splitter;
+import com.itcag.rockwell.tagger.EnclosedTagModes;
 import com.itcag.rockwell.tagger.Tagger;
 import com.itcag.rockwell.tagger.debug.Debugger;
 import com.itcag.rockwell.tagger.debug.DebuggingClients;
@@ -205,11 +206,13 @@ public class Pipeline {
 
         Debugger debugger = new Debugger(DebuggingClients.PIPELINE, 0);
 
+        EnclosedTagModes enclosedTagMode = EnclosedTagModes.valueOf(properties.getProperty(PropertyFields.ENCLOSED_TAG_MODE.getField(), EnclosedTagModes.ALL.name()));
+        
         String patternPath = properties.getProperty(PropertyFields.PATTERNS.getField(), null);
         if (patternPath != null) {
-            return new Tagger(expressions, patternPath, debugger);
+            return new Tagger(expressions, enclosedTagMode, patternPath, debugger);
         } else {
-            return new Tagger(expressions, debugger);
+            return new Tagger(expressions, enclosedTagMode, debugger);
         }
     }
 

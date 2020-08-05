@@ -38829,6 +38829,8 @@ haciendas|NN2|hacienda
 hacienda|NN1|hacienda
 hacked|VVD|hack
 hacked|VVN|hack
+hacker|NN1|hacker
+hackers|NN2|hacker
 hacking|NN1|hacking
 hacking|VVG|hack
 hackles|NN2|hackle
@@ -75746,6 +75748,8 @@ scamps|VVZ|scamp
 scamp|NN1|scamp
 scamp|VVB|scamp
 scamp|VVI|scamp
+scammers|NN2|scammer
+scammer|NN1|scammer
 scammed|VVD|scam
 scammed|VVN|scam
 scamming|NN1|scam
