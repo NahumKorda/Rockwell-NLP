@@ -181,11 +181,11 @@ public class Pipeline {
 
     private Splitter getSplitter(Properties properties) throws Exception {
         
-        String test = properties.getProperty(PropertyFields.EXTENDED_SPLITTING.getField(), null);
-        if (test == null) {
-            return new Splitter();
-        } else {
+        if (properties.containsKey(PropertyFields.EXTENDED_SPLITTING.getField())) {
+            String test = properties.getProperty(PropertyFields.EXTENDED_SPLITTING.getField(), Boolean.FALSE.toString());
             return new Splitter(Boolean.parseBoolean(test.toUpperCase()));
+        } else {
+            return new Splitter();
         }
 
     }

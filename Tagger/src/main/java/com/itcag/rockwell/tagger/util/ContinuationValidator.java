@@ -22,13 +22,17 @@ import com.itcag.rockwell.lang.Tag;
 import com.itcag.rockwell.lang.Token;
 import com.itcag.rockwell.util.TokenToolbox;
 import com.itcag.rockwell.tagger.debug.Debugger;
+import com.itcag.rockwell.tagger.lang.AcceptingCondition;
+import com.itcag.rockwell.tagger.lang.Condition;
 import com.itcag.rockwell.tagger.lang.ConditionElement;
 import com.itcag.rockwell.tagger.lang.Conditions;
 import com.itcag.rockwell.tagger.lang.Match;
+import com.itcag.rockwell.tagger.lang.RejectingCondition;
 import com.itcag.rockwell.tagger.patterns.Patterns;
 import com.itcag.rockwell.tagger.lang.State;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 /**
  * <p>This class evaluates whether a {@link com.itcag.rockwell.lang.Token token} matches any {@link com.itcag.rockwell.tagger.lang.ConditionElement condition element} that continues an existing {@link com.itcag.rockwell.tagger.lang.State state}. If it does, a new instance is created as a copy of the existing state, and it is updated with the new match.</p>
@@ -136,6 +140,23 @@ public class ContinuationValidator extends Validator {
      */
     public State validateSuffix(ConditionElement conditionElement, Token anchor, State state) throws Exception {
 
+        if (conditionElement.getSuffix().isBoundary()) {
+            
+            debugger.print("Prefix validation " + conditionElement.getSuffix().getKey());
+            debugger.print("-> Validating: "+ " " + this.conditions.getConditions().get(conditionElement.getConditionId()));
+
+            if (Objects.equals(anchor.getIndex(), this.tokens.get(this.tokens.size() - 1).getIndex())) {
+                debugger.print("Validated suffix (last token): " + anchor.toString());
+                debugger.print("->> Validated: "+ " " + this.conditions.getConditions().get(conditionElement.getConditionId()));
+                return getNewState(conditionElement, anchor);
+            } else {
+                debugger.print("Suffix not validated (not last token): " + anchor.toString());
+                debugger.print("->> Not validated: "+ " " + this.conditions.getConditions().get(conditionElement.getConditionId()));
+                return null;
+            }
+            
+        }
+        
         ArrayList<Token> tmp = getSuffixList(this.tokens, anchor, conditionElement.getSuffix().isInclusive());
 
         if (tmp.isEmpty()) {
@@ -179,6 +200,30 @@ public class ContinuationValidator extends Validator {
 
     }
     
+    private State getNewState(ConditionElement conditionElement, Token token) {
+        
+        Condition condition = conditions.getConditions().get(conditionElement.getConditionId());
+
+        State retVal = new State(conditionElement.getConditionId(), condition.getScript(), conditionElement.getOut());
+        if (condition instanceof AcceptingCondition) {
+            AcceptingCondition acceptingCondition = (AcceptingCondition) condition;
+            retVal.setRejectedById(acceptingCondition.getRejectedById());
+            retVal.setTag(acceptingCondition.getTag());
+        } else if (condition instanceof RejectingCondition) {
+            RejectingCondition rejectingCondition = (RejectingCondition) condition;
+            retVal.setIdToBeRejected(rejectingCondition.getIdToBeRejected());
+        }
+        retVal.setState(conditionElement.getOut());
+
+        Match match = new Match(token);
+        retVal.addMatch(match);
+
+        if (retVal.getState() == Conditions.FINAL_STATE_CODE) debugger.print("Validated completely: " + TokenToolbox.getStringFromTokens(new ArrayList<>(retVal.getMatches().values())));
+
+        return retVal;
+        
+    }
+
     private State getNewState(State state, ConditionElement conditionElement, Token token, Tag tag, ArrayList<Token> tmp, boolean before) {
         
         State retVal = state.getCopy();

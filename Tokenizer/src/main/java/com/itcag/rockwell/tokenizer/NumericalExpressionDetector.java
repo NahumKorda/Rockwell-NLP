@@ -22,8 +22,6 @@ import com.itcag.rockwell.tokenizer.res.LexicalResources;
 import com.itcag.util.Converter;
 import com.itcag.util.txt.TextToolbox;
 
-import java.util.ArrayList;
-
 /**
  * <p>Analyzes a single token (passed as an array of characters), and identifies:</p>
  * <ul>
@@ -59,21 +57,21 @@ public final class NumericalExpressionDetector {
     
     private final LexicalResources lexicalResources;
 
-    private boolean negative = false;
-    private Double number = null;
-    private String rest = null;
-    
     private Type type = null;
     
-    private final ArrayList<Character> digits = new ArrayList<>();
-    private final ArrayList<Character> nondigits = new ArrayList<>();
+    private Boolean negative = null;
+    private Double number = null;
+    
+    private final StringBuilder digits = new StringBuilder();
+    private final StringBuilder prefix = new StringBuilder();
+    private final StringBuilder suffix = new StringBuilder();
     
     public NumericalExpressionDetector() throws Exception {
         this.lexicalResources = LexicalResources.getInstance();
     }
     
     /**
-     * This method analyzes an array of characters representing a token, identifies numerical expressions, and splits them if required into a number and a symbol.
+     * This method analyzes an array of characters representing a token, identifies numerical expressions, and splits them if required into a number and symbols.
      * @param chars Array of characters to be analyzed.
      * @return Boolean indicating whether one or more numerical expressions were identified.
      */
@@ -82,144 +80,116 @@ public final class NumericalExpressionDetector {
         if (chars.length == 0) return false;
 
         if (Character.isLetter(chars[0])) return false;
-        
-        /**
-         * Plus sign.
-         */
-        if (chars[0] ==  43 && chars.length > 1) {
-            negative = false;
-            /**
-             * Ignore the first character.
-             */
-            return extract(1, chars);
-        }
-            
-        /**
-         * Minus sign.
-         */
-        if (chars[0] == 45 && chars.length > 1) {
-            /**
-             * Ignore the first character.
-             */
-            negative = true;
-            return extract(1, chars);
-        }
-        
-        return extract(0, chars);
-        
-    }
 
-    private boolean extract(int start, char[] chars) {
-        if (Character.isDigit(chars[start])) {
-            start = extractDigits(0, chars);
-            if (start == chars.length) return evaluate(chars);
-            start = extractNonDigits(start, chars);
-            if (start == chars.length) return evaluate(chars);
-        } else {
-            start = extractNonDigits(start, chars);
-            if (start == chars.length) return false;
-            start = extractDigits(start, chars);
-            if (start == chars.length) return evaluate(chars);
-        }
-        return false;
-    } 
-    
-    private int extractDigits(int start, char[] chars) {
-        for (int i = start ; i < chars.length ; i++) {
-            if (Character.isDigit(chars[i])) {
-                digits.add(chars[i]);
-            } else if (chars[i] == 44) {
+        for (int i = 0; i < chars.length; i++) {
+
+            if (chars[i] == 43) {
                 /**
-                 * Comma.
+                 * Plus sign.
                  */
-                digits.add(chars[i]);
-            } else if (chars[i] == 46) {
+                if (i == 0) {
+                    this.negative = false;
+                } else {
+                    return false;
+                }
+            } else if (chars[i] == 45) {
                 /**
-                 * Period.
+                 * Minus sign.
                  */
-                digits.add(chars[i]);
+                if (i == 0) {
+                    this.negative = false;
+                } else {
+                    return false;
+                }
+            } else if (chars[i] == 44 || chars[i] == 46) {
+                /**
+                 * Comma and period.
+                 */
+                if (this.digits.length() == 0) return false;
+                this.digits.append(chars[i]);
+            } else if (Character.isDigit(chars[i])) {
+                if (this.suffix.length() > 0) return false;
+                this.digits.append(chars[i]);
             } else {
-               return i; 
+                if (digits.length() == 0) {
+                    this.prefix.append(chars[i]);
+                } else {
+                    this.suffix.append(chars[i]);
+                }
             }
+            
         }
-        return chars.length;
-    }
-    
-    private int extractNonDigits(int start, char[] chars) {
-        for (int i = start ; i < chars.length ; i++) {
-            if (Character.isDigit(chars[i])) {
-               return i; 
-            } else {
-                nondigits.add(chars[i]);
-            }
-        }
-        return chars.length;
-    }
-    
-    private boolean evaluate(char[] chars) {
         
         /**
          * Ensure that the entire char array was analyzed.
-         * If not, abort because this is not a numerical expressions.
          */
-        if (negative) {
-            if (digits.size() + nondigits.size() + 1 != chars.length) return false;
-        } else {
-            if (digits.size() + nondigits.size() != chars.length) return false;
-        }
+        int length = this.prefix.length() + this.digits.length() + this.suffix.length();
+        if (this.negative != null) length++;
+        if (length != chars.length) return false;
         
-        /**
-         * A numerical expression must include a number.
-         * If not, abort because this is not a numerical expressions.
-         */
-        extractNumber();
-        if (number == null) return false;
+        if (!extractNumber()) return false;
+        if (!resolvePrefix()) return false;
+        if (!resolveSuffix()) return false;
+
+        if (this.type == null) type = Type.NUMBER;
+
+        return true;
         
-        extractString();
-        
-        if (number != null) {
-            if (getRest() != null) {
-                if (this.lexicalResources.isCurrencySymbol(getRest().toLowerCase())) {
-                    type = Type.CURRENCY;
-                    return true;
-                } else if (this.lexicalResources.isMeasuringUnit(getRest().toLowerCase())) {
-                    type = Type.QUANTITY;
-                    return true;
-                } else if ("%".equalsIgnoreCase(getRest())) {
-                    type = Type.PERCENTAGE;
-                    return true;
-                } else if ("‰".equalsIgnoreCase(getRest())) {
-                    type = Type.PERCENTAGE;
-                    return true;
-                }
+    }
+
+    private boolean extractNumber() {
+        if (this.digits.indexOf(",") > -1) TextToolbox.replace(digits, ",", "");
+        Double test = Converter.convertStringToDouble(this.digits.toString());
+        if (test != null) {
+            if (this.negative != null && this.negative) {
+                this.number = -test;
             } else {
-                type = Type.NUMBER;
-                return true;
+                this.number = test;
             }
+            return true;
+        } else {
+            return false;
         }
+    }
+    
+    private boolean resolvePrefix() {
         
+        if (this.prefix.length() == 0) return true;
+
+        if (this.lexicalResources.isCurrencySymbol(this.prefix.toString().toLowerCase())) {
+            type = Type.CURRENCY;
+            return true;
+        }
+
         return false;
         
     }
     
-    private void extractNumber() {
-        String chars = digits.stream().map(e -> e.toString()).reduce((acc, e) -> acc  + e).get();
-        if (chars.contains(",")) chars = TextToolbox.replace(chars, ",", "");
-        Double test = Converter.convertStringToDouble(chars);
-        if (test != null) {
-            if (negative) {
-                number = -test;
-            } else {
-                number = test;
-            }
+    private boolean resolveSuffix() {
+
+        if (this.suffix.length() == 0) return true;
+
+        if ("k".equalsIgnoreCase(this.suffix.toString())) {
+            this.number = this.number * 1000;
+            return true;
+        } else if ("m".equalsIgnoreCase(this.suffix.toString())) {
+            this.number = this.number * 1000000;
+            return true;
+        } else if ("%".equalsIgnoreCase(this.suffix.toString())) {
+            type = Type.PERCENTAGE;
+            return true;
+        } else if ("‰".equalsIgnoreCase(this.suffix.toString())) {
+            type = Type.PERCENTAGE;
+            return true;
+        } else if (this.lexicalResources.isMeasuringUnit(this.suffix.toString().toLowerCase())) {
+            type = Type.QUANTITY;
+            return true;
         }
+
+        return false;
+
     }
     
-    private void extractString() {
-        if (nondigits.isEmpty()) return;
-        rest = nondigits.stream().map(e -> e.toString()).reduce((acc, e) -> acc  + e).get();
-    }
-
     /**
      * Used if the {@link #split(char[])} method returned TRUE.
      * @return Number holding the number part pf the token.
@@ -238,10 +208,18 @@ public final class NumericalExpressionDetector {
     
     /**
      * Used if the {@link #split(char[])} method returned TRUE.
-     * @return String holding the part of the token that is not a number (i.e. a currency sign, the percent/per mille sign or a measuring unit), null otherwise.
+     * @return String holding the part of the token that is not a number and precedes it (i.e. a currency sign), null otherwise.
      */
-    public String getRest() {
-        return rest;
+    public String getPrefix() {
+        return this.prefix.toString();
+    }
+
+    /**
+     * Used if the {@link #split(char[])} method returned TRUE.
+     * @return String holding the part of the token that is not a number and succeeds it (i.e. the percent/per mille sign or a measuring unit), null otherwise.
+     */
+    public String getSuffix() {
+        return this.suffix.toString();
     }
 
     /**

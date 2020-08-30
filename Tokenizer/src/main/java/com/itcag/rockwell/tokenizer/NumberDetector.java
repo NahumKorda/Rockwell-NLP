@@ -226,6 +226,8 @@ public final class NumberDetector {
             case "thousand":
                 return 1000l;
             case "million":
+            case "mil":
+            case "mln":
                 return 1000000l;
             case "billion":
                 return 1000000000l;

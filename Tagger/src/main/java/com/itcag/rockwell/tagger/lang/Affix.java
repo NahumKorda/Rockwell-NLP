@@ -25,9 +25,11 @@ package com.itcag.rockwell.tagger.lang;
 public class Affix extends MatchingSpecification {
     
     private boolean inclusive = false;
-    public boolean complete = false;
-    public boolean optional = false;
+    private boolean complete = false;
+    private boolean optional = false;
 
+    private boolean boundary = false;
+    
     /**
      * @param aspect Value of the {@link com.itcag.rockwell.tagger.lang.MatchingSpecification.Aspect Aspect} enum that specifies which apsect of a token must be matched.
      * @param value String holding the value that must be matched. This value depends on the aspect.
@@ -76,6 +78,20 @@ public class Affix extends MatchingSpecification {
      */
     public void setOptional(boolean optional) {
         this.optional = optional;
+    }
+    
+    /**
+     * @return Boolean indicating whether the corresponding condition element must be the first or the last token in a sentence.
+     */
+    public boolean isBoundary() {
+        return this.boundary;
+    }
+
+    /**
+     * @param boundary Boolean indicating whether the corresponding condition element must be the first or the last token in a sentence.
+     */
+    public void setBoundary(boolean boundary) {
+        this.boundary = boundary;
     }
     
 }

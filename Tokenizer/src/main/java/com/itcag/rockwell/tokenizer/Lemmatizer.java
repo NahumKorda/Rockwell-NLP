@@ -170,15 +170,15 @@ public final class Lemmatizer {
             switch (detector.getType()) {
                 case PERCENTAGE:
                     tokens.add(new Token(detector.getNumberAsString(), POSTag.CRD, detector.getNumberAsString(), tokens.size()));
-                    tokens.add(new Token(detector.getRest(), POSTag.XZ1, detector.getRest(), tokens.size()));
+                    tokens.add(new Token(detector.getSuffix(), POSTag.XZ1, detector.getSuffix(), tokens.size()));
                     return true;
                 case CURRENCY:
-                    tokens.add(new Token(detector.getRest(), POSTag.XZ2, detector.getRest(), tokens.size()));
+                    tokens.add(new Token(detector.getPrefix(), POSTag.XZ2, detector.getPrefix(), tokens.size()));
                     tokens.add(new Token(detector.getNumberAsString(), POSTag.CRD, detector.getNumberAsString(), tokens.size()));
                     return true;
                 case QUANTITY:
                     tokens.add(new Token(detector.getNumberAsString(), POSTag.CRD, detector.getNumberAsString(), tokens.size()));
-                    tokens.add(new Token(detector.getRest(), POSTag.XZ3, detector.getRest(), tokens.size()));
+                    tokens.add(new Token(detector.getSuffix(), POSTag.XZ3, detector.getSuffix(), tokens.size()));
                     return true;
                 case NUMBER:
                     tokens.add(new Token(detector.getNumberAsString(), POSTag.CRD, detector.getNumberAsString(), tokens.size()));

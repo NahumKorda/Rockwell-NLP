@@ -28120,6 +28120,7 @@ emaciate|VVI|emaciate
 emaciating|VVG|emaciate
 emaciation|NN0|emaciation
 emaciation|NN1|emaciation
+emails|NN2|email
 email|NN1|email
 emanated|VVD|emanate
 emanated|VVN|emanate
@@ -29913,8 +29914,10 @@ eurasia|NP0|eurasia
 eureka|ITJ|eureka
 eurhythmics|NN1|eurhythmics
 eurhythmics|NN2|eurhythmics
-eurodollars|NN2|eurodollars
-eurodollar|NN1|eurodollar
+euros|NN2|euro
+euros|XZ2|euro
+euro|NN1|euro
+euro|XZ2|euro
 europeans|NN2|europeans
 european|AJ0|european
 european|NN1|european
@@ -31978,6 +31981,7 @@ fells|VVZ|fell
 fell|AJ0|fell
 fell|NN1|fell
 fell|VVB|fell
+fell|VVD|fall
 fell|VVD|fell
 fell|VVI|fell
 felonies|NN2|felony
@@ -48952,6 +48956,12 @@ level|NN1|level
 level|VVB|level
 level|VVI|level
 leven|NP0|leven
+leveraged|VVN|leverage
+leveraged|VVD|leverage
+leverages|VVZ|leverage
+leveraging|VVG|leverage
+leverage|VVB|leverage
+leverage|VVI|leverage
 leverage|NN1|leverage
 levered|AJ0|levered
 levered|VVD|lever

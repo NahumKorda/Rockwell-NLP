@@ -86,6 +86,8 @@ public class ConditionFactory {
     private final String COMPLETE = "t";
     private final String OPTIONAL = "*";
     
+    private final String BOUNDARY = "!";
+    
     private final String OPTION_LEFT_BRACKET = "[";
     private final String OPTION_RIGHT_BRACKET = "]";
 
@@ -289,9 +291,13 @@ public class ConditionFactory {
             case PREFIX:
             {
                 Affix affix = new Affix(aspect.getAspect(), value);
-                affix.setInclusive(aspect.isInclusive());
-                affix.setComplete(aspect.isComplete());
-                affix.setOptional(aspect.isCompulsory());
+                if (this.BOUNDARY.equals(value)) {
+                    affix.setBoundary(true);
+                } else {
+                    affix.setInclusive(aspect.isInclusive());
+                    affix.setComplete(aspect.isComplete());
+                    affix.setOptional(aspect.isCompulsory());
+                }
                 conditionElement.setPrefix(affix);
                 break;
             }
@@ -307,9 +313,13 @@ public class ConditionFactory {
             case SUFFIX:
             {
                 Affix affix = new Affix(aspect.getAspect(), value);
-                affix.setInclusive(aspect.isInclusive());
-                affix.setComplete(aspect.isComplete());
-                affix.setOptional(aspect.isCompulsory());
+                if (this.BOUNDARY.equals(value)) {
+                    affix.setBoundary(true);
+                } else {
+                    affix.setInclusive(aspect.isInclusive());
+                    affix.setComplete(aspect.isComplete());
+                    affix.setOptional(aspect.isCompulsory());
+                }
                 conditionElement.setSuffix(affix);
                 break;
             }

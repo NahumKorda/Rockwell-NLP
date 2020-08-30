@@ -32,6 +32,7 @@ import com.itcag.rockwell.tagger.lang.RejectingCondition;
 import com.itcag.rockwell.tagger.lang.State;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 /**
  * <p>This class evaluates whether a {@link com.itcag.rockwell.lang.Token token} matches the first {@link com.itcag.rockwell.tagger.lang.ConditionElement condition element} of any {@link com.itcag.rockwell.tagger.lang.Condition condition}. If it does, this condition creates a new instance of the {@link com.itcag.rockwell.tagger.lang.State State} class.</p>
@@ -69,6 +70,23 @@ public class InitialValidator extends Validator {
      */
     public State validatePrefix(ConditionElement conditionElement, Token anchor) throws Exception {
 
+        if (conditionElement.getPrefix().isBoundary()) {
+            
+            debugger.print("Prefix validation " + conditionElement.getPrefix().getKey());
+            debugger.print("-> Validating: "+ " " + this.conditions.getConditions().get(conditionElement.getConditionId()));
+
+            if (Objects.equals(anchor.getIndex(), this.tokens.get(0).getIndex())) {
+                debugger.print("Validated prefix (first token): " + anchor.toString());
+                debugger.print("->> Validated: "+ " " + this.conditions.getConditions().get(conditionElement.getConditionId()));
+                return getNewState(conditionElement, anchor);
+            } else {
+                debugger.print("Prefix not validated (not first token): " + anchor.toString());
+                debugger.print("->> Not validated: "+ " " + this.conditions.getConditions().get(conditionElement.getConditionId()));
+                return null;
+            }
+            
+        }
+        
         ArrayList<Token> tmp = getPrefixList(this.tokens, anchor, conditionElement.getPrefix().isInclusive());
 
         if (tmp.isEmpty()) {
@@ -120,6 +138,23 @@ public class InitialValidator extends Validator {
      */
     public State validateSuffix(ConditionElement conditionElement, Token anchor) throws Exception {
 
+        if (conditionElement.getSuffix().isBoundary()) {
+            
+            debugger.print("Prefix validation " + conditionElement.getSuffix().getKey());
+            debugger.print("-> Validating: "+ " " + this.conditions.getConditions().get(conditionElement.getConditionId()));
+
+            if (Objects.equals(anchor.getIndex(), this.tokens.get(this.tokens.size() - 1).getIndex())) {
+                debugger.print("Validated suffix (last token): " + anchor.toString());
+                debugger.print("->> Validated: "+ " " + this.conditions.getConditions().get(conditionElement.getConditionId()));
+                return getNewState(conditionElement, anchor);
+            } else {
+                debugger.print("Suffix not validated (not last token): " + anchor.toString());
+                debugger.print("->> Not validated: "+ " " + this.conditions.getConditions().get(conditionElement.getConditionId()));
+                return null;
+            }
+            
+        }
+        
         ArrayList<Token> tmp = getSuffixList(this.tokens, anchor, conditionElement.getSuffix().isInclusive());
         
         if (tmp.isEmpty()) {
