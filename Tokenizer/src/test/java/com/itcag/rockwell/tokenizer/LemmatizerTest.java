@@ -14,7 +14,7 @@ public class LemmatizerTest {
     public void testGetTokens() throws Exception {
 
         ArrayList<String> tests = new ArrayList<>();
-        tests.add("Telecom Argentina Has Tuesday Deadline to Pay $7.5m Ransom");
+        tests.add("Garmin reportedly paid millions of dollars in ransom for a cyber attack");
         
         Tokenizer tokenizer = new Tokenizer();
         

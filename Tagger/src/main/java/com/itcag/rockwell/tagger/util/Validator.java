@@ -181,7 +181,14 @@ public class Validator {
             }
         }
         
-        if (include) retVal.add(anchor);
+        if (include) {
+            for (Token token : tokens) {
+                if (Objects.equals(token.getIndex(), anchor.getIndex())) {
+                    retVal.add(token);
+                    break;
+                }
+            }
+        }
         
         return retVal;
         

@@ -7738,6 +7738,8 @@ bitchy|AJ0|bitchy
 bitch|NN1|bitch
 bitch|VVB|bitch
 bitch|VVI|bitch
+bitcoins|NN2|bitcoin
+bitcoin|NN1|bitcoin
 bites|NN2|bite
 bites|VVZ|bite
 bite|NN1|bite
@@ -34730,6 +34732,8 @@ fraternize|VVI|fraternize
 fraternizing|VVG|fraternize
 fratricides|NN2|fratricide
 fratricide|NN1|fratricide
+fraudsters|NN2|fraudster
+fraudster|NN1|fraudster
 frauds|NN2|fraud
 fraudulently|AV0|fraudulently
 fraudulent|AJ0|fraudulent
@@ -62820,6 +62824,7 @@ philosophy|NN1|philosophy
 philtres|NN2|philtres
 philtre|NN1|philtre
 phil|NP0|phil
+phishing|NN1|phishing
 phlebitis|NN1|phlebitis
 phlegmatically|AV0|phlegmatically
 phlegmatic|AJ0|phlegmatic
@@ -69244,6 +69249,7 @@ ransomed|VVN|ransom
 ransoming|VVG|ransom
 ransoms|NN2|ransom
 ransoms|VVZ|ransom
+ransomware|NN1|ransomware
 ransom|NN1|ransom
 ransom|VVB|ransom
 ransom|VVI|ransom
