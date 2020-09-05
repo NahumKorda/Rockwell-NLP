@@ -29,7 +29,7 @@ public class CSVFileWriter {
     public final static void append(String filePath, String[] line) throws Exception {
         
         File file = new File(filePath);
-        if (!file.exists()) throw new IllegalArgumentException("Incorrect file path: " + filePath);
+        if (!file.exists()) file.createNewFile();
         
         FileWriter fileWriter = new FileWriter(file, true);
         BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
@@ -40,5 +40,10 @@ public class CSVFileWriter {
         
     }
 
+    public final static void reset(String filePath) throws Exception {
+        File file = new File(filePath);
+        if (file.exists()) file.delete();
+        file.createNewFile();
+    }
     
 }
