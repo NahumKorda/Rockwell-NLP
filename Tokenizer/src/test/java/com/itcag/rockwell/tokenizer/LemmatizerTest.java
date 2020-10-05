@@ -14,7 +14,7 @@ public class LemmatizerTest {
     public void testGetTokens() throws Exception {
 
         ArrayList<String> tests = new ArrayList<>();
-        tests.add("Garmin reportedly paid millions of dollars in ransom for a cyber attack");
+        tests.add("A CMMC Approach to Address Firmware Vulnerabilities and Ensure Device Integrity");
         
         Tokenizer tokenizer = new Tokenizer();
         

@@ -90,6 +90,8 @@ public final class NumberDetector {
         
         String[] elts = word.split("-");
         
+        if (elts.length == 0) return null;
+        
         {
             int count = 0;
             for (String elt : elts) {

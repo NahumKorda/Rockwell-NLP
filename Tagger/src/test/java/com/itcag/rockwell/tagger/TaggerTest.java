@@ -47,9 +47,9 @@ public class TaggerTest {
 //        ArrayList<String> expressions = new ArrayList<>();
 //        expressions.add("@cain+suffix{} :in+noun | test");
 
-        StringBuilder text = new StringBuilder("SEC Issues Ransomware Alert");
+        StringBuilder text = new StringBuilder("vulnerabilities let them in.");
         ArrayList<String> expressions = new ArrayList<>();
-        expressions.add("@lemma :issue ; @cain+infix{x*} :alert+noun / @cain :update ; @cain :alert | warning");
+        expressions.add("@lemma :vulnerability ; @lemma+infix{x*} :let+verb_conditional | threat");
         
         for (StringBuilder sentence : splitter.split(text)) {
 

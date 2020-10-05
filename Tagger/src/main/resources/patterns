@@ -220,6 +220,10 @@
 @pos :VHD ; @lemma :not ; @pos+infix{*} :VBN+adverb ; @pos :VVN | verb_indicative
 @pos :VHG ; @lemma :not ; @pos+infix{*} :VBN+adverb ; @pos :VVN | verb_indicative
 
+##### this is necessary to allow for {x*} when no VM0 precedes it #####
+@type :VV | verb_conditional
+@type :VA | verb_conditional
+
 @pos :VM0 ; @pos+infix{*} :VBI+adverb |  verb_conditional
 @pos :VM0 ; @pos+infix{*} :VDI+adverb |  verb_conditional
 @pos :VM0 ; @pos+infix{*} :VHI+adverb |  verb_conditional

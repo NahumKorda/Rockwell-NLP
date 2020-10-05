@@ -23,6 +23,7 @@ import com.opencsv.CSVReader;
 import java.io.FileReader;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class CSVFileReader {
 
@@ -34,6 +35,7 @@ public class CSVFileReader {
         
         String[] line;
         while ((line = reader.readNext()) != null) {
+//System.out.println(Arrays.toString(line));
             retVal.add(line);
         }
         

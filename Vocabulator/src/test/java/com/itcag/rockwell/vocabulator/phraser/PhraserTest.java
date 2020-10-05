@@ -21,7 +21,7 @@ public class PhraserTest {
     public void testProcess() throws Exception {
 
         String folderPath = System.getProperty("user.home") + "/Desktop/analyzerInput/business/titles";
-        String filePath = System.getProperty("user.home") + "/code/Rockwell-NLP/Playground/src/main/resources/data/techcrunch";
+        String filePath = System.getProperty("user.home") + "/Desktop/zoominfo/forward/train/z.txt";
         
         int max = 6;
         int min = 0;
@@ -29,7 +29,7 @@ public class PhraserTest {
 //        String exclusions = Exclusions.STOPPHRASES.name() + ", " + Exclusions.ADJECTIVE_PHRASES.name() + ", " + Exclusions.VERB_PHRASES.name();
         String exclusions = Exclusions.STOPPHRASES.name();
         int threshold = 20;
-        int trimThreshold = 2;
+        int trimThreshold = 20;
 
         
         /*
@@ -55,6 +55,8 @@ public class PhraserTest {
         properties.put(PropertyFields.MAX_PHRASE_LENGTH.getField(), Integer.toString(max));
         
         properties.put(PropertyFields.EXCLUSIONS.getField(), exclusions);
+        properties.put(PropertyFields.STOP_PHRASES.getField(), "/home/nahum/code/Rockwell-NLP/Vocabulator/src/main/resources/stopwords");
+        
         properties.put(PropertyFields.WORD_THRESHOLD.getField(), Integer.toString(threshold));
         properties.put(PropertyFields.TRIM_THRESHOLD.getField(), Integer.toString(trimThreshold));
         
@@ -72,10 +74,10 @@ public class PhraserTest {
         
         this.extractor = new VocabularyExtractor(properties);
 
-        processFolder(folderPath);
-        folderPath = System.getProperty("user.home") + "/Desktop/analyzerInput/business/descriptions";
-        processFolder(folderPath);
-//        processFile(filePath);
+//        processFolder(folderPath);
+//        folderPath = System.getProperty("user.home") + "/Desktop/analyzerInput/business/descriptions";
+//        processFolder(folderPath);
+        processFile(filePath);
         
         extractor.print(false);
         

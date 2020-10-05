@@ -70,6 +70,8 @@ public final class Lemmatizer {
                 retVal.add(new Token(word, POSTag.PC0, word, retVal.size()));
             } else if (PunctuationToolbox.isNonTerminalPunctuation(cain)) {
                 retVal.add(new Token(word, POSTag.PC1, word, retVal.size()));
+            } else if (cain.equals("-")) {
+                retVal.add(new Token(word, POSTag.XZ4, word, retVal.size()));
             } else if (word.contains(Characters.ABBREVIATION.getReplacement())) {
                 word = this.locker.unlockAbbreviation(word);
                 retVal.add(new Token(word, POSTag.ABB, word, retVal.size()));
@@ -216,6 +218,7 @@ public final class Lemmatizer {
 
         if (word.contains("-")) {
             String[] elts = cain.split("-");
+            if (elts.length == 0) return false;
             String last = elts[elts.length - 1];
             if (this.lexicon.isKnown(last)) {
                 Alternatives alternatives = this.lexicon.getAlternatives(last);

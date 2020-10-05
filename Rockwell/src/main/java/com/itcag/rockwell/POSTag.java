@@ -150,6 +150,8 @@ public enum POSTag {
     XZ2(POSType.XZ),
     /** Measuring unit.*/
     XZ3(POSType.XZ),
+    /** Hyphen */
+    XZ4(POSType.XZ),
 
     ;
     
