@@ -46,6 +46,8 @@ public enum POSTag {
     CJT(POSType.CJ),
     /** Cardinal number (e.g., "one", "3", "fifty-five", "3609"). */
     CRD(POSType.NM),
+    /** Internet domain (in website/corporation names). */
+    DOM(POSType.NN),
     /** General determiner. */
     DT0(POSType.DT),
     /** Existential "there", i.e. there occurring in the "there is..." or "there are..." construction. */
@@ -152,6 +154,8 @@ public enum POSTag {
     XZ3(POSType.XZ),
     /** Hyphen */
     XZ4(POSType.XZ),
+    /** Quote */
+    XZ5(POSType.XZ),
 
     ;
     

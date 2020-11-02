@@ -511,4 +511,8 @@ public class Pipeline {
         return retVal;
     }
     
+    public void test() throws Exception {
+        
+    }
+    
 }

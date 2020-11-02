@@ -11,7 +11,7 @@ public class SplitterTest {
     @Test
     public void testSplit() throws Exception {
         
-        StringBuilder text = new StringBuilder("Report: GrubHub nears deal to be acquired by Just Eat Takeway.com...");
+        StringBuilder text = new StringBuilder("Report: GrubHub nears deal to be acquired by Just Eat Takeway.com.");
         
         Splitter splitter = new Splitter();
         ArrayList<StringBuilder> sentences = splitter.split(text);

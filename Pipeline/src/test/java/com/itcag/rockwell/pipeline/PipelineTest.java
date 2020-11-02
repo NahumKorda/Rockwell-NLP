@@ -1,22 +1,39 @@
 package com.itcag.rockwell.pipeline;
 
 import com.itcag.rockwell.lang.Extract;
-import com.itcag.rockwell.lang.Semtoken;
 import com.itcag.rockwell.lang.Tag;
 import com.itcag.rockwell.lang.Token;
 import com.itcag.rockwell.semantex.ner.NER;
 import com.itcag.rockwell.util.TokenPrinter;
 import com.itcag.util.Printer;
+
 import java.util.ArrayList;
 import java.util.Properties;
+
 import org.junit.jupiter.api.Test;
 
 public class PipelineTest {
     
     @Test
-    public void testSplit() throws Exception {
+    public void testTest() throws Exception {
+//        split();
+//        tokenizeStringBuilder();
+//        tokenizeString();
+//        lemmatizeArrayList();
+        lemmatizeString();
+//        insertNERInArrayList();
+//        insertNERInString();
+//        getNERFromArrayList();
+//        getNERFromString();
+//        extractString();
+//        extractArrayList();
+//        classifyString();
+//        classifyArrayList();
+    }
+    
+    private void split() throws Exception {
         
-        String text = "The quick brown fox jumps over the lazy dog. Lazy dog doesn't wake up.";
+        String text = "\"He wants his brother's wives.\" - Said the old man.";
         
         Properties properties = new Properties();
         properties.put(PropertyFields.TASK.getField(), Pipeline.Tasks.SPLIT.name());
@@ -30,10 +47,9 @@ public class PipelineTest {
         
     }
 
-    @Test
-    public void testTokenize_StringBuilder() throws Exception {
+    private void tokenizeStringBuilder() throws Exception {
         
-        String text = "The quick brown fox jumps over the lazy dog. Lazy dog doesn't wake up.";
+        String text = "The quick brown fox jumps in the U.S.A. over the lazy dog. Lazy dog doesn't wake up.";
         
         Properties properties = new Properties();
         properties.put(PropertyFields.TASK.getField(), Pipeline.Tasks.TOKENIZE.name());
@@ -45,18 +61,17 @@ public class PipelineTest {
 
             ArrayList<String> tokens = pipeline.tokenize(sentence);
 
-            for (String token : tokens) {
+            tokens.forEach((token) -> {
                 System.out.println(token);
-            }
+            });
 
         }
 
     }
 
-    @Test
-    public void testTokenize_String() throws Exception {
+    private void tokenizeString() throws Exception {
         
-        String text = "The quick brown fox jumps over the lazy dog.";
+        String text = "'He wants his brother's wives.' - Said the old man.";
         
         Properties properties = new Properties();
         properties.put(PropertyFields.TASK.getField(), Pipeline.Tasks.TOKENIZE.name());
@@ -69,17 +84,17 @@ public class PipelineTest {
                 Printer.print(token);
             }
             Printer.print();
+            Printer.print();
         }
         
     }
 
-    @Test
-    public void testLemmatize_ArrayList() throws Exception {
+    public void lemmatizeArrayList() throws Exception {
         
         String text = "The quick brown fox jumps over the lazy dog. Lazy dog doesn't wake up.";
         
         Properties properties = new Properties();
-        properties.put(PropertyFields.TASK.getField(), Pipeline.Tasks.TOKENIZE.name());
+        properties.put(PropertyFields.TASK.getField(), Pipeline.Tasks.LEMMATIZE.name());
         
         Pipeline pipeline = new Pipeline(properties);
         ArrayList<StringBuilder> sentences = pipeline.split(text);
@@ -95,10 +110,9 @@ public class PipelineTest {
 
     }
 
-    @Test
-    public void testLemmatize_String() throws Exception {
+    private void lemmatizeString() throws Exception {
         
-        String text = "The quick brown fox jumps over the lazy dog.";
+        String text = "'He doesn't want his brothers' wives.' - Said the old man.";
         
         Properties properties = new Properties();
         properties.put(PropertyFields.TASK.getField(), Pipeline.Tasks.LEMMATIZE.name());
@@ -113,8 +127,7 @@ public class PipelineTest {
         
     }
 
-    @Test
-    public void testInsertNamedEntities_ArrayList() throws Exception {
+    private void insertNERInArrayList() throws Exception {
         
         String text = "The quick brown fox jumps over the lazy dog. Lazy dog doesn't wake up.";
         String instructions = NER.Instructions.PERSONS.name() + ", " + NER.Instructions.ORGANIZATIONS.name() + ", " + NER.Instructions.DATES.name() + ", " + NER.Instructions.CURRENCIES.name();
@@ -133,8 +146,7 @@ public class PipelineTest {
 
     }
 
-    @Test
-    public void testInsertNamedEntities_String() throws Exception {
+    private void insertNERInString() throws Exception {
         
         String text = "The quick brown fox jumps over the lazy dog.";
         String instructions = NER.Instructions.PERSONS.name() + ", " + NER.Instructions.ORGANIZATIONS.name() + ", " + NER.Instructions.DATES.name() + ", " + NER.Instructions.CURRENCIES.name();
@@ -153,8 +165,7 @@ public class PipelineTest {
         
     }
 
-    @Test
-    public void testGetNamedEntities_ArrayList() throws Exception {
+    private void getNERFromArrayList() throws Exception {
         
         String text = "The quick brown fox jumps over the lazy dog. Lazy dog doesn't wake up.";
         String instructions = NER.Instructions.PERSONS.name() + ", " + NER.Instructions.ORGANIZATIONS.name() + ", " + NER.Instructions.DATES.name() + ", " + NER.Instructions.CURRENCIES.name();
@@ -175,8 +186,7 @@ public class PipelineTest {
 
     }
 
-    @Test
-    public void testGetNamedEntities_String() throws Exception {
+    private void getNERFromString() throws Exception {
         
         String text = "The quick brown fox jumps over the lazy dog.";
         String instructions = NER.Instructions.PERSONS.name() + ", " + NER.Instructions.ORGANIZATIONS.name() + ", " + NER.Instructions.DATES.name() + ", " + NER.Instructions.CURRENCIES.name();
@@ -197,8 +207,7 @@ public class PipelineTest {
         
     }
 
-    @Test
-    public void testClassify_ArrayList() throws Exception {
+    private void classifyArrayList() throws Exception {
         
         String text = "The quick brown fox jumps over the lazy dog. Lazy dog doesn't wake up.";
         String instructions = NER.Instructions.PERSONS.name() + ", " + NER.Instructions.ORGANIZATIONS.name() + ", " + NER.Instructions.DATES.name() + ", " + NER.Instructions.CURRENCIES.name();
@@ -223,8 +232,7 @@ public class PipelineTest {
 
     }
 
-    @Test
-    public void testClassify_String() throws Exception {
+    private void classifyString() throws Exception {
         
         String text = "The quick brown fox jumps over the lazy dog.";
         String instructions = NER.Instructions.PERSONS.name() + ", " + NER.Instructions.ORGANIZATIONS.name() + ", " + NER.Instructions.DATES.name() + ", " + NER.Instructions.CURRENCIES.name();
@@ -248,8 +256,7 @@ public class PipelineTest {
         
     }
 
-    @Test
-    public void testExtract_ArrayList() throws Exception {
+    private void extractArrayList() throws Exception {
         
         String text = "The quick brown fox jumps over the lazy dog. Lazy dog doesn't wake up.";
         String instructions = NER.Instructions.PERSONS.name() + ", " + NER.Instructions.ORGANIZATIONS.name() + ", " + NER.Instructions.DATES.name() + ", " + NER.Instructions.CURRENCIES.name();
@@ -275,8 +282,7 @@ public class PipelineTest {
 
     }
 
-    @Test
-    public void testExtract_String() throws Exception {
+    private void extractString() throws Exception {
         
         String text = "The quick brown fox jumps over the lazy dog.";
         String instructions = NER.Instructions.PERSONS.name() + ", " + NER.Instructions.ORGANIZATIONS.name() + ", " + NER.Instructions.DATES.name() + ", " + NER.Instructions.CURRENCIES.name();
@@ -299,5 +305,5 @@ public class PipelineTest {
         }
         
     }
-    
+
 }

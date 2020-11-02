@@ -55,7 +55,6 @@ public final class Tokenizer {
         this.locker.lock(sentence);
         
         ArrayList<String> tokens = tokenize(sentence);
-        boolean quote = false;
         for (String token : tokens) {
             
             /**
@@ -68,28 +67,6 @@ public final class Tokenizer {
             
             if (toklex.isRecognized(token.toLowerCase())) {
                 retVal.addAll(toklex.getReplacement(token.toLowerCase()));
-            } else if (token.endsWith("'s")) {
-                String tmp = token.substring(0, token.length() - 2);
-                if (!tmp.isEmpty()) retVal.add(tmp);
-                retVal.add("'s");
-            } else if (token.endsWith("s'")) {
-                retVal.add(token.substring(0, token.length() - 1));
-                retVal.add("'");
-            } else if (token.startsWith("'")) {
-                String tmp = token.substring(1, token.length());
-                if (tmp.isEmpty()) continue;
-                if (tmp.endsWith("'")) {
-                    tmp = tmp.substring(0, tmp.length() - 1);
-                    retVal.add(tmp);
-                } else {
-                    retVal.add(tmp);
-                    quote = true;
-                }
-            } else if (token.endsWith("'") && quote) {
-                String tmp = token.substring(0, token.length() - 1);
-                if (tmp.isEmpty()) continue;
-                retVal.add(tmp);
-                quote = false;
             } else {
                 retVal.add(token);
             }
@@ -125,14 +102,18 @@ public final class Tokenizer {
     }
     
     private ArrayList<String> sortOutFromEnd(ArrayList<String> tokens) {
+
+        int singleQuoteCount = countSingleQuotes(tokens);
+        int doubleQuoteCount = countDoubleQuotes(tokens);
+        
         ArrayList<String> retVal = new ArrayList<>();
         for (String token : tokens) {
-            retVal.addAll(resolveFromEnd(token));
+            retVal.addAll(resolveFromEnd(token, singleQuoteCount, doubleQuoteCount));
         }
         return retVal;
     }
     
-    private LinkedList<String> resolveFromEnd(String token) {
+    private LinkedList<String> resolveFromEnd(String token, int singleQuoteCount, int doubleQuoteCount) {
         
         LinkedList<String> retVal = new LinkedList<>();
 
@@ -157,7 +138,54 @@ public final class Tokenizer {
                 found = true;
             } else if (token.endsWith(")") || token.endsWith("]") || token.endsWith("}")) {
                 /**
-                 * Separate parentheses from the last word.
+                 * Separate parentheses from the word.
+                 */
+                retVal.addFirst(token.substring(token.length() - 1));
+                token = token.substring(0, token.length() - 1);
+                if (token.isEmpty()) break;
+                found = true;
+            } else if (token.endsWith("s'") && singleQuoteCount < 0) {
+                /**
+                 * This is the Saxon genitive in plural.
+                 * Leave it as is and do not proceed.
+                 */
+            } else if (token.endsWith("'") && singleQuoteCount < 0) {
+                /**
+                 * If preceded by a number, this is a measure (in feet).
+                 * Leave it as is and do not proceed.
+                 * Otherwise remove the quote and proceed.
+                 */
+                char c = token.charAt(token.length() - 2);
+                if (!Character.isDigit(c)) {
+                    retVal.addFirst(token.substring(token.length() - 1));
+                    token = token.substring(0, token.length() - 1);
+                    if (token.isEmpty()) break;
+                    found = true;
+                }
+            } else if (token.endsWith("'")) {
+                /**
+                 * Separate single quote from the word.
+                 */
+                retVal.addFirst(token.substring(token.length() - 1));
+                token = token.substring(0, token.length() - 1);
+                if (token.isEmpty()) break;
+                found = true;
+            } else if (token.endsWith("\"") && doubleQuoteCount < 0) {
+                /**
+                 * If preceded by a number, this is a measure (in inches).
+                 * Leave it as is and do not proceed.
+                 * Otherwise remove the quote and proceed.
+                 */
+                char c = token.charAt(token.length() - 2);
+                if (!Character.isDigit(c)) {
+                    retVal.addFirst(token.substring(token.length() - 1));
+                    token = token.substring(0, token.length() - 1);
+                    if (token.isEmpty()) break;
+                    found = true;
+                }
+            } else if (token.endsWith("\"")) {
+                /**
+                 * Separate double quote from the word.
                  */
                 retVal.addFirst(token.substring(token.length() - 1));
                 token = token.substring(0, token.length() - 1);
@@ -173,6 +201,32 @@ public final class Tokenizer {
         
     }
 
+    private int countSingleQuotes(ArrayList<String> tokens) {
+        int retVal = 0;
+        for (String token : tokens) {
+            if (token.startsWith("'")) {
+                retVal++;
+            }
+            if (token.endsWith("'")) {
+                retVal--;
+            }
+        }
+        return retVal;
+    }
+    
+    private int countDoubleQuotes(ArrayList<String> tokens) {
+        int retVal = 0;
+        for (String token : tokens) {
+            if (token.startsWith("\"")) {
+                retVal++;
+            }
+            if (token.endsWith("\"")) {
+                retVal--;
+            }
+        }
+        return retVal;
+    }
+    
     private ArrayList<String> sortOutFromStart(ArrayList<String> tokens) {
         ArrayList<String> retVal = new ArrayList<>();
         for (String token : tokens) {
@@ -193,7 +247,15 @@ public final class Tokenizer {
 
             if (token.startsWith("(") || token.startsWith("[") || token.startsWith("{")) {
                 /**
-                 * Separate parentheses from the first word.
+                 * Separate parentheses from the word.
+                 */
+                retVal.addLast(token.substring(0, 1));
+                token = token.substring(1);
+                if (token.isEmpty()) break;
+                found = true;
+            } else if (token.startsWith("\"") || token.startsWith("'")) {
+                /**
+                 * Separate quotes from the word.
                  */
                 retVal.addLast(token.substring(0, 1));
                 token = token.substring(1);

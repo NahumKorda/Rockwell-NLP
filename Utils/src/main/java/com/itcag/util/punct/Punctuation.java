@@ -143,27 +143,29 @@ public final class Punctuation {
         int pos = input.indexOf(punctuation);
         while (pos > -1) {
 
-            /*
+            /**
              * Ensure that we can peek one character - check if this is the period that ends the entire text.
              */
             if (input.length() > pos + 1) {
 
-                /*
-                 * Check whether the following character is empty space.
+                /**
+                 * Check whether the following character is empty space or quotes
+                 * (do not insert empty space before a quote following a punctuation character,
+                 * and there is no sense in inserting empty space in front of another empty space).
                  */
-                if (input.charAt(pos + 1) != 32) {
+                if (input.charAt(pos + 1) != 32 && input.charAt(pos + 1) != 34 && input.charAt(pos + 1) != 39) {
 
-                    /*
+                    /**
                      * Check if we can peek yet another character.
                      */
                     if (input.length() > pos + 2) {
 
-                        /*
+                        /**
                          * Check whether the following character is a period (making it an acronym).
                          */
                         if (input.charAt(pos + 2) != 46) {
                         
-                            /*
+                            /**
                              * if not, insert an empty space after the period.
                              */
                             input.insert(pos + 1, (char) 32);

@@ -53,6 +53,96 @@ public final class Lemmatizer {
 
     }
     
+    private ArrayList<Object> resolveQuotes (ArrayList<String> sentence) throws Exception {
+        
+        ArrayList<Object> retVal = new ArrayList<>();
+        
+        for (String word : sentence) {
+
+            String cain = word.toLowerCase();
+
+            if ("'".equals(word) || "\"".equals(word)) {
+                /**
+                 * Simple quotes.
+                 */
+                retVal.add(new Token(word, POSTag.XZ5, word, retVal.size()));
+            } else if (cain.endsWith("s'")) {
+                /**
+                 * Saxon genitive for plural.
+                 */
+                word = word.substring(0, word.length() - 1);
+                retVal.add(word);
+                retVal.add(new Token("'", POSTag.POS, "'", retVal.size()));
+            } else if (cain.endsWith("'s")) {
+                /**
+                 * Saxon genitive for singular.
+                 */
+                String saxGen = word.substring(word.length() - 2);
+                word = word.substring(0, word.length() - 2);
+                retVal.add(word);
+                retVal.add(new Token(saxGen, POSTag.POS, "'s", retVal.size()));
+            } else if (word.endsWith("'")) {
+                /**
+                 * Number followed by a single quote = imperial measure (in feet).
+                 */
+                word = word.substring(0, word.length() - 1);
+                retVal.add(new Token(word, POSTag.CRD, word, retVal.size()));
+                retVal.add(new Token("'", POSTag.XZ3, "'", retVal.size()));
+            } else if (word.endsWith("\"")) {
+                if (word.contains("'")) {
+                    /**
+                     * Combined imperial measure (feet + inches).
+                     */
+                    if (!insertImperialLength(word, retVal)) {
+                        /**
+                         * Cannot be split properly = unknown word followed by a double quote.
+                         */
+                        word = word.substring(0, word.length() - 1);
+                        retVal.add(word);
+                        retVal.add(new Token("\"", POSTag.XZ5, "\"", retVal.size()));
+                    }
+                } else {
+                    /**
+                     * Number followed by a double quote = imperial measure (in inches).
+                     */
+                    word = word.substring(0, word.length() - 1);
+                    retVal.add(new Token(word, POSTag.CRD, word, retVal.size()));
+                    retVal.add(new Token("\"", POSTag.XZ3, "\"", retVal.size()));
+                }
+            } else {
+                retVal.add(word);
+            }
+            
+        }
+
+        return retVal;
+        
+    }
+    
+    private boolean insertImperialLength(String word, ArrayList<Object> retVal) {
+
+        /**
+         * Handles only foot and inch combinations.
+         * For example: 5'7".
+         * Since there are two measuring units occurring in the same word,
+         * the NumericalExpressionDetector class cannot parse it correctly.
+         */
+        int foot = word.indexOf("'");
+        int inch = word.indexOf("\"");
+        if (foot == -1 || inch == -1 || inch < foot) return false;
+        
+        String feet = word.substring(0, foot);
+        String inches = word.substring(foot + 1, word.length() - 1);
+        
+        retVal.add(new Token(feet, POSTag.CRD, feet, retVal.size()));
+        retVal.add(new Token("'", POSTag.XZ3, "'", retVal.size()));
+        retVal.add(new Token(inches, POSTag.CRD, inches, retVal.size()));
+        retVal.add(new Token("\"", POSTag.XZ3, "\"", retVal.size()));
+        
+        return true;
+
+    }
+    
     /**
      * @param sentence Array list containing strings holding tokens.
      * @return Array list containing instances of the {@link com.itcag.rockwell.lang.Token Token} class.
@@ -62,8 +152,18 @@ public final class Lemmatizer {
         
         ArrayList<Token> retVal = new ArrayList<>();
         
-        for (String word : sentence) {
+        ArrayList<Object> mixedArray = resolveQuotes(sentence);
+        
+        for (Object object : mixedArray) {
             
+            if (object instanceof Token) {
+                Token token = (Token) object;
+                token.setIndex(retVal.size());
+                retVal.add(token);
+                continue;
+            }
+            
+            String word = (String) object;
             String cain = word.toLowerCase();
             
             if (PunctuationToolbox.isTerminalPunctuation(cain)) {
@@ -80,7 +180,7 @@ public final class Lemmatizer {
                 retVal.add(new Token(word, POSTag.ACR, word, retVal.size()));
             } else if (cain.contains(Characters.DOMAIN.getReplacement())) {
                 word = this.locker.unlockDomain(word);
-                retVal.add(new Token(word, POSTag.ACR, word, retVal.size()));
+                retVal.add(new Token(word, POSTag.DOM, word, retVal.size()));
             } else if ("(".equals(cain) || "[".equals(cain) || "{".equals(cain)) {
                 retVal.add(new Token(word, POSTag.PC2, word, retVal.size()));
             } else if (")".equals(cain) || "]".equals(cain) || "}".equals(cain)) {
@@ -93,10 +193,6 @@ public final class Lemmatizer {
                 retVal.add(lexer.getToken(word, retVal.size()));
             } else if (NumberDetector.getDigits(cain) != null) {
                 retVal.add(new Token(word, POSTag.CRD, cain, retVal.size()));
-            } else if ("'".equals(word)) {
-                retVal.add(new Token(word, POSTag.POS, "'", retVal.size()));
-            } else if (word.startsWith("'") || word.endsWith("'")) {
-                retVal.add(new Token(word, POSTag.XXX, word, retVal.size()));
             } else if (word.length() == 1 && ("%".equals(word) || "‰".equals(word))) {
                 retVal.add(new Token(word, POSTag.XZ1, word, retVal.size()));
             } else if (this.lexicalResources.isCurrencyCode(cain)) {
@@ -165,8 +261,6 @@ public final class Lemmatizer {
     
     private boolean isNumericalExpression(String word, ArrayList<Token> tokens) throws Exception {
         
-        if (word.contains("'") && word.contains("\"")) return isImperialLength(word, tokens);
-        
         NumericalExpressionDetector detector = new NumericalExpressionDetector();
         if (detector.split(word.toCharArray())) {
             switch (detector.getType()) {
@@ -188,30 +282,6 @@ public final class Lemmatizer {
             }
         }
         return false;
-    }
-    
-    private boolean isImperialLength(String word, ArrayList<Token> tokens) {
-
-        /**
-         * Handles only foot and inch combinations.
-         * For example: 5'7".
-         * Since there are two measuring units occurring in the same word,
-         * the NumericalExpressionDetector class cannot parse it correctly.
-         */
-        int foot = word.indexOf("'");
-        int inch = word.indexOf("\"");
-        if (foot == -1 || inch == -1 || inch < foot) return false;
-        
-        String feet = word.substring(0, foot);
-        String inches = word.substring(foot + 1, word.length() - 1);
-        
-        tokens.add(new Token(feet, POSTag.CRD, feet, tokens.size()));
-        tokens.add(new Token("'", POSTag.XZ3, "'", tokens.size()));
-        tokens.add(new Token(inches, POSTag.CRD, inches, tokens.size()));
-        tokens.add(new Token("\"", POSTag.XZ3, "\"", tokens.size()));
-        
-        return true;
-
     }
     
     private boolean isCompoundWord(String word, String cain, ArrayList<Token> tokens) {

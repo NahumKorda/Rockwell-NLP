@@ -130,6 +130,17 @@ public final class Split {
          */
         if (lastWord.length() == 1) return false;
         
+        /**
+         * A (single or double) quote could follow a punctuation character
+         * (the end of quotation is also the end of that sentence).
+         */
+        if (p == 34 || p == 39) {
+            /**
+             * Check the character preceding the quote.
+             */
+            if (lastWord.length() > 1) p = lastWord.charAt(lastWord.length() - 2);
+        }
+        
         if (this.extended) {
             if (!PunctuationToolbox.isExtendedTerminalPunctuation(Character.toString(p))) return false;
         } else {
