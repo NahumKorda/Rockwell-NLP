@@ -108,7 +108,11 @@ public final class Tokenizer {
         
         ArrayList<String> retVal = new ArrayList<>();
         for (String token : tokens) {
-            retVal.addAll(resolveFromEnd(token, singleQuoteCount, doubleQuoteCount));
+            if (token.length() == 1) {
+                retVal.add(token);
+            } else {
+                retVal.addAll(resolveFromEnd(token, singleQuoteCount, doubleQuoteCount));
+            }
         }
         return retVal;
     }
@@ -230,7 +234,11 @@ public final class Tokenizer {
     private ArrayList<String> sortOutFromStart(ArrayList<String> tokens) {
         ArrayList<String> retVal = new ArrayList<>();
         for (String token : tokens) {
-            retVal.addAll(resolveFromStart(token));
+            if (token.length() == 1) {
+                retVal.add(token);
+            } else {
+                retVal.addAll(resolveFromStart(token));
+            }
         }
         return retVal;
     }
