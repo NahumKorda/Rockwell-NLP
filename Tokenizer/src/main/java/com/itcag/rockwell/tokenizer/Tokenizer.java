@@ -195,6 +195,14 @@ public final class Tokenizer {
                 token = token.substring(0, token.length() - 1);
                 if (token.isEmpty()) break;
                 found = true;
+            } else if (token.endsWith("®") || token.endsWith("©") || token.endsWith("™")) {
+                /**
+                 * Separate symbols from the world, but don't continue,
+                 * since this is an addition to a name that should be preserved as is.
+                 */
+                retVal.addFirst(token.substring(token.length() - 1));
+                token = token.substring(0, token.length() - 1);
+                if (token.isEmpty()) break;
             }
             
         } while (found);

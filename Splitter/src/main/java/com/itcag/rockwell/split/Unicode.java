@@ -298,6 +298,10 @@ public final class Unicode {
             case 65130:
             case 65285:
                 return 37;
+            /* per mille */
+            case 1545:
+            case 8240:
+                return 8240;
             /* ampersand */
             case 38:
             case 65120:

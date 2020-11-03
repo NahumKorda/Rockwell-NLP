@@ -170,6 +170,10 @@ public final class Lemmatizer {
                 retVal.add(new Token(word, POSTag.PC0, word, retVal.size()));
             } else if (PunctuationToolbox.isNonTerminalPunctuation(cain)) {
                 retVal.add(new Token(word, POSTag.PC1, word, retVal.size()));
+            } else if ("(".equals(cain) || "[".equals(cain) || "{".equals(cain)) {
+                retVal.add(new Token(word, POSTag.PC2, word, retVal.size()));
+            } else if (")".equals(cain) || "]".equals(cain) || "}".equals(cain)) {
+                retVal.add(new Token(word, POSTag.PC3, word, retVal.size()));
             } else if (cain.equals("-")) {
                 retVal.add(new Token(word, POSTag.XZ4, word, retVal.size()));
             } else if (word.contains(Characters.ABBREVIATION.getReplacement())) {
@@ -181,14 +185,14 @@ public final class Lemmatizer {
             } else if (cain.contains(Characters.DOMAIN.getReplacement())) {
                 word = this.locker.unlockDomain(word);
                 retVal.add(new Token(word, POSTag.DOM, word, retVal.size()));
-            } else if ("(".equals(cain) || "[".equals(cain) || "{".equals(cain)) {
-                retVal.add(new Token(word, POSTag.PC2, word, retVal.size()));
-            } else if (")".equals(cain) || "]".equals(cain) || "}".equals(cain)) {
-                retVal.add(new Token(word, POSTag.PC3, word, retVal.size()));
             } else if ("n't".equals(cain) || "not".equals(cain)) {
                 retVal.add(new Token(word, POSTag.XX0, "not", retVal.size()));
             } else if ("never".equals(cain) || "ne'er".equals(cain)) {
                 retVal.add(new Token(word, POSTag.XX0, "never", retVal.size()));
+            } else if (word.startsWith("#") && word.length() > 1 && Character.isLetterOrDigit(word.charAt(1))) {
+                retVal.add(new Token(word, POSTag.XY0, cain, retVal.size()));
+            } else if (word.startsWith("@") && word.length() > 1 && Character.isLetterOrDigit(word.charAt(1))) {
+                retVal.add(new Token(word, POSTag.XY1, cain, retVal.size()));
             } else if (lexicon.isKnown(cain)) {
                 retVal.add(lexer.getToken(word, retVal.size()));
             } else if (NumberDetector.getDigits(cain) != null) {
@@ -225,8 +229,11 @@ public final class Lemmatizer {
                 Token token = NumberDetector.identify(word, retVal.size());
                 if (token == null) {
                     if (!isCompoundWord(word, cain, retVal)) {
-                        token = new Token(word, POSTag.XXX, word, retVal.size());
-                        retVal.add(token);
+                        if (word.length() == 1 && !Character.isLetterOrDigit(word.charAt(0))) {
+                            retVal.add(new Token(word, POSTag.XZ6, word, retVal.size()));
+                        } else {
+                            retVal.add(new Token(word, POSTag.XXX, word, retVal.size()));
+                        }
                     }
                 } else {
                     retVal.add(token);
@@ -265,18 +272,26 @@ public final class Lemmatizer {
         if (detector.split(word.toCharArray())) {
             switch (detector.getType()) {
                 case PERCENTAGE:
+                    if (detector.getCca()) tokens.add(new Token("~", POSTag.XZ6, "~", tokens.size()));
+                    if (detector.getPlusMinus()) tokens.add(new Token("±", POSTag.XZ6, "±", tokens.size()));
                     tokens.add(new Token(detector.getNumberAsString(), POSTag.CRD, detector.getNumberAsString(), tokens.size()));
                     tokens.add(new Token(detector.getSuffix(), POSTag.XZ1, detector.getSuffix(), tokens.size()));
                     return true;
                 case CURRENCY:
+                    if (detector.getCca()) tokens.add(new Token("~", POSTag.XZ6, "~", tokens.size()));
+                    if (detector.getPlusMinus()) tokens.add(new Token("±", POSTag.XZ6, "±", tokens.size()));
                     tokens.add(new Token(detector.getPrefix(), POSTag.XZ2, detector.getPrefix(), tokens.size()));
                     tokens.add(new Token(detector.getNumberAsString(), POSTag.CRD, detector.getNumberAsString(), tokens.size()));
                     return true;
                 case QUANTITY:
+                    if (detector.getCca()) tokens.add(new Token("~", POSTag.XZ6, "~", tokens.size()));
+                    if (detector.getPlusMinus()) tokens.add(new Token("±", POSTag.XZ6, "±", tokens.size()));
                     tokens.add(new Token(detector.getNumberAsString(), POSTag.CRD, detector.getNumberAsString(), tokens.size()));
                     tokens.add(new Token(detector.getSuffix(), POSTag.XZ3, detector.getSuffix(), tokens.size()));
                     return true;
                 case NUMBER:
+                    if (detector.getCca()) tokens.add(new Token("~", POSTag.XZ6, "~", tokens.size()));
+                    if (detector.getPlusMinus()) tokens.add(new Token("±", POSTag.XZ6, "±", tokens.size()));
                     tokens.add(new Token(detector.getNumberAsString(), POSTag.CRD, detector.getNumberAsString(), tokens.size()));
                     return true;
             }

@@ -58,9 +58,11 @@ public final class NumericalExpressionDetector {
     private final LexicalResources lexicalResources;
 
     private Type type = null;
+    private Double number = null;
     
     private Boolean negative = null;
-    private Double number = null;
+    private Boolean cca = null;
+    private Boolean plusMinus = null;
     
     private final StringBuilder digits = new StringBuilder();
     private final StringBuilder prefix = new StringBuilder();
@@ -98,6 +100,24 @@ public final class NumericalExpressionDetector {
                  */
                 if (i == 0) {
                     this.negative = false;
+                } else {
+                    return false;
+                }
+            } else if (chars[i] == 177 || chars[i] == 8723) {
+                /**
+                 * Plus/minus sign.
+                 */
+                if (i == 0) {
+                    this.plusMinus = false;
+                } else {
+                    return false;
+                }
+            } else if (chars[i] == 126) {
+                /**
+                 * Tilde sign.
+                 */
+                if (i == 0) {
+                    this.cca = false;
                 } else {
                     return false;
                 }
@@ -192,6 +212,14 @@ public final class NumericalExpressionDetector {
     
     /**
      * Used if the {@link #split(char[])} method returned TRUE.
+     * @return Value of the {@link Type} enum indicating which numerical expression was identified.
+     */
+    public Type getType() {
+        return type;
+    }
+    
+    /**
+     * Used if the {@link #split(char[])} method returned TRUE.
      * @return Number holding the number part pf the token.
      */
     public Number getNumber() {
@@ -222,12 +250,12 @@ public final class NumericalExpressionDetector {
         return this.suffix.toString();
     }
 
-    /**
-     * Used if the {@link #split(char[])} method returned TRUE.
-     * @return Value of the {@link Type} enum indicating which numerical expression was identified.
-     */
-    public Type getType() {
-        return type;
+    public boolean getCca() {
+        return this.cca;
+    }
+    
+    public boolean getPlusMinus() {
+        return this.plusMinus;
     }
     
 }

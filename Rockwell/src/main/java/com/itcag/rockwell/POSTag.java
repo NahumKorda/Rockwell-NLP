@@ -146,6 +146,12 @@ public enum POSTag {
     
     /** Unrecognized word.*/
     XXX(POSType.NN),
+    
+    /** Hashtag */
+    XY0(POSType.NN),
+    /** At user */
+    XY1(POSType.NN),
+    
     /** %, ‰*/
     XZ1(POSType.XZ),
     /** Currency.*/
@@ -156,6 +162,8 @@ public enum POSTag {
     XZ4(POSType.XZ),
     /** Quote */
     XZ5(POSType.XZ),
+    /** Symbol */
+    XZ6(POSType.XZ),
 
     ;
     
