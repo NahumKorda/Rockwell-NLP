@@ -52,7 +52,7 @@ public final class Lexer {
             Token retVal = new Token(word, null, null, index);
             Token alternative = lexicon.getAlternatives(cain).getAlternatives().get(0);
             retVal.addAlternative(alternative);
-            alternative = new Token(word, POSTag.ACR, word);
+            alternative = new Token(word, POSTag.XY5, word);
             retVal.addAlternative(alternative);
             return retVal;
         } else if (lexicon.getAlternatives(cain).getAlternatives().size() == 1) {

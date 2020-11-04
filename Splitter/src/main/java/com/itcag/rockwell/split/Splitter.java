@@ -31,17 +31,21 @@ import java.util.Iterator;
  */
 public final class Splitter {
 
+    private final Locker locker;
+    
     /**
      * Extended split includes splitting not only on sentence terminating characters, but also on colon and semicolon.
      * This is required, for example, in case of newspaper titles and social posts.
      */
     private final boolean extended;
     
-    public Splitter() {
+    public Splitter() throws Exception{
+        this.locker = new Locker();
         this.extended = false;
     }
     
-    public Splitter(boolean extended) {
+    public Splitter(boolean extended) throws Exception {
+        this.locker = new Locker();
         this.extended = extended;
     }
     
@@ -50,10 +54,48 @@ public final class Splitter {
      * @return Array list containing string builders holding individual sentences.
      * @throws Exception if anything goes wrong.
      */
-    public final ArrayList<StringBuilder> split(StringBuilder input) throws Exception {
+    public final ArrayList<String> split(String input) throws Exception {
         
         if (TextToolbox.isEmpty(input)) throw new IllegalArgumentException("Input is empty.");
 
+        ArrayList<String> retVal = new ArrayList<>();
+        
+        ArrayList<StringBuilder> sentences = this.protocol(new StringBuilder(input));
+        for (StringBuilder sentence : sentences) {
+            
+            /**
+             * Reinsert punctuation after the split.
+             */
+            locker.unlockEverything(sentence);
+            
+            retVal.add(sentence.toString());
+
+        }
+
+        return retVal;
+        
+    }
+    
+    public final ArrayList<StringBuilder> splitInPipeline(String input) throws Exception {
+        
+        if (TextToolbox.isEmpty(input)) throw new IllegalArgumentException("Input is empty.");
+
+        ArrayList<StringBuilder> retVal = this.protocol(new StringBuilder(input));
+        for (StringBuilder sentence : retVal) {
+            
+            /**
+             * Reinsert punctuation after the split.
+             */
+            locker.unlockPunctuationOnly(sentence);
+            
+        }
+
+        return retVal;
+        
+    }
+
+    private ArrayList<StringBuilder> protocol(StringBuilder input) throws Exception {
+        
         /**
          * Standardize Unicode.
          */
@@ -78,7 +120,6 @@ public final class Splitter {
         /**
          * Lock URLs, abbreviations, acronyms, decimal numbers.
          */
-        Locker locker = new Locker();
         locker.lock(input);
 
         /**
@@ -103,11 +144,6 @@ public final class Splitter {
             StringBuilder sentence = sentenceIterator.next();
             
             /**
-             * Reinsert punctuation after the split.
-             */
-            locker.unlock(sentence);
-
-            /**
              * Remove leftovers originating in erroneous punctuation.
              */
             Punctuation.removePunctuationAtBeginning(sentence);
@@ -118,18 +154,12 @@ public final class Splitter {
             TextToolbox.trim(sentence);
             if (sentence.length() == 0) {
                 sentenceIterator.remove();
-                continue;
             }
-
-            /**
-             * Trim extra spaces.
-             */
-            TextToolbox.trim(sentence);
 
         }
         
         return sentences;
         
     }
-
+    
 }

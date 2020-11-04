@@ -20,7 +20,7 @@ public class TokenizerTest {
         Tokenizer tokenizer = new Tokenizer();
         
         for (String test : tests) {
-            for (String token : tokenizer.getTokens(new StringBuilder(test))) {
+            for (String token : tokenizer.tokenize(test)) {
                 Printer.print(token);
             }
             Printer.print();

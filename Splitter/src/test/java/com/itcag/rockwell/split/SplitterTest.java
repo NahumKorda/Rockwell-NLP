@@ -11,12 +11,12 @@ public class SplitterTest {
     @Test
     public void testSplit() throws Exception {
         
-        StringBuilder text = new StringBuilder("Report: GrubHub nears deal to be acquired by Just Eat Takeway.com.");
+        String text = "Report: GrubHub nears deal to be acquired by Just Eat Takeway.com.";
         
         Splitter splitter = new Splitter();
-        ArrayList<StringBuilder> sentences = splitter.split(text);
+        ArrayList<String> sentences = splitter.split(text);
         
-        for (StringBuilder sentence : sentences) {
+        for (String sentence : sentences) {
             Printer.print(sentence);
         }
         

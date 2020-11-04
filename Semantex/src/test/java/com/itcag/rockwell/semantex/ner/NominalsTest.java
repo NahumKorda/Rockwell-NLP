@@ -30,10 +30,10 @@ public class NominalsTest {
 
         for (String test : tests) {
             
-            for (StringBuilder sentence : splitter.split(new StringBuilder(test))) {
+            for (StringBuilder sentence : splitter.splitInPipeline(test)) {
 
-                ArrayList<String> words = tokenizer.getTokens(new StringBuilder(sentence));
-                ArrayList<Token> tokens = lemmatizer.getTokens(words);
+                ArrayList<String> words = tokenizer.tokenize(sentence.toString());
+                ArrayList<Token> tokens = lemmatizer.lemmatize(words);
 
                 Printer.print();
                 Printer.print("-------------------------------------------------------------");

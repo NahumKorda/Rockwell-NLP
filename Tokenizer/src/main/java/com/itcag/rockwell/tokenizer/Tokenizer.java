@@ -48,20 +48,20 @@ public final class Tokenizer {
      * @return Array list of strings - each representing a token.
      * @throws java.lang.Exception if anything goes wrong.
      */
-    public final synchronized ArrayList<String> getTokens(StringBuilder sentence) throws Exception {
+    public final synchronized ArrayList<String> tokenize(String sentence) throws Exception {
         
         ArrayList<String> retVal = new ArrayList<>();
         
         this.locker.lock(sentence);
         
-        ArrayList<String> tokens = tokenize(sentence);
+        ArrayList<String> tokens = getTokens(new StringBuilder(sentence));
         for (String token : tokens) {
             
             /**
              * Release all locks except abbreviations and acronyms.
              * They are required for lemmatization.
              */
-            token = this.locker.unlock(token);
+            token = this.locker.unlockEverything(token);
             
             if (misspellings.contains(token)) token = misspellings.getReplacement(token);
             
@@ -76,8 +76,35 @@ public final class Tokenizer {
         return retVal;
     
     }
+
+    public final synchronized ArrayList<String> tokenizeInPipeline(StringBuilder sentence) throws Exception {
+        
+        ArrayList<String> retVal = new ArrayList<>();
+        
+        ArrayList<String> tokens = getTokens(sentence);
+        for (String token : tokens) {
+            
+            /**
+             * Release all locks except URLs, email addresses, abbreviations, acronyms and domains.
+             * They are all required for lemmatization.
+             */
+            token = this.locker.unlockPunctuationOnly(token);
+            
+            if (misspellings.contains(token)) token = misspellings.getReplacement(token);
+            
+            if (toklex.isRecognized(token.toLowerCase())) {
+                retVal.addAll(toklex.getReplacement(token.toLowerCase()));
+            } else {
+                retVal.add(token);
+            }
+        
+        }
+        
+        return retVal;
     
-    private ArrayList<String> tokenize(StringBuilder input) {
+    }
+
+    private ArrayList<String> getTokens(StringBuilder input) {
         
         TextToolbox.fixEmptySpaces(input);
         

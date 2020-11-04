@@ -20,12 +20,6 @@ package com.itcag.util.punct;
 
 import com.itcag.util.txt.TextToolbox;
 
-import java.util.EnumSet;
-
-import org.nibor.autolink.LinkExtractor;
-import org.nibor.autolink.LinkSpan;
-import org.nibor.autolink.LinkType;
-
 /**
  * <p>This class "locks" dual purpose characters wherever they are not used as punctuation. Dual purpose characters are characters that can be used as punctuation, but also in numbers, URLs, acronyms, etc. Locking ensures that the splitting will not erroneously split text in wrong places.</p>
  */
@@ -35,10 +29,15 @@ public final class Locker {
     private final Acronyms acronyms;
     private final Domains domains;
     
+    private final URL urlDetector;
+    private final Email emailDetector;
+
     public Locker() throws Exception {
         this.abbrevations = Abbreviations.getInstance();
         this.acronyms = Acronyms.getInstance();
         this.domains = Domains.getInstance();
+        this.urlDetector = new URL();
+        this.emailDetector = new Email();
     }
     
     /**
@@ -47,7 +46,8 @@ public final class Locker {
      */
     public final synchronized void lock(StringBuilder input) throws Exception {
         
-        lockURL(input);
+        this.urlDetector.lock(input);
+        this.emailDetector.lock(input);
         
         this.abbrevations.lock(input);
         this.acronyms.lock(input);
@@ -61,6 +61,12 @@ public final class Locker {
         
     }
 
+    public final synchronized String lock(String input) throws Exception {
+        StringBuilder retVal = new StringBuilder(input);
+        this.lock(retVal);
+        return retVal.toString();
+    }
+    
     private void lockPeriods(StringBuilder input) {
         int start = input.indexOf(".");
         while (start > -1 && start < input.length() - 1) {
@@ -72,60 +78,6 @@ public final class Locker {
             }
             start = input.indexOf(".", start + 1);
         }
-    }
-    
-    private void lockColons(StringBuilder input) {
-        /**
-         * This is to preserve the time.
-         */
-        int start = input.indexOf(":");
-        while (start > -1 && start < input.length() - 1) {
-            char c = input.charAt(start + 1);
-            if (Character.isDigit(c)) {
-                input.replace(start, start + 1, Characters.COLON.getReplacement());
-            }
-            start = input.indexOf(".", start + 1);
-        }
-    }
-    
-    private void lockCommas(StringBuilder input) {
-        int start = input.indexOf(",");
-        while (start > -1 && start < input.length() - 1) {
-            char c = input.charAt(start + 1);
-            if (Character.isDigit(c)) input.replace(start, start + 1, Characters.COMMA.getReplacement());
-            start = input.indexOf(",", start + 1);
-        }
-    }
-    
-    private void lockURL(StringBuilder input) {
-
-        LinkExtractor linkExtractor = LinkExtractor.builder().linkTypes(EnumSet.of(LinkType.URL, LinkType.WWW, LinkType.EMAIL)).build();
-        Iterable<LinkSpan> links = linkExtractor.extractLinks(input.toString());
-        for (LinkSpan link : links) {
-            String original = input.substring(link.getBeginIndex(), link.getEndIndex());
-            if (original.endsWith(".")) {
-                original = original.substring(0, original.length() - 2);
-            }
-            String replacement = encode(original);
-            TextToolbox.replace(input, original, replacement);
-        }
-
-    }
-    
-    private String encode(String input) {
-
-        String retVal = input;
-
-        retVal = TextToolbox.replace(retVal, ".", Characters.PERIOD.getReplacement());
-        retVal = TextToolbox.replace(retVal, "!", Characters.EXCLAMATION.getReplacement());
-        retVal = TextToolbox.replace(retVal, "?", Characters.QUESTION.getReplacement());
-        retVal = TextToolbox.replace(retVal, "-", Characters.HYPHEN.getReplacement());
-        retVal = TextToolbox.replace(retVal, ":", Characters.COLON.getReplacement());
-        retVal = TextToolbox.replace(retVal, ";", Characters.SEMICOLON.getReplacement());
-        retVal = TextToolbox.replace(retVal, "/", Characters.SLASH.getReplacement());
-
-        return retVal;
-
     }
     
     private void lockAcronym(StringBuilder input, int start) {
@@ -160,16 +112,55 @@ public final class Locker {
         
     }
     
-    public final void unlock(StringBuilder input) throws Exception {
+    private void lockColons(StringBuilder input) {
+        /**
+         * This is to preserve the time.
+         */
+        int start = input.indexOf(":");
+        while (start > -1 && start < input.length() - 1) {
+            char c = input.charAt(start + 1);
+            if (Character.isDigit(c)) {
+                input.replace(start, start + 1, Characters.COLON.getReplacement());
+            }
+            start = input.indexOf(".", start + 1);
+        }
+    }
+    
+    private void lockCommas(StringBuilder input) {
+        int start = input.indexOf(",");
+        while (start > -1 && start < input.length() - 1) {
+            char c = input.charAt(start + 1);
+            if (Character.isDigit(c)) input.replace(start, start + 1, Characters.COMMA.getReplacement());
+            start = input.indexOf(",", start + 1);
+        }
+    }
+    
+    public final void unlockEverything(StringBuilder input) throws Exception {
+        TextToolbox.replace(input, Characters.ABBREVIATION.getReplacement(), ".");
+        TextToolbox.replace(input, Characters.ACRONYM.getReplacement(), ".");
+        TextToolbox.replace(input, Characters.DOMAIN.getReplacement(), ".");
+        this.urlDetector.unlock(input);
+        this.emailDetector.unlock(input);
         decode(input);
     }
     
-    public final String unlock(String input) throws Exception {
-        return decode(input);
+    public final String unlockEverything(String input) throws Exception {
+        StringBuilder retVal = new StringBuilder(input);
+        this.unlockEverything(retVal);
+        return retVal.toString();
+    }
+    
+    public final void unlockPunctuationOnly(StringBuilder input) throws Exception {
+        decode(input);
+    }
+    
+    public final String unlockPunctuationOnly(String input) throws Exception {
+        StringBuilder retVal = new StringBuilder(input);
+        decode(retVal);
+        return retVal.toString();
     }
     
     private void decode(StringBuilder input) {
-        
         TextToolbox.replace(input, Characters.PERIOD.getReplacement(), ".");
         TextToolbox.replace(input, Characters.EXCLAMATION.getReplacement(), "!");
         TextToolbox.replace(input, Characters.QUESTION.getReplacement(), "?");
@@ -178,30 +169,24 @@ public final class Locker {
         TextToolbox.replace(input, Characters.COMMA.getReplacement(), ",");
         TextToolbox.replace(input, Characters.SLASH.getReplacement(), "/");
         TextToolbox.replace(input, Characters.HYPHEN.getReplacement(), "-");
-        TextToolbox.replace(input, Characters.ABBREVIATION.getReplacement(), ".");
-        TextToolbox.replace(input, Characters.ACRONYM.getReplacement(), ".");
-        TextToolbox.replace(input, Characters.DOMAIN.getReplacement(), ".");
-        
     }
     
-    private String decode(String input) {
-        
-        input = TextToolbox.replace(input, Characters.PERIOD.getReplacement(), ".");
-        input = TextToolbox.replace(input, Characters.EXCLAMATION.getReplacement(), "!");
-        input = TextToolbox.replace(input, Characters.QUESTION.getReplacement(), "?");
-        input = TextToolbox.replace(input, Characters.COLON.getReplacement(), ":");
-        input = TextToolbox.replace(input, Characters.SEMICOLON.getReplacement(), ";");
-        input = TextToolbox.replace(input, Characters.COMMA.getReplacement(), ",");
-        input = TextToolbox.replace(input, Characters.SLASH.getReplacement(), "/");
-        input = TextToolbox.replace(input, Characters.HYPHEN.getReplacement(), "-");
-        input = TextToolbox.replace(input, Characters.ABBREVIATION.getReplacement(), ".");
-        input = TextToolbox.replace(input, Characters.ACRONYM.getReplacement(), ".");
-        input = TextToolbox.replace(input, Characters.DOMAIN.getReplacement(), ".");
-        
-        return input;
-        
+    public final synchronized boolean isURL(String input) {
+        return this.urlDetector.isThisTokenLockedURL(input);
     }
-
+    
+    public final synchronized String unlockURL(String input) {
+        return this.urlDetector.unlock(input);
+    }
+    
+    public final synchronized boolean isEmail(String input) {
+        return this.emailDetector.isThisTokenLockedEmail(input);
+    }
+    
+    public final synchronized String unlockEmail(String input) {
+        return this.emailDetector.unlock(input);
+    }
+    
     /**
      * This method "unlocks" locked text by replacing the inserted non-printable characters with the periods.
      * @param input String holding text.

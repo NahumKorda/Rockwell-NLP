@@ -34,6 +34,7 @@ import java.util.TreeMap;
 
 import com.itcag.rockwell.vocabulator.Vocabulator;
 import com.itcag.rockwell.vocabulator.res.Synonyms;
+import com.itcag.util.txt.TextToolbox;
 
 /**
  * <p>Extract single words as they occur in text. Results are sorted descending by the frequency of occurrence.</p>
@@ -48,7 +49,7 @@ public class SingleWordExtractor implements Vocabulator {
     
     private final Synonyms synonyms;
 
-    private HashMap<String, Term> index = new HashMap<>();
+    private final HashMap<String, Term> index = new HashMap<>();
     
     private int count = 0;
 
@@ -59,12 +60,8 @@ public class SingleWordExtractor implements Vocabulator {
      */
     public SingleWordExtractor(Properties config) throws Exception {
 
-        String test = config.getProperty(PropertyFields.WORD_THRESHOLD.getField(), null);
-        if (test != null) {
-            this.threshold = Converter.convertStringToInteger(test);
-        } else {
-            this.threshold = 0;
-        }
+        Integer test = Converter.convertStringToInteger(config.getProperty(PropertyFields.WORD_THRESHOLD.getField()));
+        this.threshold = (test == null) ? 0 : test;
         
         this.pipeline = getPipeline();
     
@@ -90,40 +87,40 @@ public class SingleWordExtractor implements Vocabulator {
         
         this.count++;
         
-        ArrayList<StringBuilder> sentences = this.pipeline.split(text);
-        for (StringBuilder sentence : sentences) {
-            if (sentence.length() == 0) continue;
-            processSentence(sentence);
-        }
-        
-    }
-    
-    private void processSentence(StringBuilder sentence) throws Exception {
+        ArrayList<String> sentences = this.pipeline.split(text);
+        for (String sentence : sentences) {
 
-        if (sentence.length() == 0) return;
+            if (TextToolbox.isReallyEmpty(sentence)) continue;
 
-        for (String token : this.pipeline.tokenize(sentence)) {
-            
-            token = token.toLowerCase();
-            
-            if (!this.validator.isValidWord(token)) continue;
-            
-            token = this.synonyms.getWordSynonym(token);
-            
-            if (index.containsKey(token)) {
-                Term word = index.get(token);
-                word.incrementFOO();
-                word.addSentence(sentence.toString());
-            } else {
-                Term word = new Term(token);
-                word.addSentence(sentence.toString());
-                index.put(token, word);
+            for (ArrayList<String> tokens : this.pipeline.tokenize(sentence)) {
+
+                for (String token : tokens) {
+
+                    token = token.toLowerCase();
+
+                    if (!this.validator.isValidWord(token)) continue;
+
+                    token = this.synonyms.getWordSynonym(token);
+
+                    if (index.containsKey(token)) {
+                        Term word = index.get(token);
+                        word.incrementFOO();
+                        word.addSentence(sentence);
+                    } else {
+                        Term word = new Term(token);
+                        word.addSentence(sentence);
+                        index.put(token, word);
+                    }
+
+                }
+
             }
 
         }
-    
+        
+        
     }
-   
+    
     /**
      * This method removes all accumulated extracted words/phrases with very low frequency of occurrence.Following the <a href="https://en.wikipedia.org/wiki/Zipf%27s_law"target="_blank">Zipf's law</a> most of the encountered words/phrases are bound to have very low frequency of occurrence. Nonetheless these words/phrases are kept in hash maps, and could simply overwhelm the available memory resources.
      * @throws java.lang.Exception

@@ -47,14 +47,14 @@ public class TaggerTest {
 //        ArrayList<String> expressions = new ArrayList<>();
 //        expressions.add("@cain+suffix{} :in+noun | test");
 
-        StringBuilder text = new StringBuilder("vulnerabilities let them in.");
+        String text = "vulnerabilities let them in.";
         ArrayList<String> expressions = new ArrayList<>();
         expressions.add("@lemma :vulnerability ; @lemma+infix{x*} :let+verb_conditional | threat");
         
-        for (StringBuilder sentence : splitter.split(text)) {
+        for (StringBuilder sentence : splitter.splitInPipeline(text)) {
 
-            ArrayList<String> words = tokenizer.getTokens(new StringBuilder(sentence));
-            ArrayList<Token> tokens = lemmatizer.getTokens(words);
+            ArrayList<String> words = tokenizer.tokenize(sentence.toString());
+            ArrayList<Token> tokens = lemmatizer.lemmatize(words);
 
             Printer.print();
             Printer.print("-------------------------------------------------------------");
@@ -84,10 +84,10 @@ public class TaggerTest {
         
         for (Test test : tests) {
             
-            for (StringBuilder sentence : splitter.split(new StringBuilder(test.getText()))) {
+            for (StringBuilder sentence : splitter.splitInPipeline(test.getText())) {
 
-                ArrayList<String> words = tokenizer.getTokens(new StringBuilder(sentence));
-                ArrayList<Token> tokens = lemmatizer.getTokens(words);
+                ArrayList<String> words = tokenizer.tokenize(sentence.toString());
+                ArrayList<Token> tokens = lemmatizer.lemmatize(words);
 
                 Printer.print();
                 Printer.print("-------------------------------------------------------------");

@@ -273,21 +273,10 @@ public class Pipeline {
      * @return Array list of string - each holding an individual sentence.
      * @throws Exception if anything goes wrong.
      */
-    public ArrayList<StringBuilder> split(String text) throws Exception {
-        return this.splitter.split(new StringBuilder(text));
+    public ArrayList<String> split(String text) throws Exception {
+        return this.splitter.split(text);
     }
     
-    /**
-     * Splits a sentence into individual tokens. This method receives output from the {@link #split(java.lang.String)} method.
-     * @param sentence String builder holding a sentence.
-     * @return Array list containing strings - each representing a token.
-     * @throws Exception if anything goes wrong.
-     */
-    public ArrayList<String> tokenize(StringBuilder sentence) throws Exception {
-        if (this.tokenizer == null) throw new IllegalArgumentException("This pipeline was initiated for " + this.currentTask.name() + " and not for " + Tasks.TOKENIZE.name() + ".");
-        return this.tokenizer.getTokens(sentence);
-    }
-
     /**
      * Splits text into individual sentences, and then splits each sentence into individual tokens.
      * @param text String holding the text.
@@ -297,24 +286,12 @@ public class Pipeline {
     public ArrayList<ArrayList<String>> tokenize(String text) throws Exception {
         if (this.tokenizer == null) throw new IllegalArgumentException("This pipeline was initiated for " + this.currentTask.name() + " and not for " + Tasks.TOKENIZE.name() + ".");
         ArrayList<ArrayList<String>> retVal = new ArrayList<>();
-        for (StringBuilder sentence : this.split(text)) {
-            retVal.add(this.tokenize(sentence));
+        for (StringBuilder sentence : this.splitter.splitInPipeline(text)) {
+            retVal.add(this.tokenizer.tokenizeInPipeline(sentence));
         }
         return retVal;
     }
 
-    /**
-     * Inserts part-of-speech specification and lemmas into tokens.
-     * @param tokens Array list containing strings - each representing a token.
-     * @return Array list containing instances of the {@link com.itcag.rockwell.lang.Token Token} class representing a sentence.
-     * @throws Exception if anything goes wrong.
-     */
-    public ArrayList<Token> lemmatize(ArrayList<String> tokens) throws Exception {
-        if (this.lemmatizer == null) throw new IllegalArgumentException("This pipeline was initiated for " + this.currentTask.name() + " and not for " + Tasks.LEMMATIZE.name() + ".");
-        return this.lemmatizer.getTokens(tokens);
-    }
-    
-    
     /**
      * Splits text into sentences, splits sentences into tokens, and then inserts part-of-speech specification and lemmas into tokens.
      * @param text String holding the text.
@@ -324,8 +301,9 @@ public class Pipeline {
     public ArrayList<ArrayList<Token>> lemmatize(String text) throws Exception {
         if (this.lemmatizer == null) throw new IllegalArgumentException("This pipeline was initiated for " + this.currentTask.name() + " and not for " + Tasks.LEMMATIZE.name() + ".");
         ArrayList<ArrayList<Token>> retVal = new ArrayList<>();
-        for (ArrayList<String> sentence : this.tokenize(text)) {
-            retVal.add(this.lemmatize(sentence));
+        for (StringBuilder sentence : this.splitter.splitInPipeline(text)) {
+            ArrayList<String> tokens = this.tokenizer.tokenizeInPipeline(sentence);
+            retVal.add(this.lemmatizer.lemmatize(tokens));
         }
         return retVal;
     }

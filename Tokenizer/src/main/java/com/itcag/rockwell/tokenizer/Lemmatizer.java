@@ -53,6 +53,115 @@ public final class Lemmatizer {
 
     }
     
+    /**
+     * @param sentence Array list containing strings holding tokens.
+     * @return Array list containing instances of the {@link com.itcag.rockwell.lang.Token Token} class.
+     * @throws Exception If anything goes wrong.
+     */
+    public final synchronized ArrayList<Token> lemmatize(ArrayList<String> sentence) throws Exception {
+        
+        ArrayList<Token> retVal = new ArrayList<>();
+        
+        ArrayList<Object> mixedArray = resolveQuotes(sentence);
+        
+        for (Object object : mixedArray) {
+            
+            if (object instanceof Token) {
+                Token token = (Token) object;
+                token.setIndex(retVal.size());
+                retVal.add(token);
+                continue;
+            }
+            
+            String word = (String) object;
+            String cain = word.toLowerCase();
+            
+            if (PunctuationToolbox.isTerminalPunctuation(cain)) {
+                retVal.add(new Token(word, POSTag.PC0, word, retVal.size()));
+            } else if (PunctuationToolbox.isNonTerminalPunctuation(cain)) {
+                retVal.add(new Token(word, POSTag.PC1, word, retVal.size()));
+            } else if ("(".equals(cain) || "[".equals(cain) || "{".equals(cain)) {
+                retVal.add(new Token(word, POSTag.PC2, word, retVal.size()));
+            } else if (")".equals(cain) || "]".equals(cain) || "}".equals(cain)) {
+                retVal.add(new Token(word, POSTag.PC3, word, retVal.size()));
+            } else if (cain.equals("-")) {
+                retVal.add(new Token(word, POSTag.XZ4, word, retVal.size()));
+            } else if (this.locker.isURL(word)) {
+                word = this.locker.unlockURL(word);
+                retVal.add(new Token(word, POSTag.XY2, word, retVal.size()));
+            } else if (this.locker.isEmail(word)) {
+                word = this.locker.unlockEmail(word);
+                retVal.add(new Token(word, POSTag.XY3, word, retVal.size()));
+            } else if (word.contains(Characters.ABBREVIATION.getReplacement())) {
+                word = this.locker.unlockAbbreviation(word);
+                retVal.add(new Token(word, POSTag.XY4, word, retVal.size()));
+            } else if (cain.contains(Characters.ACRONYM.getReplacement())) {
+                word = this.locker.unlockAcronym(word);
+                retVal.add(new Token(word, POSTag.XY5, word, retVal.size()));
+            } else if (cain.contains(Characters.DOMAIN.getReplacement())) {
+                word = this.locker.unlockDomain(word);
+                retVal.add(new Token(word, POSTag.XY6, word, retVal.size()));
+            } else if (word.startsWith("#") && word.length() > 1 && Character.isLetterOrDigit(word.charAt(1))) {
+                retVal.add(new Token(word, POSTag.XY0, cain, retVal.size()));
+            } else if (word.startsWith("@") && word.length() > 1 && Character.isLetterOrDigit(word.charAt(1))) {
+                retVal.add(new Token(word, POSTag.XY1, cain, retVal.size()));
+            } else if ("n't".equals(cain) || "not".equals(cain)) {
+                retVal.add(new Token(word, POSTag.XX0, "not", retVal.size()));
+            } else if ("never".equals(cain) || "ne'er".equals(cain)) {
+                retVal.add(new Token(word, POSTag.XX0, "never", retVal.size()));
+            } else if (lexicon.isKnown(cain)) {
+                retVal.add(lexer.getToken(word, retVal.size()));
+            } else if (NumberDetector.getDigits(cain) != null) {
+                retVal.add(new Token(word, POSTag.CRD, cain, retVal.size()));
+            } else if (word.length() == 1 && ("%".equals(word) || "‰".equals(word))) {
+                retVal.add(new Token(word, POSTag.XZ1, word, retVal.size()));
+            } else if (this.lexicalResources.isCurrencyCode(cain)) {
+                retVal.add(new Token(word, POSTag.XZ2, cain, retVal.size()));
+            } else if (this.lexicalResources.isCurrencySymbol(word)) {
+                retVal.add(new Token(word, POSTag.XZ2, cain, retVal.size()));
+            } else if (this.lexicalResources.isMeasuringUnit(cain)) {
+                /**
+                 * Many measures are single letters that could also be initials in names.
+                 * If the word consists of a single letter, and this letter is capitalized,
+                 * assume that this is maybe a measuring unit, or maybe an initial.
+                 */
+                if (word.length() == 1 && !word.equals(cain)) {
+                    Token token = new Token(word, null, null, retVal.size());
+                    token.addAlternative(new Token(word, POSTag.XZ3, cain));
+                    token.addAlternative(new Token(word, POSTag.XXX, word));
+                    retVal.add(token);
+                } else {
+                    retVal.add(new Token(word, POSTag.XZ3, cain, retVal.size()));
+                }
+            } else if (isTime(word, retVal)) {
+                /**
+                 * Do nothing.
+                 */
+            } else if (isNumericalExpression(word, retVal)) {
+                /**
+                 * Do nothing.
+                 */
+            } else {
+                Token token = NumberDetector.identify(word, retVal.size());
+                if (token == null) {
+                    if (!isCompoundWord(word, cain, retVal)) {
+                        if (word.length() == 1 && !Character.isLetterOrDigit(word.charAt(0))) {
+                            retVal.add(new Token(word, POSTag.XZ6, word, retVal.size()));
+                        } else {
+                            retVal.add(new Token(word, POSTag.XXX, word, retVal.size()));
+                        }
+                    }
+                } else {
+                    retVal.add(token);
+                }
+            }
+
+        }
+        
+        return retVal;
+        
+    }
+
     private ArrayList<Object> resolveQuotes (ArrayList<String> sentence) throws Exception {
         
         ArrayList<Object> retVal = new ArrayList<>();
@@ -143,109 +252,6 @@ public final class Lemmatizer {
 
     }
     
-    /**
-     * @param sentence Array list containing strings holding tokens.
-     * @return Array list containing instances of the {@link com.itcag.rockwell.lang.Token Token} class.
-     * @throws Exception If anything goes wrong.
-     */
-    public final synchronized ArrayList<Token> getTokens(ArrayList<String> sentence) throws Exception {
-        
-        ArrayList<Token> retVal = new ArrayList<>();
-        
-        ArrayList<Object> mixedArray = resolveQuotes(sentence);
-        
-        for (Object object : mixedArray) {
-            
-            if (object instanceof Token) {
-                Token token = (Token) object;
-                token.setIndex(retVal.size());
-                retVal.add(token);
-                continue;
-            }
-            
-            String word = (String) object;
-            String cain = word.toLowerCase();
-            
-            if (PunctuationToolbox.isTerminalPunctuation(cain)) {
-                retVal.add(new Token(word, POSTag.PC0, word, retVal.size()));
-            } else if (PunctuationToolbox.isNonTerminalPunctuation(cain)) {
-                retVal.add(new Token(word, POSTag.PC1, word, retVal.size()));
-            } else if ("(".equals(cain) || "[".equals(cain) || "{".equals(cain)) {
-                retVal.add(new Token(word, POSTag.PC2, word, retVal.size()));
-            } else if (")".equals(cain) || "]".equals(cain) || "}".equals(cain)) {
-                retVal.add(new Token(word, POSTag.PC3, word, retVal.size()));
-            } else if (cain.equals("-")) {
-                retVal.add(new Token(word, POSTag.XZ4, word, retVal.size()));
-            } else if (word.contains(Characters.ABBREVIATION.getReplacement())) {
-                word = this.locker.unlockAbbreviation(word);
-                retVal.add(new Token(word, POSTag.ABB, word, retVal.size()));
-            } else if (cain.contains(Characters.ACRONYM.getReplacement())) {
-                word = this.locker.unlockAcronym(word);
-                retVal.add(new Token(word, POSTag.ACR, word, retVal.size()));
-            } else if (cain.contains(Characters.DOMAIN.getReplacement())) {
-                word = this.locker.unlockDomain(word);
-                retVal.add(new Token(word, POSTag.DOM, word, retVal.size()));
-            } else if ("n't".equals(cain) || "not".equals(cain)) {
-                retVal.add(new Token(word, POSTag.XX0, "not", retVal.size()));
-            } else if ("never".equals(cain) || "ne'er".equals(cain)) {
-                retVal.add(new Token(word, POSTag.XX0, "never", retVal.size()));
-            } else if (word.startsWith("#") && word.length() > 1 && Character.isLetterOrDigit(word.charAt(1))) {
-                retVal.add(new Token(word, POSTag.XY0, cain, retVal.size()));
-            } else if (word.startsWith("@") && word.length() > 1 && Character.isLetterOrDigit(word.charAt(1))) {
-                retVal.add(new Token(word, POSTag.XY1, cain, retVal.size()));
-            } else if (lexicon.isKnown(cain)) {
-                retVal.add(lexer.getToken(word, retVal.size()));
-            } else if (NumberDetector.getDigits(cain) != null) {
-                retVal.add(new Token(word, POSTag.CRD, cain, retVal.size()));
-            } else if (word.length() == 1 && ("%".equals(word) || "‰".equals(word))) {
-                retVal.add(new Token(word, POSTag.XZ1, word, retVal.size()));
-            } else if (this.lexicalResources.isCurrencyCode(cain)) {
-                retVal.add(new Token(word, POSTag.XZ2, cain, retVal.size()));
-            } else if (this.lexicalResources.isCurrencySymbol(word)) {
-                retVal.add(new Token(word, POSTag.XZ2, cain, retVal.size()));
-            } else if (this.lexicalResources.isMeasuringUnit(cain)) {
-                /**
-                 * Many measures are single letters that could also be initials in names.
-                 * If the word consists of a single letter, and this letter is capitalized,
-                 * assume that this is maybe a measuring unit, or maybe an initial.
-                 */
-                if (word.length() == 1 && !word.equals(cain)) {
-                    Token token = new Token(word, null, null, retVal.size());
-                    token.addAlternative(new Token(word, POSTag.XZ3, cain));
-                    token.addAlternative(new Token(word, POSTag.XXX, word));
-                    retVal.add(token);
-                } else {
-                    retVal.add(new Token(word, POSTag.XZ3, cain, retVal.size()));
-                }
-            } else if (isTime(word, retVal)) {
-                /**
-                 * Do nothing.
-                 */
-            } else if (isNumericalExpression(word, retVal)) {
-                /**
-                 * Do nothing.
-                 */
-            } else {
-                Token token = NumberDetector.identify(word, retVal.size());
-                if (token == null) {
-                    if (!isCompoundWord(word, cain, retVal)) {
-                        if (word.length() == 1 && !Character.isLetterOrDigit(word.charAt(0))) {
-                            retVal.add(new Token(word, POSTag.XZ6, word, retVal.size()));
-                        } else {
-                            retVal.add(new Token(word, POSTag.XXX, word, retVal.size()));
-                        }
-                    }
-                } else {
-                    retVal.add(token);
-                }
-            }
-
-        }
-        
-        return retVal;
-        
-    }
-
     private static boolean isTime(String word, ArrayList<Token> tokens) {
         
         if (!word.contains(":")) return false;

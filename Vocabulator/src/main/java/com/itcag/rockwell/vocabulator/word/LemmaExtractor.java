@@ -25,6 +25,7 @@ import com.itcag.util.Converter;
 import com.itcag.rockwell.vocabulator.Term;
 import com.itcag.rockwell.vocabulator.Vocabulator;
 import com.itcag.rockwell.vocabulator.res.Synonyms;
+import com.itcag.util.txt.TextToolbox;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -61,25 +62,10 @@ public class LemmaExtractor implements Vocabulator {
      */
     public LemmaExtractor(Properties config) throws Exception {
 
-        String test = config.getProperty(PropertyFields.POSITIVE_FILTER.getField(), null);
-        if (test != null) {
-            this.filter = new ArrayList<>();
-            String[] tmp = test.split(",");
-            for (String item : tmp) {
-                item = item.trim();
-                if (item.isEmpty()) continue;
-                this.filter.add(item);
-            }
-        } else {
-            this.filter = null;
-        }
+        this.filter = getFilter(config);
         
-        test = config.getProperty(PropertyFields.WORD_THRESHOLD.getField(), null);
-        if (test != null) {
-            this.threshold = Converter.convertStringToInteger(test);
-        } else {
-            this.threshold = 0;
-        }
+        Integer test = Converter.convertStringToInteger(config.getProperty(PropertyFields.WORD_THRESHOLD.getField()));
+        this.threshold = (test == null) ? 0 : test;
         
         this.pipeline = getPipeline();
         
@@ -87,6 +73,27 @@ public class LemmaExtractor implements Vocabulator {
         
         this.synonyms = new Synonyms(config);
     
+    }
+    
+    private ArrayList<String> getFilter(Properties config) throws Exception {
+        
+        if (!config.containsKey(PropertyFields.POSITIVE_FILTER.getField())) return null;
+
+        String test = config.getProperty(PropertyFields.POSITIVE_FILTER.getField());
+        if (TextToolbox.isReallyEmpty(test)) return null;
+        
+        String[] tmp = test.split(",");
+        
+        ArrayList<String> retVal = new ArrayList<>();
+        
+        for (String item : tmp) {
+            item = item.trim();
+            if (item.isEmpty()) continue;
+            retVal.add(item);
+        }
+        
+        return retVal;
+        
     }
     
     private Pipeline getPipeline() throws Exception {
@@ -105,10 +112,10 @@ public class LemmaExtractor implements Vocabulator {
         
         this.count++;
         
-        ArrayList<StringBuilder> sentences = this.pipeline.split(text);
-        for (StringBuilder sentence : sentences) {
+        ArrayList<String> sentences = this.pipeline.split(text);
+        for (String sentence : sentences) {
             if (sentence.length() == 0) continue;
-            processSentence(sentence.toString());
+            processSentence(sentence);
         }
         
     }

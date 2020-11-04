@@ -219,10 +219,10 @@ public final class Phraser implements Vocabulator {
         
         if (this.count % 1000 == 0) trim();
         
-        ArrayList<StringBuilder> sentences = this.pipeline.split(text);
-        for (StringBuilder sentence : sentences) {
+        ArrayList<String> sentences = this.pipeline.split(text);
+        for (String sentence : sentences) {
             if (sentence.length() == 0) continue;
-            processSentence(sentence.toString());
+            processSentence(sentence);
         }
         
     }

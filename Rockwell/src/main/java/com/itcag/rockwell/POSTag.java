@@ -24,10 +24,6 @@ package com.itcag.rockwell;
  */
 public enum POSTag {
 
-    /** Abbreviation. */
-    ABB(POSType.NN),
-    /** Acronym. */
-    ACR(POSType.NN),
     /** Adjective (general or positive) (e.g., "good", "old", "beautiful"). */
     AJ0(POSType.AJ),
     /** Comparative adjective (e.g., "better", "older"). */
@@ -46,8 +42,6 @@ public enum POSTag {
     CJT(POSType.CJ),
     /** Cardinal number (e.g., "one", "3", "fifty-five", "3609"). */
     CRD(POSType.NM),
-    /** Internet domain (in website/corporation names). */
-    DOM(POSType.NN),
     /** General determiner. */
     DT0(POSType.DT),
     /** Existential "there", i.e. there occurring in the "there is..." or "there are..." construction. */
@@ -151,6 +145,16 @@ public enum POSTag {
     XY0(POSType.NN),
     /** At user */
     XY1(POSType.NN),
+    /** URL */
+    XY2(POSType.NN),
+    /** Email address */
+    XY3(POSType.NN),
+    /** Abbreviation. */
+    XY4(POSType.NN),
+    /** Acronym. */
+    XY5(POSType.NN),
+    /** Internet domain (in website/corporation names). */
+    XY6(POSType.NN),
     
     /** %, ‰*/
     XZ1(POSType.XZ),

@@ -17,7 +17,6 @@ public class PipelineTest {
     @Test
     public void testTest() throws Exception {
 //        split();
-//        tokenizeStringBuilder();
 //        tokenizeString();
 //        lemmatizeArrayList();
         lemmatizeString();
@@ -39,34 +38,12 @@ public class PipelineTest {
         properties.put(PropertyFields.TASK.getField(), Pipeline.Tasks.SPLIT.name());
         
         Pipeline pipeline = new Pipeline(properties);
-        ArrayList<StringBuilder> sentences = pipeline.split(text);
+        ArrayList<String> sentences = pipeline.split(text);
         
-        for (StringBuilder sentence : sentences) {
+        for (String sentence : sentences) {
             System.out.println(sentence.toString());
         }
         
-    }
-
-    private void tokenizeStringBuilder() throws Exception {
-        
-        String text = "The quick brown fox jumps in the U.S.A. over the lazy dog. Lazy dog doesn't wake up.";
-        
-        Properties properties = new Properties();
-        properties.put(PropertyFields.TASK.getField(), Pipeline.Tasks.TOKENIZE.name());
-        
-        Pipeline pipeline = new Pipeline(properties);
-        ArrayList<StringBuilder> sentences = pipeline.split(text);
-
-        for (StringBuilder sentence : sentences) {
-
-            ArrayList<String> tokens = pipeline.tokenize(sentence);
-
-            tokens.forEach((token) -> {
-                System.out.println(token);
-            });
-
-        }
-
     }
 
     private void tokenizeString() throws Exception {
@@ -87,27 +64,6 @@ public class PipelineTest {
             Printer.print();
         }
         
-    }
-
-    public void lemmatizeArrayList() throws Exception {
-        
-        String text = "The quick brown fox jumps over the lazy dog. Lazy dog doesn't wake up.";
-        
-        Properties properties = new Properties();
-        properties.put(PropertyFields.TASK.getField(), Pipeline.Tasks.LEMMATIZE.name());
-        
-        Pipeline pipeline = new Pipeline(properties);
-        ArrayList<StringBuilder> sentences = pipeline.split(text);
-
-        for (StringBuilder sentence : sentences) {
-
-            ArrayList<String> tokenStrings = pipeline.tokenize(sentence);
-            ArrayList<Token> tokens = pipeline.lemmatize(tokenStrings);
-
-            TokenPrinter.printTokensWithPOS(tokens);
-
-        }
-
     }
 
     private void lemmatizeString() throws Exception {

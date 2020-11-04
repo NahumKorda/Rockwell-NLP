@@ -32,10 +32,30 @@ public enum Characters {
     COMMA((char) 6),
     SLASH((char) 7),
     HYPHEN((char) 8),
-    SPACE((char) 11),
-    ABBREVIATION((char) 14),
-    ACRONYM((char) 15),
-    DOMAIN((char) 16),
+    
+    SPACE((char) 127),
+
+    ABBREVIATION((char) 11),
+    ACRONYM((char) 12),
+    DOMAIN((char) 14),
+
+    URL_PERIOD((char) 15),
+    URL_EXCLAMATION((char) 16),
+    URL_QUESTION((char) 17),
+    URL_COLON((char) 18),
+    URL_SEMICOLON((char) 19),
+    URL_COMMA((char) 20),
+    URL_SLASH((char) 21),
+    URL_HYPHEN((char) 22),
+
+    EMAIL_PERIOD((char) 23),
+    EMAIL_EXCLAMATION((char) 24),
+    EMAIL_QUESTION((char) 25),
+    EMAIL_COLON((char) 26),
+    EMAIL_SEMICOLON((char) 27),
+    EMAIL_COMMA((char) 28),
+    EMAIL_SLASH((char) 29),
+    EMAIL_HYPHEN((char) 30),
 
     ;
 
