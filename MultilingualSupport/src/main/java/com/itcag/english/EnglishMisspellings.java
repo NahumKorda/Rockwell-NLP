@@ -16,8 +16,10 @@
  *
  */
 
-package com.itcag.rockwell.tokenizer.res;
+package com.itcag.english;
 
+import com.itcag.multilingual.Loader;
+import com.itcag.multilingual.Misspellings;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -25,20 +27,20 @@ import java.util.HashMap;
  * <p>This class loads and stores a list of most frequently encountered misspellings, and their corrections.</p.>
  * <p>This class is implemented as singleton to avoid reloading lexical resources.</p>
  */
-public final class Misspellings {
+public final class EnglishMisspellings implements Misspellings {
 
-    private static volatile Misspellings instance = null;
+    private static volatile EnglishMisspellings instance = null;
     
     /**
      * This method is designed to throw an exception if lexical resources cannot be loaded, and therefore the double checked locking is necessary.
      * @return Instance of this class.
      * @throws Exception If anything goes wrong.
      */
-    public static synchronized Misspellings getInstance() throws Exception {
+    public static synchronized EnglishMisspellings getInstance() throws Exception {
         if (instance == null) {
-            synchronized(Misspellings.class) {
+            synchronized(EnglishMisspellings.class) {
                 if (instance == null) {
-                    instance = new Misspellings();
+                    instance = new EnglishMisspellings();
                 }
             }
         }
@@ -49,7 +51,7 @@ public final class Misspellings {
     
     private final HashMap<String, String> index = new HashMap<>();
     
-    private Misspellings() throws Exception {
+    private EnglishMisspellings() throws Exception {
         
         Loader loader = new Loader();
         ArrayList<String> items = loader.load("misspellings");
@@ -69,6 +71,7 @@ public final class Misspellings {
     /**
      * @return Hash map containing misspellings and their corrections.
      */
+    @Override
     public final synchronized HashMap<String, String> getIndex() {
         return index;
     }
@@ -77,6 +80,7 @@ public final class Misspellings {
      * @param word String holding a word.
      * @return Boolean indicating whether the word is recognized as a misspelling.
      */
+    @Override
     public final synchronized boolean contains(String word) {
         return index.containsKey(word);
     }
@@ -85,6 +89,7 @@ public final class Misspellings {
      * @param word String holding a word.
      * @return String holding the correction of the misspelled word, or null if the word is not recognized.
      */
+    @Override
     public final synchronized String getReplacement(String word) {
         return index.get(word);
     }

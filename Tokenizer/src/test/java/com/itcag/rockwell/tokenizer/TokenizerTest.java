@@ -1,5 +1,7 @@
 package com.itcag.rockwell.tokenizer;
 
+import com.itcag.english.EnglishMisspellings;
+import com.itcag.english.EnglishToklex;
 import com.itcag.util.Printer;
 
 import java.util.ArrayList;
@@ -17,7 +19,7 @@ public class TokenizerTest {
         tests.add("(This is a test).");
         tests.add("This is (maybe) a test.");
         
-        Tokenizer tokenizer = new Tokenizer();
+        Tokenizer tokenizer = new Tokenizer(EnglishToklex.getInstance(), EnglishMisspellings.getInstance());
         
         for (String test : tests) {
             for (String token : tokenizer.tokenize(test)) {

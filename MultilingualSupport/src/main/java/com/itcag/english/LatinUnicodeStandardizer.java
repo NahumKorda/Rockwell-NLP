@@ -16,18 +16,20 @@
  *
  */
 
-package com.itcag.rockwell.split;
+package com.itcag.english;
 
+import com.itcag.multilingual.UnicodeStandardizer;
 import com.itcag.util.txt.TextToolbox;
 
 /**
  * <p>This class standardizes Unicode characters with similar appearance, but different Unicode values. For example, a period (".") can have Unicode values 46, 1748, 8228, etc. In this class all alternative values are replaced with the Unicode character 46.</p>
  */
-public final class Unicode {
+public final class LatinUnicodeStandardizer implements UnicodeStandardizer {
 
     /**
      * @param input String builder holding the original text.
      */
+    @Override
     public final void standardize(StringBuilder input) {
 
         if (TextToolbox.isEmpty(input)) return;

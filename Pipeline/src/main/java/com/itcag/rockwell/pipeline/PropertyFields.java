@@ -27,6 +27,9 @@ public enum PropertyFields {
     /** Instructs the pipeline which task it should prepare to execute. */
     TASK("task"),
     
+    /** Intended language. */
+    LANGUAGE("language"),
+    
     /** Local path to a text file containing Rockwell expressions used for classifying. */
     EXPRESSIONS("expressions"),
     

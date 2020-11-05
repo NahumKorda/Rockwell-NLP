@@ -18,10 +18,10 @@
 
 package com.itcag.rockwell.tokenizer;
 
-import com.itcag.rockwell.tokenizer.res.Lexicon;
+import com.itcag.multilingual.LexicalResources;
+import com.itcag.multilingual.Lexicon;
 import com.itcag.rockwell.POSTag;
 import com.itcag.rockwell.lang.Token;
-import com.itcag.rockwell.tokenizer.res.LexicalResources;
 
 /**
  * <p>This class converts a single string representing a token into an instance of the {@link com.itcag.rockwell.lang.Token Token} class.</p>
@@ -31,8 +31,8 @@ public final class Lexer {
     private final Lexicon lexicon;
     private final LexicalResources lexicalResources;
     
-    public Lexer() throws Exception {
-        this.lexicon = Lexicon.getInstance();
+    public Lexer(Lexicon lexicon) throws Exception {
+        this.lexicon = lexicon;
         this.lexicalResources = LexicalResources.getInstance();
     }
 
@@ -45,17 +45,7 @@ public final class Lexer {
         
         String cain = word.toLowerCase();
         
-        /**
-         * Capitalized IT could be an acronym for "Information Technologies".
-         */
-        if (cain.equals("it") && word.equals(word.toUpperCase())) {
-            Token retVal = new Token(word, null, null, index);
-            Token alternative = lexicon.getAlternatives(cain).getAlternatives().get(0);
-            retVal.addAlternative(alternative);
-            alternative = new Token(word, POSTag.XY5, word);
-            retVal.addAlternative(alternative);
-            return retVal;
-        } else if (lexicon.getAlternatives(cain).getAlternatives().size() == 1) {
+        if (lexicon.getAlternatives(cain).getAlternatives().size() == 1) {
             Token alternative = lexicon.getAlternatives(cain).getAlternatives().get(0);
             if (NumberDetector.getDigits(alternative.getLemma()) != null) {
                 Token retVal = new Token(word, null, null, index);

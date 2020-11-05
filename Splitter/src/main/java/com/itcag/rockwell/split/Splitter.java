@@ -18,6 +18,7 @@
 
 package com.itcag.rockwell.split;
 
+import com.itcag.multilingual.UnicodeStandardizer;
 import com.itcag.util.punct.Locker;
 import com.itcag.util.punct.Punctuation;
 import com.itcag.util.txt.TextToolbox;
@@ -31,6 +32,7 @@ import java.util.Iterator;
  */
 public final class Splitter {
 
+    private final UnicodeStandardizer unicode;
     private final Locker locker;
     
     /**
@@ -39,14 +41,10 @@ public final class Splitter {
      */
     private final boolean extended;
     
-    public Splitter() throws Exception{
+    public Splitter(UnicodeStandardizer unicode, boolean extended) throws Exception{
+        this.unicode = unicode;
         this.locker = new Locker();
         this.extended = false;
-    }
-    
-    public Splitter(boolean extended) throws Exception {
-        this.locker = new Locker();
-        this.extended = extended;
     }
     
     /**
@@ -100,7 +98,6 @@ public final class Splitter {
          * Standardize Unicode.
          */
         int originalLength = input.length();
-        Unicode unicode = new Unicode();
         unicode.standardize(input);
         TextToolbox.trim(input);
         if (input.length() == 0) throw new IllegalArgumentException("Input is not in Latin alphabet.");

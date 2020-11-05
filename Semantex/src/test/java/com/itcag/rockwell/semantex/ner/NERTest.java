@@ -1,5 +1,10 @@
 package com.itcag.rockwell.semantex.ner;
 
+import com.itcag.english.EnglishLexicon;
+import com.itcag.english.EnglishMisspellings;
+import com.itcag.english.EnglishNumericalExpressionDetector;
+import com.itcag.english.EnglishToklex;
+import com.itcag.english.LatinUnicodeStandardizer;
 import com.itcag.rockwell.lang.Tag;
 import com.itcag.rockwell.lang.Token;
 import com.itcag.rockwell.tokenizer.Lemmatizer;
@@ -21,9 +26,9 @@ public class NERTest {
     private final Lemmatizer lemmatizer;
 
     public NERTest() throws Exception {
-        this.splitter = new Splitter();
-        this.tokenizer = new Tokenizer();
-        this.lemmatizer = new Lemmatizer();
+        this.splitter = new Splitter(new LatinUnicodeStandardizer(), false);
+        this.tokenizer = new Tokenizer(EnglishToklex.getInstance(), EnglishMisspellings.getInstance());
+        this.lemmatizer = new Lemmatizer(EnglishLexicon.getInstance(), EnglishNumericalExpressionDetector.class);
     }
     
     @org.junit.jupiter.api.Test

@@ -18,15 +18,16 @@
 
 package com.itcag.rockwell.tokenizer;
 
-import com.itcag.rockwell.tokenizer.res.Lexicon;
-import com.itcag.rockwell.tokenizer.res.LexicalResources;
-import com.itcag.util.punct.PunctuationToolbox;
-import com.itcag.rockwell.POSTag;
+import com.itcag.multilingual.LexicalResources;
+import com.itcag.multilingual.Lexicon;
+import com.itcag.multilingual.NumericalExpressionDetector;
 import com.itcag.rockwell.lang.Alternatives;
 import com.itcag.rockwell.lang.Token;
+import com.itcag.rockwell.POSTag;
 import com.itcag.util.Converter;
 import com.itcag.util.punct.Characters;
 import com.itcag.util.punct.Locker;
+import com.itcag.util.punct.PunctuationToolbox;
 
 import java.util.ArrayList;
 
@@ -41,15 +42,19 @@ public final class Lemmatizer {
     private final Lexer lexer;
     
     private final LexicalResources lexicalResources;
+    
+    private final Class Numerator;
 
-    public Lemmatizer() throws Exception {
+    public <T extends NumericalExpressionDetector> Lemmatizer(Lexicon lexicon, Class<T> Numerator) throws Exception {
 
         this.locker = new Locker();
 
-        this.lexicon = Lexicon.getInstance();
+        this.lexicon = lexicon;
         this.lexicalResources = LexicalResources.getInstance();
 
-        this.lexer = new Lexer();
+        this.lexer = new Lexer(lexicon);
+        
+        this.Numerator = Numerator;
 
     }
     
@@ -274,7 +279,7 @@ public final class Lemmatizer {
     
     private boolean isNumericalExpression(String word, ArrayList<Token> tokens) throws Exception {
         
-        NumericalExpressionDetector detector = new NumericalExpressionDetector();
+        NumericalExpressionDetector detector = (NumericalExpressionDetector) this.Numerator.newInstance();
         if (detector.split(word.toCharArray())) {
             switch (detector.getType()) {
                 case PERCENTAGE:

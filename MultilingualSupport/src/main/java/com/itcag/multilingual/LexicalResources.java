@@ -16,7 +16,7 @@
  *
  */
 
-package com.itcag.rockwell.tokenizer.res;
+package com.itcag.multilingual;
 
 import java.util.HashSet;
 

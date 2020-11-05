@@ -16,7 +16,7 @@
  *
  */
 
-package com.itcag.rockwell.tokenizer.res;
+package com.itcag.multilingual;
 
 import com.itcag.util.io.TextFileReader;
 

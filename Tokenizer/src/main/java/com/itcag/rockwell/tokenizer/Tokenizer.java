@@ -18,8 +18,8 @@
 
 package com.itcag.rockwell.tokenizer;
 
-import com.itcag.rockwell.tokenizer.res.Toklex;
-import com.itcag.rockwell.tokenizer.res.Misspellings;
+import com.itcag.multilingual.Misspellings;
+import com.itcag.multilingual.Toklex;
 import com.itcag.util.punct.Locker;
 import com.itcag.util.punct.PunctuationToolbox;
 import com.itcag.util.txt.TextToolbox;
@@ -37,10 +37,10 @@ public final class Tokenizer {
     private final Toklex toklex;
     private final Misspellings misspellings;
 
-    public Tokenizer() throws Exception {
+    public Tokenizer(Toklex toklex, Misspellings misspellings) throws Exception {
         this.locker = new Locker();
-        this.toklex = Toklex.getInstance();
-        this.misspellings = Misspellings.getInstance();
+        this.toklex = toklex;
+        this.misspellings = misspellings;
     }
     
     /**

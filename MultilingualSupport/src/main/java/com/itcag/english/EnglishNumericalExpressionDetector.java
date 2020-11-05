@@ -16,9 +16,10 @@
  *
  */
 
-package com.itcag.rockwell.tokenizer;
+package com.itcag.english;
 
-import com.itcag.rockwell.tokenizer.res.LexicalResources;
+import com.itcag.multilingual.LexicalResources;
+import com.itcag.multilingual.NumericalExpressionDetector;
 import com.itcag.util.Converter;
 import com.itcag.util.txt.TextToolbox;
 
@@ -39,21 +40,7 @@ import com.itcag.util.txt.TextToolbox;
  * <li>If this method returns TRUE, the {@link #getNumber()}, {@link #getNumberAsString()}, {@link #getRest()} and {@link #getType()} methods are called, in order to retrieve the components of the numerical expression.</li>
  * </ol>
  */
-public final class NumericalExpressionDetector {
-    
-    /**
-     * Enumerates types of recognized numerical expressions.
-     */
-    public enum Type {
-        /** Only number - expressed as digits, fraction or with words. */
-        NUMBER,
-        /** Currency sign appended to a number. */
-        CURRENCY,
-        /** Percent or per mille sign appended to a number. */
-        PERCENTAGE,
-        /** Measuring unit appended to a number. */
-        QUANTITY,
-    }
+public final class EnglishNumericalExpressionDetector implements NumericalExpressionDetector {
     
     private final LexicalResources lexicalResources;
 
@@ -68,7 +55,7 @@ public final class NumericalExpressionDetector {
     private final StringBuilder prefix = new StringBuilder();
     private final StringBuilder suffix = new StringBuilder();
     
-    public NumericalExpressionDetector() throws Exception {
+    public EnglishNumericalExpressionDetector() throws Exception {
         this.lexicalResources = LexicalResources.getInstance();
     }
     
@@ -77,6 +64,7 @@ public final class NumericalExpressionDetector {
      * @param chars Array of characters to be analyzed.
      * @return Boolean indicating whether one or more numerical expressions were identified.
      */
+    @Override
     public final boolean split(char[] chars) {
         
         if (chars.length == 0) return false;
@@ -214,6 +202,7 @@ public final class NumericalExpressionDetector {
      * Used if the {@link #split(char[])} method returned TRUE.
      * @return Value of the {@link Type} enum indicating which numerical expression was identified.
      */
+    @Override
     public Type getType() {
         return type;
     }
@@ -222,6 +211,7 @@ public final class NumericalExpressionDetector {
      * Used if the {@link #split(char[])} method returned TRUE.
      * @return Number holding the number part pf the token.
      */
+    @Override
     public Number getNumber() {
         return number;
     }
@@ -230,6 +220,7 @@ public final class NumericalExpressionDetector {
      * Used if the {@link #split(char[])} method returned TRUE.
      * @return String holding the number part of the token.
      */
+    @Override
     public String getNumberAsString() {
         return Converter.formatDouble(number);
     }
@@ -238,6 +229,7 @@ public final class NumericalExpressionDetector {
      * Used if the {@link #split(char[])} method returned TRUE.
      * @return String holding the part of the token that is not a number and precedes it (i.e. a currency sign), null otherwise.
      */
+    @Override
     public String getPrefix() {
         return this.prefix.toString();
     }
@@ -246,14 +238,17 @@ public final class NumericalExpressionDetector {
      * Used if the {@link #split(char[])} method returned TRUE.
      * @return String holding the part of the token that is not a number and succeeds it (i.e. the percent/per mille sign or a measuring unit), null otherwise.
      */
+    @Override
     public String getSuffix() {
         return this.suffix.toString();
     }
 
+    @Override
     public boolean getCca() {
         return this.cca;
     }
     
+    @Override
     public boolean getPlusMinus() {
         return this.plusMinus;
     }

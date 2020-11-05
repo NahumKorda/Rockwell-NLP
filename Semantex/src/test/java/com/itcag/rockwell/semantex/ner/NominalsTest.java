@@ -1,5 +1,10 @@
 package com.itcag.rockwell.semantex.ner;
 
+import com.itcag.english.EnglishLexicon;
+import com.itcag.english.EnglishMisspellings;
+import com.itcag.english.EnglishNumericalExpressionDetector;
+import com.itcag.english.EnglishToklex;
+import com.itcag.english.LatinUnicodeStandardizer;
 import com.itcag.rockwell.lang.Semtoken;
 import com.itcag.rockwell.lang.Token;
 import com.itcag.rockwell.tokenizer.Lemmatizer;
@@ -24,9 +29,9 @@ public class NominalsTest {
 //        tests.add("Dr. Alicja Gruzdz.");
         tests.add("USD 14 million");
 
-        Splitter splitter = new Splitter();
-        Tokenizer tokenizer = new Tokenizer();
-        Lemmatizer lemmatizer = new Lemmatizer();
+        Splitter splitter = new Splitter(new LatinUnicodeStandardizer(), false);
+        Tokenizer tokenizer = new Tokenizer(EnglishToklex.getInstance(), EnglishMisspellings.getInstance());
+        Lemmatizer lemmatizer = new Lemmatizer(EnglishLexicon.getInstance(), EnglishNumericalExpressionDetector.class);
 
         for (String test : tests) {
             

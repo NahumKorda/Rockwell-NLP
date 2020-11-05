@@ -18,6 +18,15 @@
 
 package com.itcag.rockwell.pipeline;
 
+import com.itcag.english.EnglishLexicon;
+import com.itcag.english.EnglishMisspellings;
+import com.itcag.english.EnglishNumericalExpressionDetector;
+import com.itcag.english.EnglishToklex;
+import com.itcag.english.LatinUnicodeStandardizer;
+import com.itcag.multilingual.Lexicon;
+import com.itcag.multilingual.Misspellings;
+import com.itcag.multilingual.Toklex;
+import com.itcag.multilingual.UnicodeStandardizer;
 import com.itcag.rockwell.extr.Extractor;
 import com.itcag.rockwell.lang.Extract;
 import com.itcag.rockwell.lang.Tag;
@@ -97,8 +106,8 @@ public class Pipeline {
             case EXTRACT:
             {
                 this.splitter = getSplitter(properties);
-                this.tokenizer = new Tokenizer();
-                this.lemmatizer = new Lemmatizer();
+                this.tokenizer = getTokenizer(properties);
+                this.lemmatizer = getLemmatizer(properties);
                 this.tagger = null;
                 this.semantex = getSemantex(properties);
                 this.extractor = getExtractor(properties);
@@ -107,8 +116,8 @@ public class Pipeline {
             case CLASSIFY:
             {
                 this.splitter = getSplitter(properties);
-                this.tokenizer = new Tokenizer();
-                this.lemmatizer = new Lemmatizer();
+                this.tokenizer = getTokenizer(properties);
+                this.lemmatizer = getLemmatizer(properties);
                 this.tagger = getTagger(properties);
                 this.semantex = getSemantex(properties);
                 this.extractor = null;
@@ -117,8 +126,8 @@ public class Pipeline {
             case NER:
             {
                 this.splitter = getSplitter(properties);
-                this.tokenizer = new Tokenizer();
-                this.lemmatizer = new Lemmatizer();
+                this.tokenizer = getTokenizer(properties);
+                this.lemmatizer = getLemmatizer(properties);
                 this.tagger = null;
                 this.semantex = getSemantex(properties);
                 this.extractor = null;
@@ -127,8 +136,8 @@ public class Pipeline {
             case INSERT_NER:
             {
                 this.splitter = getSplitter(properties);
-                this.tokenizer = new Tokenizer();
-                this.lemmatizer = new Lemmatizer();
+                this.tokenizer = getTokenizer(properties);
+                this.lemmatizer = getLemmatizer(properties);
                 this.tagger = null;
                 this.semantex = getSemantex(properties);
                 this.extractor = null;
@@ -137,8 +146,8 @@ public class Pipeline {
             case INSERT_CONCEPTS:
             {
                 this.splitter = getSplitter(properties);
-                this.tokenizer = new Tokenizer();
-                this.lemmatizer = new Lemmatizer();
+                this.tokenizer = getTokenizer(properties);
+                this.lemmatizer = getLemmatizer(properties);
                 this.tagger = null;
                 this.semantex = getSemantex(properties);
                 this.extractor = null;
@@ -147,8 +156,8 @@ public class Pipeline {
             case LEMMATIZE:
             {
                 this.splitter = getSplitter(properties);
-                this.tokenizer = new Tokenizer();
-                this.lemmatizer = new Lemmatizer();
+                this.tokenizer = getTokenizer(properties);
+                this.lemmatizer = getLemmatizer(properties);
                 this.tagger = null;
                 this.semantex = null;
                 this.extractor = null;
@@ -157,7 +166,7 @@ public class Pipeline {
             case TOKENIZE:
             {
                 this.splitter = getSplitter(properties);
-                this.tokenizer = new Tokenizer();
+                this.tokenizer = getTokenizer(properties);
                 this.lemmatizer = null;
                 this.tagger = null;
                 this.semantex = null;
@@ -181,13 +190,82 @@ public class Pipeline {
 
     private Splitter getSplitter(Properties properties) throws Exception {
         
-        if (properties.containsKey(PropertyFields.EXTENDED_SPLITTING.getField())) {
-            String test = properties.getProperty(PropertyFields.EXTENDED_SPLITTING.getField(), Boolean.FALSE.toString());
-            return new Splitter(Boolean.parseBoolean(test.toUpperCase()));
+        UnicodeStandardizer unicode;
+        if (!properties.containsKey(PropertyFields.LANGUAGE.getField())) {
+            unicode = new LatinUnicodeStandardizer();
         } else {
-            return new Splitter();
+            switch (properties.getProperty(PropertyFields.LANGUAGE.getField())) {
+                case "EN":
+                default:
+                    unicode = new LatinUnicodeStandardizer();
+            }
+        }
+        
+        boolean extendedSplitting;
+        if (properties.containsKey(PropertyFields.EXTENDED_SPLITTING.getField())) {
+            extendedSplitting = Boolean.parseBoolean(properties.getProperty(PropertyFields.EXTENDED_SPLITTING.getField(), Boolean.FALSE.toString()));
+        } else {
+            extendedSplitting = false;
+        }
+        
+        return new Splitter(unicode, extendedSplitting);
+
+    }
+    
+    private Tokenizer getTokenizer(Properties properties) throws Exception {
+        
+        Toklex toklex;
+        if (!properties.containsKey(PropertyFields.LANGUAGE.getField())) {
+            toklex = EnglishToklex.getInstance();
+        } else {
+            switch (properties.getProperty(PropertyFields.LANGUAGE.getField())) {
+                case "EN":
+                default:
+                    toklex = EnglishToklex.getInstance();
+            }
         }
 
+        Misspellings misspellings;
+        if (!properties.containsKey(PropertyFields.LANGUAGE.getField())) {
+            misspellings = EnglishMisspellings.getInstance();
+        } else {
+            switch (properties.getProperty(PropertyFields.LANGUAGE.getField())) {
+                case "EN":
+                default:
+                    misspellings = EnglishMisspellings.getInstance();
+            }
+        }
+        
+        return new Tokenizer(toklex, misspellings);
+        
+    }
+    
+    private Lemmatizer getLemmatizer(Properties properties) throws Exception {
+        
+        Lexicon lexicon;
+        if (!properties.containsKey(PropertyFields.LANGUAGE.getField())) {
+            lexicon = EnglishLexicon.getInstance();
+        } else {
+            switch (properties.getProperty(PropertyFields.LANGUAGE.getField())) {
+                case "EN":
+                default:
+                    lexicon = EnglishLexicon.getInstance();
+            }
+        }
+        
+        Class numerator;
+        if (!properties.containsKey(PropertyFields.LANGUAGE.getField())) {
+            numerator = EnglishNumericalExpressionDetector.class;
+        } else {
+            switch (properties.getProperty(PropertyFields.LANGUAGE.getField())) {
+                case "EN":
+                default:
+                    numerator = EnglishNumericalExpressionDetector.class;
+            }
+        }
+        
+        return new Lemmatizer(lexicon, numerator);
+        
     }
     
     private Tagger getTagger(Properties properties) throws Exception {
