@@ -54,7 +54,7 @@ public final class EnglishToklex implements Toklex {
     private EnglishToklex() throws Exception {
 
         Loader loader = new Loader();
-        ArrayList<String> items = loader.load("toklex");
+        ArrayList<String> items = loader.load("english/toklex");
 
         items.stream().forEach((item) -> {
             String[] elts = item.split("\t");

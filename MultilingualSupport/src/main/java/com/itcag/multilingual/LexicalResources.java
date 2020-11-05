@@ -55,9 +55,9 @@ public final class LexicalResources {
     
     private LexicalResources() throws Exception {
         Loader loader = new Loader();
-        this.currencyCodes = new HashSet<>(loader.load("currencyCodes"));
-        this.currencySymbols = new HashSet<>(loader.load("currencySymbols"));
-        this.measuringUnits = new HashSet<>(loader.load("measuringUnits"));
+        this.currencyCodes = new HashSet<>(loader.load("english/currencyCodes"));
+        this.currencySymbols = new HashSet<>(loader.load("english/currencySymbols"));
+        this.measuringUnits = new HashSet<>(loader.load("english/measuringUnits"));
     }
     
     /**

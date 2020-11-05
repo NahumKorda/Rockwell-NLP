@@ -54,7 +54,7 @@ public final class EnglishMisspellings implements Misspellings {
     private EnglishMisspellings() throws Exception {
         
         Loader loader = new Loader();
-        ArrayList<String> items = loader.load("misspellings");
+        ArrayList<String> items = loader.load("english/misspellings");
 
         items.stream().forEach((item) -> {
             /*

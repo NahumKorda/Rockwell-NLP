@@ -18,6 +18,7 @@
         <module>../Tokenizer</module>
         <module>../Utils</module>
         <module>../Vocabulator</module>
+        <module>../MultilingualSupport</module>
     </modules>
 
     <properties>

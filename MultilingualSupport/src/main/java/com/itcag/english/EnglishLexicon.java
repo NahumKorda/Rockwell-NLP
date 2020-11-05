@@ -60,7 +60,7 @@ public final class EnglishLexicon implements Lexicon {
     private EnglishLexicon() throws Exception {
         
         Loader loader = new Loader();
-        ArrayList<String> items = loader.load("lexicon");
+        ArrayList<String> items = loader.load("english/lexicon");
 
         for (String item : items) {
             /**
