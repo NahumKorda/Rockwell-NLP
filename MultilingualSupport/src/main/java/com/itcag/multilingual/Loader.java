@@ -30,7 +30,7 @@ public final class Loader {
     private final String basePath;
     
     public Loader() throws Exception {
-        String path2JAR = Loader.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath();
+        String path2JAR = Loader.class.getProtectionDomain().getCodeSource().getLocation().getPath();
         String location = path2JAR.substring(0, path2JAR.lastIndexOf("/"));
         if (!location.endsWith("/")) location += "/";
         basePath = location;

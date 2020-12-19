@@ -35,6 +35,26 @@ import java.util.ArrayList;
  */
 public final class TextFileReader {
 
+    private final BufferedReader reader;
+    
+    public TextFileReader(String filePath) throws Exception {
+        
+        File file = new File(filePath);
+        if (!file.exists()) throw new FileNotFoundException(filePath);
+
+        InputStream input = new FileInputStream(file);
+        this.reader = new BufferedReader(new InputStreamReader(input));
+        
+    }
+    
+    public String getNextLine() throws Exception {
+        return reader.readLine();
+    }
+    
+    public void close() throws Exception {
+        this.reader.close();
+    }
+    
     /**
      * @param filePath String holding a local path to a text file.
      * @return Array list of strings - each string containing a line in the file.
